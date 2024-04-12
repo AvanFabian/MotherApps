@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/pages/home_page.dart';
+import 'package:monitoring_hamil/pages/page_control.dart'; // Replace with your package name
 import 'package:monitoring_hamil/pages/leaderboard_page.dart'; // Replace with your package name
 
 class ProfilePage extends StatelessWidget {
+  ProfilePage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +19,7 @@ class ProfilePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
+                  MaterialPageRoute(builder: (context) => PageControl()),
                 );
               },
             ),

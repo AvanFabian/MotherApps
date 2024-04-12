@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 // import home_page.dart
+import 'package:monitoring_hamil/pages/page_control.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
@@ -15,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: HomePage(),
+        home: PageControl(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => HomePage(),
           '/leaderboard': (BuildContext context) => LeaderboardPage(),

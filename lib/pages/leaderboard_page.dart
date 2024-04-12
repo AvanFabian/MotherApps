@@ -3,11 +3,25 @@ import 'package:monitoring_hamil/pages/home_page.dart'; // Replace with your pac
 import 'package:monitoring_hamil/pages/profile_page.dart'; // Replace with your package name
 
 class LeaderboardPage extends StatelessWidget {
+  LeaderboardPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Leaderboard Page'),
+        title: const Center(child: Text('Papan Peringkat')),
+        backgroundColor: Colors.deepOrange[400],
+        elevation: 0, // z-coordinate of the app bar
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {},
+        ),
+        // logout button
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: Center(
         child: Column(
