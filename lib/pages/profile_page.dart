@@ -44,10 +44,10 @@ class ProfilePage extends StatelessWidget {
             ElevatedButton(
               child: Text('Go to Profile Page'),
               onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => LeaderboardPage()),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => LeaderboardPage()),
+                );
               },
             ),
           ],

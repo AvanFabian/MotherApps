@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/my_colors.dart';
 
-class LeaderBoardPage extends StatelessWidget {
-  const LeaderBoardPage({super.key});
+class LeaderboardPage extends StatelessWidget {
+  const LeaderboardPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,72 +11,32 @@ class LeaderBoardPage extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          leading: const Icon(
-            Icons.arrow_back_ios,
+       appBar: AppBar(
+        title: const Text(
+          'Peringkat',
+          style: TextStyle(
             color: Colors.white,
+            fontSize: 24.0, // Adjust the size as needed
+            fontWeight: FontWeight.bold,
           ),
-          actions: const [
-            Icon(
-              Icons.grid_view,
-              color: Colors.white,
-            ),
-          ],
         ),
+        backgroundColor: const Color.fromARGB(255, 252, 82, 0),
+        elevation: 0, // z-coordinate of the app bar
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.person_add, size: 35.0),
+            color: const Color.fromARGB(255, 255, 255, 255),
+            onPressed: () {
+              // Handle the button's onPressed event
+            },
+          ),
+        ],
+      ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      gradient: LinearGradient(colors: [
-                        Colors.yellow.shade600,
-                        Colors.orange,
-                        Colors.red
-                      ])),
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Container(
-                      height: 50.0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: MyColors.calculatorButton),
-                      child: const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Region',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0),
-                            ),
-                            Text(
-                              'National',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0),
-                            ),
-                            Text(
-                              'Global',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
                 const SizedBox(
                   height: 20.0,
                 ),
@@ -295,7 +255,7 @@ class WinnerContainer extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'Emma Aria',
+                      'Daniswara',
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
