@@ -24,9 +24,9 @@ class _PageControlState extends State<PageControl> {
   // pages list
   final List _pages = [
     // home page
-    HomePage(),
+    const HomePage(),
     // leaderboard page
-    LeaderboardPage(),
+    const LeaderboardPage(),
     // profile page
     ProfilePage(),
   ];
@@ -38,21 +38,25 @@ class _PageControlState extends State<PageControl> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _navigateBottomBar,
-        backgroundColor: Colors.deepOrange[400],
+        selectedItemColor: const Color.fromARGB(255, 252, 82, 0),
+        unselectedItemColor: Colors.grey[900],
+        selectedLabelStyle:
+            const TextStyle(fontSize: 15.0), // Adjust the size as needed
+        unselectedLabelStyle:
+            const TextStyle(fontSize: 15.0), // Adjust the size as needed
+        backgroundColor: const Color.fromARGB(255, 252, 255, 255),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.black87),
-            activeIcon: Icon(Icons.home, color: Colors.white),
+            icon: Icon(Icons.home, size: 35.0), // Adjust the size as needed
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard, color: Colors.black87),
-            activeIcon: Icon(Icons.leaderboard, color: Colors.white),
+            icon: Icon(Icons.leaderboard,
+                size: 35.0), // Adjust the size as needed
             label: 'Leaderboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.black87),
-            activeIcon: Icon(Icons.person, color: Colors.white),
+            icon: Icon(Icons.person, size: 35.0), // Adjust the size as needed
             label: 'Profile',
           ),
         ],

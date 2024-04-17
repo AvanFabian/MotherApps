@@ -6,59 +6,92 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepOrange[200],
+      backgroundColor: Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
-        title: const Center(child: Text('Galeri Catatan')),
-        backgroundColor: Colors.deepOrange[400],
-        elevation: 0, // z-coordinate of the app bar
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {},
+        title: const Text(
+          'Home',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24.0, // Adjust the size as needed
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        // logout button
+        backgroundColor: const Color.fromARGB(255, 252, 82, 0),
+        elevation: 0, // z-coordinate of the app bar
         actions: <Widget>[
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {},
+            icon: const Icon(Icons.person_add, size: 35.0),
+            color: const Color.fromARGB(255, 255, 255, 255),
+            onPressed: () {
+              // Handle the button's onPressed event
+            },
           ),
         ],
       ),
-      body: GridView.builder(
-        itemCount: 6, // Number of items
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Number of columns
-        ),
-        itemBuilder: (BuildContext context, int index) {
-          return Center(
-            child: Container(
-              height: 180,
-              width: 180,
-              decoration: BoxDecoration(
-                color: Colors.redAccent[200],
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.all(20),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.white,
-                    size: 50.0,
-                  ),
-                  Text(
-                    'Hello World',
-                    style: TextStyle(
-                      fontSize: 30,
-                      color: Colors.white,
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(height: 12), // Add a gap of 12 pixels
+            Center(
+              child: Container(
+                height: 180,
+                width: MediaQuery.of(context).size.width,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                padding: const EdgeInsets.all(20),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 50.0,
                     ),
-                    textAlign: TextAlign.center, // Centers text horizontally
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          );
-        },
+            const SizedBox(height: 12), // Add a gap of 12 pixels
+            Center(
+              child: Container(
+                height: 180,
+                width: MediaQuery.of(context).size.width,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                padding: const EdgeInsets.all(20),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12), // Add a gap of 12 pixels
+            Center(
+              child: Container(
+                height: 180,
+                width: MediaQuery.of(context).size.width,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                padding: const EdgeInsets.all(20),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 50.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12), // Add a gap of 12 pixels
+          ],
+        ),
       ),
     );
   }

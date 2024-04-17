@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: PageControl(),
         routes: <String, WidgetBuilder>{
-          '/home': (BuildContext context) => HomePage(),
+          '/home': (BuildContext context) => const HomePage(),
           '/leaderboard': (BuildContext context) => LeaderboardPage(),
           '/profile': (BuildContext context) => ProfilePage(),
         });
