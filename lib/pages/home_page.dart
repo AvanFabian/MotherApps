@@ -6,7 +6,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 240, 240, 240),
+      backgroundColor: const Color.fromARGB(255, 240, 240, 240),
       appBar: AppBar(
         title: const Text(
           'Home',
@@ -42,10 +42,15 @@ class HomePage extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 50.0,
+                    Expanded(
+                      child: Text(
+                        'Perkenalan Aplikasi (Get Started)',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22.5, // Adjust the size as needed
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -61,10 +66,15 @@ class HomePage extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 50.0,
+                    Expanded(
+                      child: Text(
+                        'Menu StopWatch olahraga + Tombol Simpan dsb.',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 22.5, // Adjust the size as needed
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -80,10 +90,16 @@ class HomePage extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                      size: 50.0,
+                    Expanded(
+                      child: Text(
+                        'Opsional (bisa diisi dengan fitur lainnya)',
+                        style: TextStyle(
+                          // lebar
+                          color: Colors.black,
+                          fontSize: 22.5, // Adjust the size as needed
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 ),

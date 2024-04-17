@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => const HomePage(),
           '/leaderboard': (BuildContext context) => const LeaderboardPage(),
-          '/profile': (BuildContext context) => ProfilePage(),
+          '/profile': (BuildContext context) => const ProfilePage(),
         });
   }
 }

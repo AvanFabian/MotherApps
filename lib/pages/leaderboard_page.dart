@@ -7,31 +7,31 @@ class LeaderboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: MyColors.calculatorScreen,
+        color: Color.fromARGB(255, 224, 150, 113),
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-       appBar: AppBar(
-        title: const Text(
-          'Peringkat',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24.0, // Adjust the size as needed
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: const Text(
+            'Papan Peringkat',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24.0, // Adjust the size as needed
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          backgroundColor: const Color.fromARGB(255, 252, 82, 0),
+          elevation: 0, // z-coordinate of the app bar
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.person_add, size: 35.0),
+              color: const Color.fromARGB(255, 255, 255, 255),
+              onPressed: () {
+                // Handle the button's onPressed event
+              },
+            ),
+          ],
         ),
-        backgroundColor: const Color.fromARGB(255, 252, 82, 0),
-        elevation: 0, // z-coordinate of the app bar
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.person_add, size: 35.0),
-            color: const Color.fromARGB(255, 255, 255, 255),
-            onPressed: () {
-              // Handle the button's onPressed event
-            },
-          ),
-        ],
-      ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -51,18 +51,18 @@ class LeaderboardPage extends StatelessWidget {
                         winnerName: 'Alina',
                         height: 120,
                         rank: '2',
-                        color: Colors.green,
+                        color: Colors.black,
                       ),
                       WinnerContainer(
                         isFirst: true,
-                        color: Colors.orange,
+                        color: Colors.black,
                       ),
                       WinnerContainer(
                         winnerName: 'Sofiya',
                         url: 'assets/3.jpg',
                         height: 120,
                         rank: '3',
-                        color: Colors.blue,
+                        color: Colors.black,
                       ),
                     ],
                   ),
@@ -108,12 +108,6 @@ class LeaderboardPage extends StatelessWidget {
                             name: 'Josheph',
                             rank: '2153',
                           ),
-                          ContestantList(
-                            url: 'assets/10.jpg',
-                            rank: '3456',
-                            name: 'Kristine',
-                          ),
-                          ContestantList(),
                         ],
                       ),
                     ),
@@ -158,10 +152,10 @@ class WinnerContainer extends StatelessWidget {
             child: Center(
               child: Container(
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    Colors.yellow.shade600,
-                    Colors.orange,
-                    Colors.red
+                  gradient: const LinearGradient(colors: [
+                    Color.fromARGB(255, 236, 117, 58),
+                    Color.fromARGB(255, 200, 100, 50),
+                    Color.fromARGB(255, 170, 85, 40),
                   ]),
                   border: Border.all(
                     color:
@@ -177,7 +171,7 @@ class WinnerContainer extends StatelessWidget {
                     height: 150.0,
                     width: 100.0,
                     decoration: const BoxDecoration(
-                      color: MyColors.calculatorButton,
+                      color: Color.fromARGB(255, 236, 117, 58),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(40.0),
                           topRight: Radius.circular(40.0)),
@@ -202,10 +196,10 @@ class WinnerContainer extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          Colors.yellow.shade600,
-                          Colors.orange,
-                          Colors.red
+                        gradient: const LinearGradient(colors: [
+                          Color.fromARGB(255, 236, 117, 58),
+                          Color.fromARGB(255, 200, 100, 50),
+                          Color.fromARGB(255, 170, 85, 40),
                         ]),
                         border: Border.all(
                           color: Colors
@@ -217,7 +211,7 @@ class WinnerContainer extends StatelessWidget {
                         child: ClipOval(
                           clipBehavior: Clip.antiAlias,
                           child: Image.asset(
-                            'assets/5.jpg',
+                            url ?? 'assets/5.jpg',
                             height: 70,
                             width: 70,
                             fit: BoxFit.cover,
@@ -232,21 +226,21 @@ class WinnerContainer extends StatelessWidget {
                   child: Container(
                     height: 20.0,
                     width: 20.0,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.red,
+                      color: color ?? Colors.red,
                     ),
-                    child: const Center(
+                    child: Center(
                         child: Text(
-                      '1',
-                      style: TextStyle(color: Colors.white),
+                      rank ?? '1',
+                      style: const TextStyle(color: Colors.white),
                     )),
                   ),
                 ),
               ],
             ),
           ),
-          const Positioned(
+          Positioned(
             top: 150.0,
             child: SizedBox(
               // diganti sizedbox tadinya container
@@ -255,16 +249,16 @@ class WinnerContainer extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      'Daniswara',
-                      style: TextStyle(
+                      winnerName ?? 'Daniswara',
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      '1',
+                      rank ?? '1',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: color ?? Colors.white,
                         fontSize: 16.0,
                         fontWeight: FontWeight.bold,
                       ),
@@ -294,10 +288,10 @@ class ContestantList extends StatelessWidget {
           left: 20.0, right: 20.0, bottom: 5.0, top: 10.0),
       child: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            Colors.red[400] ?? Colors.red,
-            Colors.red,
-            Colors.yellow[400] ?? Colors.yellow,
+          gradient: const LinearGradient(colors: [
+            Color.fromARGB(255, 236, 117, 58),
+            Color.fromARGB(255, 200, 100, 50),
+            Color.fromARGB(255, 170, 85, 40),
           ]),
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -305,7 +299,7 @@ class ContestantList extends StatelessWidget {
           padding: const EdgeInsets.all(2.0),
           child: Container(
             decoration: BoxDecoration(
-              color: MyColors.calculatorButton,
+              color: const Color.fromARGB(255, 236, 117, 58),
               borderRadius: BorderRadius.circular(15.0),
             ),
             child: Padding(
@@ -319,23 +313,27 @@ class ContestantList extends StatelessWidget {
                     child: ClipOval(
                         clipBehavior: Clip.antiAlias,
                         child: Image.asset(
-                          'assets/4.jpg',
+                          url ?? 'assets/4.jpg',
                           height: 60.0,
                           width: 60.0,
                           fit: BoxFit.fill,
                         )),
                   ),
-                  const Column(
+                  Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Name',
-                        style: TextStyle(color: Colors.white),
+                        name ?? 'Name',
+                        style: const TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        '@${'Name'}',
-                        style: TextStyle(color: Colors.white54, fontSize: 12.0),
+                        '@${name ?? 'Name'}',
+                        style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
