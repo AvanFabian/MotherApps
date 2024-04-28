@@ -3,14 +3,14 @@ import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 
-class PageControl extends StatefulWidget {
-  PageControl({super.key});
+class Layout extends StatefulWidget {
+  const Layout({super.key});
 
   @override
-  State<PageControl> createState() => _PageControlState();
+  State<Layout> createState() => _LayoutState();
 }
 
-class _PageControlState extends State<PageControl> {
+class _LayoutState extends State<Layout> {
   // selected pages indec
   int _selectedIndex = 0;
 

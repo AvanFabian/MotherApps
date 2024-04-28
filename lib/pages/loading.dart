@@ -1,10 +1,10 @@
 import 'package:monitoring_hamil/constant.dart';
 import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/screens/home.dart';
+import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../screens/login.dart';
+import 'login.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -26,7 +26,7 @@ class _LoadingState extends State<Loading> {
       if (response.error == null) {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => Home()),
+              MaterialPageRoute(builder: (context) => const Layout()),
               (route) => false);
         }
       } else if (response.error == unauthorized) {

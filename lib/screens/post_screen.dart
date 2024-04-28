@@ -6,7 +6,7 @@ import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import 'login.dart';
+import '../pages/login.dart';
 import 'post_form.dart';
 
 class PostScreen extends StatefulWidget {

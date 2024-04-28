@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-// import home_page.dart
-import 'package:monitoring_hamil/pages/page_control.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
+import 'package:monitoring_hamil/pages/loading.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: PageControl(),
+        home: const Loading(),
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => const HomePage(),
           '/leaderboard': (BuildContext context) => const LeaderboardPage(),

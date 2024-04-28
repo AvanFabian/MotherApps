@@ -7,7 +7,7 @@ import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'login.dart';
+import '../pages/login.dart';
 
 class PostForm extends StatefulWidget {
   final Post? post;

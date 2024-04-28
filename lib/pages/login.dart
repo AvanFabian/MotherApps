@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constant.dart';
-import 'home.dart';
+import '../screens/home.dart';
 import 'register.dart';
 
 class Login extends StatefulWidget {

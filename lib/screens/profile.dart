@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../constant.dart';
-import 'login.dart';
+import '../pages/login.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

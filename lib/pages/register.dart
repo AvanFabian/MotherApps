@@ -9,8 +9,11 @@ import '../constant.dart';
 import 'login.dart';
 
 class Register extends StatefulWidget {
+  const Register({super.key});
+
   @override
-  _RegisterState createState() => _RegisterState();
+  // _RegisterState createState() => _RegisterState();
+  State<Register> createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
@@ -30,8 +33,10 @@ class _RegisterState extends State<Register> {
       setState(() {
         loading = !loading;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
     }
   }
 
@@ -40,15 +45,17 @@ class _RegisterState extends State<Register> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
         centerTitle: true,
       ),
       body: Form(
@@ -60,7 +67,7 @@ class _RegisterState extends State<Register> {
                 controller: nameController,
                 validator: (val) => val!.isEmpty ? 'Invalid name' : null,
                 decoration: kInputDecoration('Name')),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextFormField(
@@ -69,7 +76,7 @@ class _RegisterState extends State<Register> {
                 validator: (val) =>
                     val!.isEmpty ? 'Invalid email address' : null,
                 decoration: kInputDecoration('Email')),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextFormField(
@@ -78,7 +85,7 @@ class _RegisterState extends State<Register> {
                 validator: (val) =>
                     val!.length < 6 ? 'Required at least 6 chars' : null,
                 decoration: kInputDecoration('Password')),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             TextFormField(
@@ -88,11 +95,11 @@ class _RegisterState extends State<Register> {
                     ? 'Confirm password does not match'
                     : null,
                 decoration: kInputDecoration('Confirm password')),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             loading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
                 : kTextButton(
                     'Register',
                     () {
@@ -104,7 +111,7 @@ class _RegisterState extends State<Register> {
                       }
                     },
                   ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             kLoginRegisterHint('Already have an account? ', 'Login', () {
