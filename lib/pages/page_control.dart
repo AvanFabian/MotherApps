@@ -28,7 +28,7 @@ class _PageControlState extends State<PageControl> {
     // leaderboard page
     const LeaderboardPage(),
     // profile page
-    ProfilePage(),
+    const ProfilePage(),
   ];
 
   @override
