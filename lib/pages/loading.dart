@@ -31,15 +31,14 @@ class _LoadingState extends State<Loading> {
         }
       } else if (response.error == unauthorized) {
         if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => Login()),
-              (route) => false);
-        }
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => Login()), (route) => false);
+      }
       } else {
         // if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('${response.error}'),
-          ));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}'),
+        ));
         // }
       }
     }
