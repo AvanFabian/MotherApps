@@ -10,8 +10,10 @@ import '../pages/login.dart';
 import 'post_form.dart';
 
 class PostScreen extends StatefulWidget {
+  const PostScreen({super.key});
+
   @override
-  _PostScreenState createState() => _PostScreenState();
+  State<PostScreen> createState() => _PostScreenState();
 }
 
 class _PostScreenState extends State<PostScreen> {
@@ -36,9 +38,11 @@ class _PostScreenState extends State<PostScreen> {
                 (route) => false)
           });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${response.error}'),
-      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('${response.error}'),
+        ));
+      }
     }
   }
 
@@ -53,8 +57,10 @@ class _PostScreenState extends State<PostScreen> {
                 (route) => false)
           });
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
     }
   }
 
@@ -71,8 +77,10 @@ class _PostScreenState extends State<PostScreen> {
                 (route) => false)
           });
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
     }
   }
 
@@ -85,7 +93,7 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Center(child: CircularProgressIndicator())
+        ? const Center(child: CircularProgressIndicator())
         : RefreshIndicator(
             onRefresh: () {
               return retrievePosts();
@@ -95,7 +103,8 @@ class _PostScreenState extends State<PostScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   Post post = _postList[index];
                   return Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -103,7 +112,8 @@ class _PostScreenState extends State<PostScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 6),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 6),
                               child: Row(
                                 children: [
                                   Container(
@@ -118,12 +128,12 @@ class _PostScreenState extends State<PostScreen> {
                                         borderRadius: BorderRadius.circular(25),
                                         color: Colors.amber),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Text(
                                     '${post.user!.name}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 17),
                                   )
@@ -132,18 +142,18 @@ class _PostScreenState extends State<PostScreen> {
                             ),
                             post.user!.id == userId
                                 ? PopupMenuButton(
-                                    child: Padding(
+                                    child: const Padding(
                                         padding: EdgeInsets.only(right: 10),
                                         child: Icon(
                                           Icons.more_vert,
                                           color: Colors.black,
                                         )),
                                     itemBuilder: (context) => [
-                                      PopupMenuItem(
-                                          child: Text('Edit'), value: 'edit'),
-                                      PopupMenuItem(
-                                          child: Text('Delete'),
-                                          value: 'delete')
+                                      const PopupMenuItem(
+                                          value: 'edit', child: Text('Edit')),
+                                      const PopupMenuItem(
+                                          value: 'delete',
+                                          child: Text('Delete'))
                                     ],
                                     onSelected: (val) {
                                       if (val == 'edit') {
@@ -158,10 +168,10 @@ class _PostScreenState extends State<PostScreen> {
                                       }
                                     },
                                   )
-                                : SizedBox()
+                                : const SizedBox()
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 12,
                         ),
                         Text('${post.body}'),
@@ -169,7 +179,7 @@ class _PostScreenState extends State<PostScreen> {
                             ? Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 180,
-                                margin: EdgeInsets.only(top: 5),
+                                margin: const EdgeInsets.only(top: 5),
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage('${post.image}'),

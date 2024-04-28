@@ -18,10 +18,10 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blog App'),
+        title: const Text('Blog App'),
         actions: [
           IconButton(
-            icon: Icon(Icons.exit_to_app),
+            icon: const Icon(Icons.exit_to_app),
             onPressed: () {
               logout().then((value) => {
                     Navigator.of(context).pushAndRemoveUntil(
@@ -32,24 +32,24 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: currentIndex == 0 ? PostScreen() : Profile(),
+      body: currentIndex == 0 ? PostScreen() : const Profile(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PostForm(
+              builder: (context) => const PostForm(
                     title: 'Add new post',
                   )));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
         notchMargin: 5,
         elevation: 10,
         clipBehavior: Clip.antiAlias,
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         child: BottomNavigationBar(
-          items: [
+          items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: '')
           ],

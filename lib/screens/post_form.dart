@@ -16,7 +16,8 @@ class PostForm extends StatefulWidget {
   const PostForm({super.key, this.post, this.title});
 
   @override
-  _PostFormState createState() => _PostFormState();
+  // _PostFormState createState() => _PostFormState();
+  State<PostForm> createState() => _PostFormState();
 }
 
 class _PostFormState extends State<PostForm> {
@@ -40,7 +41,9 @@ class _PostFormState extends State<PostForm> {
     ApiResponse response = await createPost(_txtControllerBody.text, image);
 
     if (response.error == null) {
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
@@ -48,8 +51,10 @@ class _PostFormState extends State<PostForm> {
                 (route) => false)
           });
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
       setState(() {
         _loading = !_loading;
       });
@@ -60,7 +65,9 @@ class _PostFormState extends State<PostForm> {
   void _editPost(int postId) async {
     ApiResponse response = await editPost(postId, _txtControllerBody.text);
     if (response.error == null) {
-      Navigator.of(context).pop();
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
@@ -68,8 +75,10 @@ class _PostFormState extends State<PostForm> {
                 (route) => false)
           });
     } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
       setState(() {
         _loading = !_loading;
       });
@@ -91,13 +100,13 @@ class _PostFormState extends State<PostForm> {
         title: Text('${widget.title}'),
       ),
       body: _loading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView(
               children: [
                 widget.post != null
-                    ? SizedBox()
+                    ? const SizedBox()
                     : Container(
                         width: MediaQuery.of(context).size.width,
                         height: 200,
@@ -109,7 +118,7 @@ class _PostFormState extends State<PostForm> {
                                     fit: BoxFit.cover)),
                         child: Center(
                           child: IconButton(
-                            icon: Icon(Icons.image,
+                            icon: const Icon(Icons.image,
                                 size: 50, color: Colors.black38),
                             onPressed: () {
                               getImage();
@@ -120,14 +129,14 @@ class _PostFormState extends State<PostForm> {
                 Form(
                   key: _formKey,
                   child: Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     child: TextFormField(
                       controller: _txtControllerBody,
                       keyboardType: TextInputType.multiline,
                       maxLines: 9,
                       validator: (val) =>
                           val!.isEmpty ? 'Post body is required' : null,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: "Post body...",
                           border: OutlineInputBorder(
                               borderSide:
@@ -136,7 +145,7 @@ class _PostFormState extends State<PostForm> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: kTextButton('Post', () {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
