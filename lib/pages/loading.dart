@@ -35,11 +35,11 @@ class _LoadingState extends State<Loading> {
             MaterialPageRoute(builder: (context) => Login()), (route) => false);
       }
       } else {
-        // if (mounted) {
+        if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('${response.error}'),
         ));
-        // }
+        }
       }
     }
   }
