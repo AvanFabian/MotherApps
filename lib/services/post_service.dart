@@ -1,31 +1,28 @@
-
-
-
-
-
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/post.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../constant.dart';
+import '../constants.dart';
 
 // get all posts
 Future<ApiResponse> getPosts() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(postsURL),
-    headers: {
+    final response = await http.get(Uri.parse(postsURL), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     });
 
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body)['posts'].map((p) => Post.fromJson(p)).toList();
+        apiResponse.data = jsonDecode(response.body)['posts']
+            .map((p) => Post.fromJson(p))
+            .toList();
         // we get list of posts, so we need to map each item to post model
         apiResponse.data as List<dynamic>;
         break;
@@ -36,13 +33,11 @@ Future<ApiResponse> getPosts() async {
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch (e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;
 }
-
 
 // Create post
 Future<ApiResponse> createPost(String body, String? image) async {
@@ -50,19 +45,15 @@ Future<ApiResponse> createPost(String body, String? image) async {
   try {
     String token = await getToken();
     final response = await http.post(Uri.parse(postsURL),
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    }, body: image !=null ? {
-      'body': body,
-      'image': image
-    } : {
-      'body': body
-    });
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: image != null ? {'body': body, 'image': image} : {'body': body});
 
     // here if the image is null we just send the body, if not null we send the image too
 
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body);
         break;
@@ -74,33 +65,29 @@ Future<ApiResponse> createPost(String body, String? image) async {
         apiResponse.error = unauthorized;
         break;
       default:
-        print(response.body);
+        log(response.body);
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch (e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;
 }
-
-
 
 // Edit post
 Future<ApiResponse> editPost(int postId, String body) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.put(Uri.parse('$postsURL/$postId'),
-    headers: {
+    final response = await http.put(Uri.parse('$postsURL/$postId'), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     }, body: {
       'body': body
     });
 
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
@@ -114,13 +101,11 @@ Future<ApiResponse> editPost(int postId, String body) async {
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch (e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;
 }
-
 
 // Delete post
 Future<ApiResponse> deletePost(int postId) async {
@@ -128,12 +113,12 @@ Future<ApiResponse> deletePost(int postId) async {
   try {
     String token = await getToken();
     final response = await http.delete(Uri.parse('$postsURL/$postId'),
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
@@ -147,13 +132,11 @@ Future<ApiResponse> deletePost(int postId) async {
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch (e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;
 }
-
 
 // Like or unlike post
 Future<ApiResponse> likeUnlikePost(int postId) async {
@@ -161,12 +144,12 @@ Future<ApiResponse> likeUnlikePost(int postId) async {
   try {
     String token = await getToken();
     final response = await http.post(Uri.parse('$postsURL/$postId/likes'),
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token'
+        });
 
-    switch(response.statusCode){
+    switch (response.statusCode) {
       case 200:
         apiResponse.data = jsonDecode(response.body)['message'];
         break;
@@ -177,8 +160,7 @@ Future<ApiResponse> likeUnlikePost(int postId) async {
         apiResponse.error = somethingWentWrong;
         break;
     }
-  }
-  catch (e){
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;

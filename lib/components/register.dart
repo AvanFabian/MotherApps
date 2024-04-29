@@ -1,11 +1,12 @@
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/user.dart';
-import 'package:monitoring_hamil/screens/home.dart';
+import 'package:monitoring_hamil/components/home.dart';
+import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constant.dart';
+import '../constants.dart';
 import 'login.dart';
 
 class Register extends StatefulWidget {
@@ -24,20 +25,26 @@ class _RegisterState extends State<Register> {
       passwordController = TextEditingController(),
       passwordConfirmController = TextEditingController();
 
-  void _registerUser() async {
+  Future<void> _registerUser() async {
+    setState(() {
+      loading = true; // Set loading to true before the network request
+    });
     ApiResponse response = await register(
         nameController.text, emailController.text, passwordController.text);
     if (response.error == null) {
+      print("response.data as User: ${response.data as User}"); // debug
       _saveAndRedirectToHome(response.data as User);
     } else {
-      setState(() {
-        loading = !loading;
-      });
       if (mounted) {
+        print(
+            "response.error: ${response.error}"); // TODO: MASIH ERROR, response errornya masih ada dan Circular Loading abis pencet register stuck(coba dulu, soalnya tadi kelebihan "setState loading")
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('${response.error}')));
       }
     }
+    setState(() {
+      loading = true; // Set loading to true before the network request
+    });
   }
 
   // Save and redirect to home
@@ -47,7 +54,8 @@ class _RegisterState extends State<Register> {
     await pref.setInt('userId', user.id ?? 0);
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => Home()), (route) => false);
+          MaterialPageRoute(builder: (context) => const Layout()),
+          (route) => false);
     }
   }
 
@@ -104,10 +112,7 @@ class _RegisterState extends State<Register> {
                     'Register',
                     () {
                       if (formKey.currentState!.validate()) {
-                        setState(() {
-                          loading = !loading;
-                          _registerUser();
-                        });
+                        _registerUser(); // Call _registerUser directly
                       }
                     },
                   ),
@@ -116,7 +121,7 @@ class _RegisterState extends State<Register> {
             ),
             kLoginRegisterHint('Already have an account? ', 'Login', () {
               Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Login()),
+                  MaterialPageRoute(builder: (context) => const Login()),
                   (route) => false);
             })
           ],

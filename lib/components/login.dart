@@ -1,16 +1,19 @@
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/user.dart';
+import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../constant.dart';
-import '../screens/home.dart';
+import '../constants.dart';
+import 'home.dart';
 import 'register.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
-  _LoginState createState() => _LoginState();
+  State<Login> createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
@@ -27,8 +30,10 @@ class _LoginState extends State<Login> {
       setState(() {
         loading = false;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('${response.error}')));
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('${response.error}')));
+      }
     }
   }
 
@@ -36,21 +41,24 @@ class _LoginState extends State<Login> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Home()), (route) => false);
+    if (mounted) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Layout()),
+          (route) => false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: const Text('Login'),
         centerTitle: true,
       ),
       body: Form(
         key: formkey,
         child: ListView(
-          padding: EdgeInsets.all(32),
+          padding: const EdgeInsets.all(32),
           children: [
             TextFormField(
                 keyboardType: TextInputType.emailAddress,
@@ -58,7 +66,7 @@ class _LoginState extends State<Login> {
                 validator: (val) =>
                     val!.isEmpty ? 'Invalid email address' : null,
                 decoration: kInputDecoration('Email')),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             TextFormField(
@@ -67,11 +75,11 @@ class _LoginState extends State<Login> {
                 validator: (val) =>
                     val!.length < 6 ? 'Required at least 6 chars' : null,
                 decoration: kInputDecoration('Password')),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             loading
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(),
                   )
                 : kTextButton('Login', () {
@@ -82,12 +90,12 @@ class _LoginState extends State<Login> {
                       });
                     }
                   }),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             kLoginRegisterHint('Dont have an acount? ', 'Register', () {
               Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => Register()),
+                  MaterialPageRoute(builder: (context) => const Register()),
                   (route) => false);
             })
           ],

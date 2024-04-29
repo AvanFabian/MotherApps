@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/my_colors.dart';
+import 'package:monitoring_hamil/constants.dart';
 
 class LeaderboardPage extends StatelessWidget {
   const LeaderboardPage({super.key});
@@ -88,7 +88,7 @@ class LeaderboardPage extends StatelessWidget {
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(20.0),
                               topRight: Radius.circular(20.0)),
-                          color: MyColors.calculatorScreen),
+                          color: calculatorScreen),
                       child: GridView.count(
                         crossAxisCount: 1,
                         childAspectRatio: 3.5,

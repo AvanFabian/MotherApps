@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
+import 'package:monitoring_hamil/components/home.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 
@@ -24,7 +25,7 @@ class _LayoutState extends State<Layout> {
   // pages list
   final List _pages = [
     // home page
-    const HomePage(),
+    const Home(),
     // leaderboard page
     const LeaderboardPage(),
     // profile page

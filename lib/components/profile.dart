@@ -7,8 +7,8 @@ import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../constant.dart';
-import '../pages/login.dart';
+import '../constants.dart';
+import 'login.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

@@ -1,12 +1,12 @@
-import 'package:monitoring_hamil/constant.dart';
+import 'package:monitoring_hamil/constants.dart';
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/post.dart';
-import 'package:monitoring_hamil/screens/comment_screen.dart';
+import 'package:monitoring_hamil/components/comment_screen.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../pages/login.dart';
+import 'login.dart';
 import 'post_form.dart';
 
 class PostScreen extends StatefulWidget {
@@ -29,16 +29,17 @@ class _PostScreenState extends State<PostScreen> {
     if (response.error == null) {
       setState(() {
         _postList = response.data as List<dynamic>;
-        _loading = _loading ? !_loading : _loading;
+        _loading = _loading ? !_loading : _loading; // if loading is true then set it to false
       });
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => const Login()),
                 (route) => false)
           });
     } else {
       if (mounted) {
+        print("Error Kang");
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('${response.error}'),
         ));
@@ -53,7 +54,7 @@ class _PostScreenState extends State<PostScreen> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => const Login()),
                 (route) => false)
           });
     } else {
@@ -73,7 +74,7 @@ class _PostScreenState extends State<PostScreen> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => const Login()),
                 (route) => false)
           });
     } else {

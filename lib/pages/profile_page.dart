@@ -43,7 +43,7 @@ class ProfilePage extends StatelessWidget {
               ),
               SizedBox(height: 10),
               Text(
-                "Avan Fabian",
+                "John DoeBian",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/components/login.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,7 +24,11 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.person_add, size: 35.0),
             color: const Color.fromARGB(255, 255, 255, 255),
             onPressed: () {
-              // Handle the button's onPressed event
+              // navigate to Login
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false,
+              );
             },
           ),
         ],

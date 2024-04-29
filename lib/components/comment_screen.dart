@@ -4,8 +4,8 @@ import 'package:monitoring_hamil/services/comment_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../constant.dart';
-import '../pages/login.dart';
+import '../constants.dart';
+import 'login.dart';
 
 class CommentScreen extends StatefulWidget {
   final int? postId;

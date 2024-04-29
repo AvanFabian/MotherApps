@@ -4,7 +4,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:monitoring_hamil/constant.dart';
+import 'package:monitoring_hamil/constants.dart';
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/user.dart';
 import 'package:http/http.dart' as http;
@@ -58,6 +58,9 @@ Future<ApiResponse> register(String name, String email, String password) async {
         'password_confirmation': password
       });
 
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
     switch(response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -72,6 +75,7 @@ Future<ApiResponse> register(String name, String email, String password) async {
     }
   }
   catch (e) {
+    print('Exception: $e');
     apiResponse.error = serverError;
   }
   return apiResponse;

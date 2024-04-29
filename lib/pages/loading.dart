@@ -1,10 +1,10 @@
-import 'package:monitoring_hamil/constant.dart';
+import 'package:monitoring_hamil/constants.dart';
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import 'login.dart';
+import '../components/login.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -19,7 +19,8 @@ class _LoadingState extends State<Loading> {
     if (token == '') {
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Login()), (route) => false);
+            MaterialPageRoute(builder: (context) => Layout()), // TODO: change to Login()
+            (route) => false);
       }
     } else {
       ApiResponse response = await getUserDetail();
@@ -31,14 +32,15 @@ class _LoadingState extends State<Loading> {
         }
       } else if (response.error == unauthorized) {
         if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Login()), (route) => false);
-      }
+          Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => Layout()), // TODO: change to Login()
+              (route) => false);
+        }
       } else {
         if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${response.error}'),
-        ));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('${response.error}'),
+          ));
         }
       }
     }
