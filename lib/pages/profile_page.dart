@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/services/user_service.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -67,6 +68,7 @@ class ProfilePage extends StatelessWidget {
                     leading: Icon(tile.icon),
                     title: Text(tile.title),
                     trailing: const Icon(Icons.chevron_right),
+                    onTap: tile.onTap,
                   ),
                 ),
               );
@@ -81,9 +83,11 @@ class ProfilePage extends StatelessWidget {
 class CustomListTile {
   final IconData icon;
   final String title;
+  final VoidCallback onTap;
   CustomListTile({
     required this.icon,
     required this.title,
+    required this.onTap,
   });
 }
 
@@ -91,17 +95,29 @@ List<CustomListTile> customListTiles = [
   CustomListTile(
     icon: Icons.insights,
     title: "Detail Akun",
+    onTap: () {
+      // Handle tap
+    },
   ),
   CustomListTile(
     icon: Icons.location_on_outlined,
     title: "Aktivitas",
+    onTap: () {
+      // Handle tap
+    },
   ),
   CustomListTile(
     title: "Teman Saya",
     icon: CupertinoIcons.bell,
+    onTap: () {
+      // Handle tap
+    },
   ),
   CustomListTile(
     title: "Keluar Akun",
     icon: CupertinoIcons.arrow_right_arrow_left,
+    onTap: () async {
+      await logout();
+    },
   ),
 ];

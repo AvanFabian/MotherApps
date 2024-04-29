@@ -1,10 +1,9 @@
 import 'package:monitoring_hamil/components/post_screen.dart';
 import 'package:monitoring_hamil/components/profile.dart';
-import 'package:monitoring_hamil/services/user_service.dart';
+// import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import 'login.dart';
-import 'post_form.dart';
+import '../components/login.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -37,6 +36,7 @@ class _HomeState extends State<Home> {
             onPressed: () {
               // navigate to Login
               Navigator.of(context).pushAndRemoveUntil(
+                // ignore: prefer_const_constructors
                 MaterialPageRoute(builder: (context) => Login()),
                 (route) => false,
               );
@@ -45,16 +45,6 @@ class _HomeState extends State<Home> {
         ],
       ),
       body: currentIndex == 0 ? const PostScreen() : const Profile(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const PostForm(
-                    title: 'Add new post',
-                  )));
-        },
-        child: const Icon(Icons.add),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 }
