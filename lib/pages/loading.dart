@@ -15,33 +15,42 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   void _loadUserInfo() async {
-    String token = await getToken();
-    if (token == '') {
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => Layout()), // TODO: change to Login()
-            (route) => false);
-      }
-    } else {
-      ApiResponse response = await getUserDetail();
-      if (response.error == null) {
+    try {
+      String token = await getToken();
+      if (token == '') {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const Layout()),
-              (route) => false);
-        }
-      } else if (response.error == unauthorized) {
-        if (mounted) {
-          Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => Layout()), // TODO: change to Login()
+              MaterialPageRoute(builder: (context) => const Login()),
               (route) => false);
         }
       } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('${response.error}'),
-          ));
+        ApiResponse response = await getUserDetail();
+        if (response.error == null) {
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Layout()),
+                (route) => false);
+          }
+        } else if (response.error == unauthorized) {
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const Login()),
+                (route) => false);
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('${response.error}'),
+            ));
+          }
         }
+      }
+    } catch (e) {
+      // If there's any error, navigate to the Login page
+      if (mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const Login()),
+            (route) => false);
       }
     }
   }
@@ -54,10 +63,12 @@ class _LoadingState extends State<Loading> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: Colors.white,
-      child: const Center(child: CircularProgressIndicator()),
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

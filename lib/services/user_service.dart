@@ -82,6 +82,9 @@ Future<ApiResponse> getUserDetail() async {
       'Authorization': 'Bearer $token'
     });
 
+    print('Status code: ${response.statusCode}');
+    print('Response body: ${response.body}');
+  
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));

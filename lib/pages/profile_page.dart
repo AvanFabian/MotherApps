@@ -94,27 +94,27 @@ class CustomListTile {
 List<CustomListTile> customListTiles = [
   CustomListTile(
     icon: Icons.insights,
-    title: "Detail Akun",
+    title: "Edit Account",
     onTap: () {
       // Handle tap
     },
   ),
   CustomListTile(
     icon: Icons.location_on_outlined,
-    title: "Aktivitas",
+    title: "Activity Log",
     onTap: () {
       // Handle tap
     },
   ),
   CustomListTile(
-    title: "Teman Saya",
+    title: "Friends",
     icon: CupertinoIcons.bell,
     onTap: () {
       // Handle tap
     },
   ),
   CustomListTile(
-    title: "Keluar Akun",
+    title: "Logout",
     icon: CupertinoIcons.arrow_right_arrow_left,
     onTap: () async {
       await logout();
