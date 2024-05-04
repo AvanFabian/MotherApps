@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/pages/home.dart';
+import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
+import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 import '../components/post_form.dart';
 
@@ -25,7 +26,9 @@ class _LayoutState extends State<Layout> {
   // pages list
   final List _pages = [
     // home page
-    const Home(),
+    const HomePage(),
+    // RoutePage(),
+    const RoutePage(),
     // leaderboard page
     const LeaderboardPage(),
     // profile page
@@ -54,6 +57,11 @@ class _LayoutState extends State<Layout> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.home, size: 32.0), // Adjust the size as needed
                 label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                // maps icon
+                icon: Icon(Icons.map, size: 32.0), // Adjust the size as needed
+                label: 'Routes',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.leaderboard,

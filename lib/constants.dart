@@ -119,7 +119,12 @@ const gameHomeRight2 = Color(0xff454ce5);
 const gameHomeLeft1 = Color(0xff232941);
 const gameHomeLeft2 = Color(0xff171925);
 
-// const baseURL = 'http://127.0.0.1:8000/api';
+const kPrimaryColor = Color(0xFF6F35A5);
+const kPrimaryLightColor = Color(0xFFF1E6FF);
+
+const double defaultPadding = 16.0;
+
+// ----- API URLS -----
 const baseURL = 'http://10.0.2.2:8000/api';
 const loginURL = '$baseURL/login';
 const registerURL = '$baseURL/register';
@@ -200,13 +205,9 @@ Expanded kLikeAndComment(
   );
 }
 
-void logEvent(String message, {String category = 'General'}) {
-  developer.log(message, name: category);
-}
-
 void logMessage(String message, {int level = 0}) {
   const productionLogLevel = 2;
   if (level >= productionLogLevel) {
-    print(message);
+    developer.log(message, name: 'Message');
   }
 }

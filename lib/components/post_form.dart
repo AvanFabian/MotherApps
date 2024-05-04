@@ -7,7 +7,7 @@ import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'login.dart';
+import 'Auth/login_page.dart';
 
 class PostForm extends StatefulWidget {
   final Post? post;
@@ -47,7 +47,7 @@ class _PostFormState extends State<PostForm> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (route) => false)
           });
     } else {
@@ -71,7 +71,7 @@ class _PostFormState extends State<PostForm> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (route) => false)
           });
     } else {

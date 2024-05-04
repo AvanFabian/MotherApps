@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../constants.dart';
-import 'login.dart';
+import 'Auth/login_page.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -46,7 +46,7 @@ class _ProfileState extends State<Profile> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (route) => false)
           });
     } else {
@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
     } else if (response.error == unauthorized) {
       logout().then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => Login()),
+                MaterialPageRoute(builder: (context) => LoginPage()),
                 (route) => false)
           });
     } else {

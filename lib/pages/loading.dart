@@ -3,8 +3,8 @@ import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
-
-import '../components/login.dart';
+import 'welcome_page.dart';
+// import '../components/Auth/login_page.dart';
 
 class Loading extends StatefulWidget {
   const Loading({super.key});
@@ -20,7 +20,7 @@ class _LoadingState extends State<Loading> {
       if (token == '') {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const Login()),
+              MaterialPageRoute(builder: (context) => const WelcomePage()),
               (route) => false);
         }
       } else {
@@ -34,7 +34,7 @@ class _LoadingState extends State<Loading> {
         } else if (response.error == unauthorized) {
           if (mounted) {
             Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const Login()),
+                MaterialPageRoute(builder: (context) => const WelcomePage()),
                 (route) => false);
           }
         } else {
@@ -49,7 +49,7 @@ class _LoadingState extends State<Loading> {
       // If there's any error, navigate to the Login page
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Login()),
+            MaterialPageRoute(builder: (context) => const WelcomePage()),
             (route) => false);
       }
     }
