@@ -22,9 +22,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 child: Column(
                   children: [
                     Expanded(
+                      flex: 6, // takes 60% of the space
                       child: FractionallySizedBox(
                         widthFactor: 1.0, // 100% of screen width
-                        heightFactor: 0.6, // 50% of screen height
                         alignment: Alignment.topCenter, // Align to top
                         child: Image.asset(
                           "assets/images/leaderboard/leaderboard.png",
@@ -32,13 +32,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 25,
-                      child: Image.asset(
-                        "assets/images/leaderboard/line.png",
-                        fit: BoxFit.fill,
+                    Expanded(
+                      flex: 4, // takes 40% of the space
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: 25,
+                            child: Image.asset(
+                              "assets/images/leaderboard/line.png",
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                          // Add other widgets here to fill the space
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
