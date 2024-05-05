@@ -1,5 +1,5 @@
-import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/models/comment.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/Models/comment.dart';
 import 'package:monitoring_hamil/services/comment_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';

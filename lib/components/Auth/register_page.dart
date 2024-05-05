@@ -1,6 +1,6 @@
 import 'package:monitoring_hamil/components/Auth/login_page.dart';
-import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/models/user.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/Models/user.dart';
 // import 'package:monitoring_hamil/pages/home.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';

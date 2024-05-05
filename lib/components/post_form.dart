@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:monitoring_hamil/constants.dart';
-import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/models/post.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/Models/post.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';

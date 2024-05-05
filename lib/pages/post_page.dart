@@ -1,24 +1,24 @@
 import 'package:monitoring_hamil/constants.dart';
-import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/models/post.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/Models/post.dart';
 import 'package:monitoring_hamil/pages/comment_page.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
-import 'Auth/login_page.dart';
-import 'post_form.dart';
+import '../components/Auth/login_page.dart';
+import '../components/post_form.dart';
 
-class PostScreen extends StatefulWidget {
-  const PostScreen({super.key});
+class PostPage extends StatefulWidget {
+  const PostPage({super.key});
 
   @override
-  State<PostScreen> createState() =>
-      _PostScreenState(); // _PostScreenState is a class defined below
+  State<PostPage> createState() =>
+      _PostPageState(); // _PostPageState is a class defined below
 }
 
-class _PostScreenState extends State<PostScreen> {
+class _PostPageState extends State<PostPage> {
   List<dynamic> _postList = [];
   int userId = 0;
   bool _loading = true;

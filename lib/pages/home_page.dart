@@ -1,9 +1,9 @@
-import 'package:monitoring_hamil/components/post_screen.dart';
+import 'package:monitoring_hamil/pages/post_page.dart';
 // import 'package:monitoring_hamil/components/profile.dart';
 // import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../components/Auth/login_page.dart';
+// import '../components/Auth/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,15 +29,10 @@ class _HomePageState extends State<HomePage> {
           elevation: 0, // z-coordinate of the app bar
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.person_add, size: 35.0),
+              // account icon
+              icon: const Icon(Icons.account_circle, size: 35.0),
               color: const Color.fromARGB(255, 255, 255, 255),
               onPressed: () {
-                // navigate to Login
-                Navigator.of(context).pushAndRemoveUntil(
-                  // ignore: prefer_const_constructors
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                  (route) => false,
-                );
               },
             ),
           ],
@@ -79,7 +74,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Expanded(
-                child: PostScreen()), // add Expanded to take up remaining space
+                child: PostPage()), // add Expanded to take up remaining space
           ],
         ));
   }

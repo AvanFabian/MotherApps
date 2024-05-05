@@ -1,6 +1,6 @@
 import 'register_page.dart';
-import 'package:monitoring_hamil/models/api_response.dart';
-import 'package:monitoring_hamil/models/user.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/Models/user.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';

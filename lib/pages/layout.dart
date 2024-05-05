@@ -44,8 +44,11 @@ class _LayoutState extends State<Layout> {
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _selectedIndex,
             onTap: _navigateBottomBar,
+            // Selected item color
             selectedItemColor: const Color.fromARGB(255, 252, 82, 0),
-            unselectedItemColor: Colors.grey[900],
+            unselectedItemColor: Color.fromARGB(255, 221, 156, 123),
+            // Text in the bottom navigation bar
+            showUnselectedLabels: false, // hide labels for unselected items
             selectedLabelStyle: const TextStyle(
                 fontSize: 15.0,
                 fontWeight: FontWeight.w500), // Adjust the size as needed
@@ -64,8 +67,8 @@ class _LayoutState extends State<Layout> {
                 label: 'Routes',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.leaderboard,
-                    size: 32.0), // Adjust the size as needed
+                // trophy icon
+                icon: Icon(Icons.emoji_events, size: 32.0), // Adjust the size as needed
                 label: 'Leaderboard',
               ),
               BottomNavigationBarItem(

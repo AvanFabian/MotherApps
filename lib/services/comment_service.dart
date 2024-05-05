@@ -3,9 +3,9 @@
 
 
 import 'dart:convert';
-import 'package:monitoring_hamil/models/comment.dart';
+import 'package:monitoring_hamil/Models/comment.dart';
 import 'package:http/http.dart' as http;
-import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/Models/api_response.dart';
 
 import '../constants.dart';
 import 'user_service.dart';
