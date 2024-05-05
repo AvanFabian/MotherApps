@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
+import 'package:monitoring_hamil/constants.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -12,17 +13,17 @@ class ProfilePage extends StatelessWidget {
         title: const Text(
           'Profil Pengguna',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: 24.0, // Adjust the size as needed
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: const Color.fromARGB(255, 252, 82, 0),
+        backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.person_add, size: 35.0),
-            color: const Color.fromARGB(255, 255, 255, 255),
+            color: Colors.black,
             onPressed: () {
               // Handle the button's onPressed event
             },

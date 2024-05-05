@@ -148,18 +148,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               ),
             ),
           ),
-          // const Positioned(
-          //   top: 30,
-          //   left: 10,
-          //   child: Text(
-          //     "Ends in 2d 23Hours",
-          //     style: TextStyle(
-          //       fontSize: 15,
-          //       fontWeight: FontWeight.w500,
-          //     ),
-          //   ),
-          // ),
-          // Rank 1st
           Positioned(
             top: 80,
             right: 165,

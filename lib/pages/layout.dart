@@ -45,8 +45,8 @@ class _LayoutState extends State<Layout> {
             currentIndex: _selectedIndex,
             onTap: _navigateBottomBar,
             // Selected item color
-            selectedItemColor: const Color.fromARGB(255, 252, 82, 0),
-            unselectedItemColor: Color.fromARGB(255, 221, 156, 123),
+            selectedItemColor: Colors.black87,
+            unselectedItemColor: Colors.black54,
             // Text in the bottom navigation bar
             showUnselectedLabels: false, // hide labels for unselected items
             selectedLabelStyle: const TextStyle(
@@ -55,7 +55,7 @@ class _LayoutState extends State<Layout> {
             unselectedLabelStyle: const TextStyle(
                 fontSize: 15.0,
                 fontWeight: FontWeight.w500), // Adjust the size as needed
-            backgroundColor: const Color.fromARGB(255, 252, 255, 255),
+            backgroundColor: const Color.fromARGB(255, 255, 255, 255),
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home, size: 32.0), // Adjust the size as needed
@@ -68,7 +68,8 @@ class _LayoutState extends State<Layout> {
               ),
               BottomNavigationBarItem(
                 // trophy icon
-                icon: Icon(Icons.emoji_events, size: 32.0), // Adjust the size as needed
+                icon: Icon(Icons.emoji_events,
+                    size: 32.0), // Adjust the size as needed
                 label: 'Leaderboard',
               ),
               BottomNavigationBarItem(
@@ -82,15 +83,19 @@ class _LayoutState extends State<Layout> {
         Positioned(
           right: 20, // Adjust this as needed
           bottom: 80, // Adjust this to change the vertical position
-          child: FloatingActionButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PostForm(
-                        title: 'Add new post',
-                      )));
-            },
-            child: const Icon(Icons.add),
-          ),
+          child: _selectedIndex == 0
+              ? FloatingActionButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const PostForm(
+                              title: 'Add new post',
+                            )));
+                  },
+                  // color of the button
+                  backgroundColor: const Color.fromARGB(255, 255, 228, 0),
+                  child: const Icon(Icons.add),
+                )
+              : Container(), // Empty container when not on HomePage
         ),
       ],
     );

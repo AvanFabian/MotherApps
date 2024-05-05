@@ -2,8 +2,11 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
+const signatureAppColor = Color.fromARGB(255, 255, 228, 0);
+
 const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
+
 
 const double defaultPadding = 16.0;
 
