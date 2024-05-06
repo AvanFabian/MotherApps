@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../components/Auth/background.dart';
-import '../responsive.dart';
-import '../components/Auth/login_signup_btn.dart';
-import '../components/Auth/welcome_image.dart';
+import '../Components/Auth/background.dart';
+import '../res/responsive.dart';
+import '../Components/Auth/login_signup_btn.dart';
+import '../Components/Auth/welcome_image.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({Key? key}) : super(key: key);

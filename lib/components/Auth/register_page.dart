@@ -1,4 +1,4 @@
-import 'package:monitoring_hamil/components/Auth/login_page.dart';
+import 'package:monitoring_hamil/Components/Auth/login_page.dart';
 import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/user.dart';
 // import 'package:monitoring_hamil/pages/home.dart';
@@ -7,7 +7,7 @@ import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../constants.dart';
+import '../../res/constants.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

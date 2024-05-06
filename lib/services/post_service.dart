@@ -6,7 +6,7 @@ import 'package:monitoring_hamil/Models/post.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:http/http.dart' as http;
 
-import '../constants.dart';
+import '../res/constants.dart';
 
 // get all posts
 Future<ApiResponse> getPosts() async {

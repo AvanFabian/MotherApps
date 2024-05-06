@@ -4,8 +4,8 @@ import 'package:monitoring_hamil/services/comment_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
-import '../components/Auth/login_page.dart';
+import '../res/constants.dart';
+import '../Components/Auth/login_page.dart';
 
 class CommentPage extends StatefulWidget {
   final int? postId;

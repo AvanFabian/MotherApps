@@ -6,7 +6,7 @@ import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../constants.dart';
+import '../../res/constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

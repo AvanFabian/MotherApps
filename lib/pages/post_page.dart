@@ -1,4 +1,4 @@
-import 'package:monitoring_hamil/constants.dart';
+import 'package:monitoring_hamil/res/constants.dart';
 import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/post.dart';
 import 'package:monitoring_hamil/pages/comment_page.dart';
@@ -7,8 +7,8 @@ import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
-import '../components/Auth/login_page.dart';
-import '../components/post_form.dart';
+import '../Components/Auth/login_page.dart';
+import '../Components/AnyForm/post_form.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});

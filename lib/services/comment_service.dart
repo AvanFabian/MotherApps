@@ -7,7 +7,7 @@ import 'package:monitoring_hamil/Models/comment.dart';
 import 'package:http/http.dart' as http;
 import 'package:monitoring_hamil/Models/api_response.dart';
 
-import '../constants.dart';
+import '../res/constants.dart';
 import 'user_service.dart';
 
 // Get post comments
