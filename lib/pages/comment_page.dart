@@ -34,7 +34,7 @@ class _CommentPageState extends State<CommentPage> {
         _loading = _loading ? !_loading : _loading;
       });
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)
@@ -56,7 +56,7 @@ class _CommentPageState extends State<CommentPage> {
       _txtCommentController.clear();
       _getComments();
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)
@@ -82,7 +82,7 @@ class _CommentPageState extends State<CommentPage> {
       _txtCommentController.clear();
       _getComments();
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)
@@ -102,7 +102,7 @@ class _CommentPageState extends State<CommentPage> {
     if (response.error == null) {
       _getComments();
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)

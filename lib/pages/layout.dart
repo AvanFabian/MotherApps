@@ -7,7 +7,9 @@ import 'package:monitoring_hamil/pages/record_page.dart';
 import '../Components/AnyForm/post_form.dart';
 
 class Layout extends StatefulWidget {
-  const Layout({super.key});
+  final int initialPage;
+
+  const Layout({Key? key, this.initialPage = 0}) : super(key: key);
 
   @override
   State<Layout> createState() => _LayoutState();
@@ -16,6 +18,12 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   // selected pages indec
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialPage;
+  }
 
   // on item tap
   void _navigateBottomBar(int index) {
@@ -103,7 +111,7 @@ class _LayoutState extends State<Layout> {
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const PostForm(
-                              title: 'Add new post',
+                              title: 'Add Post',
                             )));
                   },
                   // color of the button

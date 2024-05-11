@@ -172,14 +172,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            // sized box
-            SizedBox(
-              height: 1,
-              // color
-              child: Container(
-                color: Colors.black,
-              ),
-            ),
             const Expanded(
                 child: PostPage()), // add Expanded to take up remaining space
           ],

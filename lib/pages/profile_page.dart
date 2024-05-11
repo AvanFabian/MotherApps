@@ -114,7 +114,7 @@ class ProfilePage extends StatelessWidget {
                     ),
                     // right arrow icon
                     trailing: const Icon(Icons.arrow_right_rounded),
-                    onTap: tile.onTap,
+                    onTap: tile.onTap(context),
                   ),
                 ),
               );
@@ -129,7 +129,7 @@ class ProfilePage extends StatelessWidget {
 class CustomListTile {
   final IconData icon;
   final String title;
-  final VoidCallback onTap;
+  final Function(BuildContext) onTap;
   CustomListTile({
     required this.icon,
     required this.title,
@@ -139,18 +139,15 @@ class CustomListTile {
 
 List<CustomListTile> customListTiles = [
   CustomListTile(
-    // activity icon
     icon: Icons.accessibility_new,
     title: "Your Activity",
-    onTap: () {
-      // Handle tap
-    },
+    onTap: (context) {},
   ),
   CustomListTile(
     title: "Friend Lists",
     // icon of people
     icon: Icons.people,
-    onTap: () {
+    onTap: (context) {
       // Handle tap
     },
   ),
@@ -158,16 +155,13 @@ List<CustomListTile> customListTiles = [
     title: "Information",
     // exclamation point icon
     icon: CupertinoIcons.exclamationmark_triangle,
-    onTap: () {
+    onTap: (context) {
       // Handle tap
     },
   ),
   CustomListTile(
     title: "Logout",
-    // logout icon
     icon: Icons.logout,
-    onTap: () async {
-      await logout();
-    },
+    onTap: (context) => () => logout(context), // Use a lambda function to call logout(context)
   ),
 ];

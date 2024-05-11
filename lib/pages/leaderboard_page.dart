@@ -137,20 +137,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   }),
             ),
           ),
-          // Back Arrow
-          Positioned(
-            top: 30,
-            left: 20,
-            child: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                size: 30,
-              ),
-            ),
-          ),
           // Leaderboard Text
           const Positioned(
             top: 30,

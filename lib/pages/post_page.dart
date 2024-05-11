@@ -36,7 +36,7 @@ class _PostPageState extends State<PostPage> {
             : _loading; // if loading is true then set it to false
       });
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)
@@ -55,7 +55,7 @@ class _PostPageState extends State<PostPage> {
     if (response.error == null) {
       retrievePosts();
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)
@@ -75,7 +75,7 @@ class _PostPageState extends State<PostPage> {
     if (response.error == null) {
       retrievePosts();
     } else if (response.error == unauthorized) {
-      logout().then((value) => {
+      logout(context).then((value) => {
             Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => const LoginPage()),
                 (route) => false)

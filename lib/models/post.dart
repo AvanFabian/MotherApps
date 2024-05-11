@@ -2,6 +2,8 @@ import 'user.dart';
 
 class Post {
   int? id;
+  String? header;
+  String? subheader;
   String? body;
   String? image;
   int? likesCount;
@@ -11,6 +13,8 @@ class Post {
 
   Post({
     this.id,
+    this.header,
+    this.subheader,
     this.body,
     this.image,
     this.likesCount,
@@ -24,6 +28,8 @@ class Post {
 factory Post.fromJson(Map<String, dynamic> json) {
   return Post(
     id: json['id'],
+    header: json['header'],
+    subheader: json['subheader'],
     body: json['body'],
     image: json['image'],
     likesCount: json['likes_count'],

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/pages/welcome_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/user.dart';
@@ -150,10 +152,18 @@ Future<int> getUserId() async {
 }
 
 // logout
-Future<bool> logout() async {
+Future<bool> logout(BuildContext context) async {
   print("Logout!");
   SharedPreferences pref = await SharedPreferences.getInstance();
-  return await pref.remove('token');
+  bool result = await pref.remove('token');
+  if (result) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const WelcomePage()),
+      (Route<dynamic> route) => false,
+    );
+  }
+  return result;
 }
 
 // Get base64 encoded image

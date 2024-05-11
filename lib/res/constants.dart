@@ -38,13 +38,13 @@ TextButton kTextButton(String label, Function onPressed) {
   return TextButton(
     style: ButtonStyle(
         backgroundColor:
-            MaterialStateColor.resolveWith((states) => Colors.blue),
+            MaterialStateColor.resolveWith((states) => signatureAppColor),
         padding: MaterialStateProperty.resolveWith(
             (states) => const EdgeInsets.symmetric(vertical: 10))),
     onPressed: () => onPressed(),
     child: Text(
       label,
-      style: const TextStyle(color: Colors.white),
+      style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
     ),
   );
 }

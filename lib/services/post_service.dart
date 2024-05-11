@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/post.dart';
@@ -40,7 +40,8 @@ Future<ApiResponse> getPosts() async {
 }
 
 // Create post
-Future<ApiResponse> createPost(String body, String? image) async {
+Future<ApiResponse> createPost(
+    String header, String subheader, String body, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -49,7 +50,14 @@ Future<ApiResponse> createPost(String body, String? image) async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: image != null ? {'body': body, 'image': image} : {'body': body});
+        body: image != null
+            ? {
+                'header': header,
+                'subheader': subheader,
+                'body': body,
+                'image': image
+              }
+            : {'header': header, 'subheader': subheader, 'body': body});
 
     // here if the image is null we just send the body, if not null we send the image too
 
@@ -65,7 +73,7 @@ Future<ApiResponse> createPost(String body, String? image) async {
         apiResponse.error = unauthorized;
         break;
       default:
-        log(response.body);
+        print(response.body);
         apiResponse.error = somethingWentWrong;
         break;
     }
@@ -76,7 +84,7 @@ Future<ApiResponse> createPost(String body, String? image) async {
 }
 
 // Edit post
-Future<ApiResponse> editPost(int postId, String body) async {
+Future<ApiResponse> editPost(int postId, String header, String subheader, String body, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -84,6 +92,8 @@ Future<ApiResponse> editPost(int postId, String body) async {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     }, body: {
+      'header': header,
+      'subheader': subheader,
       'body': body
     });
 
