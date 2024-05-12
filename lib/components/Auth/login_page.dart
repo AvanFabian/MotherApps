@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _loginUser() async {
     ApiResponse response = await login(txtEmail.text, txtPassword.text);
+    print(response.data);
     if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
     } else {

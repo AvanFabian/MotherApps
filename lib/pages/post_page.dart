@@ -130,7 +130,8 @@ class _PostPageState extends State<PostPage> {
                                                     '${post.user!.image}'))
                                             : null,
                                         borderRadius: BorderRadius.circular(25),
-                                        color: Colors.amber),
+                                        color: const Color.fromARGB(
+                                            255, 34, 34, 34)),
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -183,20 +184,50 @@ class _PostPageState extends State<PostPage> {
                         const SizedBox(
                           height: 12,
                         ),
-                        Text('${post.body}'),
                         post.image != null
-                            ? Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 180,
-                                margin: const EdgeInsets.only(top: 5),
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                        image: NetworkImage('${post.image}'),
-                                        fit: BoxFit.cover)),
-                              )
+                            ? Padding(
+                              padding: const EdgeInsets.only(left: 6, right: 6),
+                              child: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height: 180,
+                                  margin: const EdgeInsets.only(top: 5),
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage('${post.image}'),
+                                          fit: BoxFit.cover)),
+                                ),
+                            )
                             : SizedBox(
                                 height: post.image != null ? 0 : 10,
                               ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 16),
+                          child: Text(
+                            '${post.header}',
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 6, right: 6, bottom: 32),
+                          child: Text(
+                            '${post.subheader}',
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
+                          child: Text(
+                            '${post.body}',
+                            style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.black87,
+                                height: 1.5),
+                          ),
+                        ),
                         Row(
                           children: [
                             kLikeAndComment(

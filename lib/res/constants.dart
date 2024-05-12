@@ -1,17 +1,18 @@
 // ----- STRINGS ------
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:image_picker/image_picker.dart';
 
 const signatureAppColor = Color.fromARGB(255, 255, 228, 0);
 
 const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
 
-
 const double defaultPadding = 16.0;
 
 // ----- API URLS -----
-const baseURL = 'http://10.0.2.2:8000/api';
+// const baseURL = 'http://10.0.2.2:8000/api';
+const baseURL = 'http://192.168.1.7:8000/api';
 const loginURL = '$baseURL/login';
 const registerURL = '$baseURL/register';
 const logoutURL = '$baseURL/logout';
@@ -44,7 +45,8 @@ TextButton kTextButton(String label, Function onPressed) {
     onPressed: () => onPressed(),
     child: Text(
       label,
-      style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+      style:
+          const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
     ),
   );
 }

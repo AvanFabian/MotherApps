@@ -17,6 +17,7 @@ Future<ApiResponse> login(String email, String password) async {
         headers: {'Accept': 'application/json'},
         body: {'email': email, 'password': password});
 
+
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
@@ -33,6 +34,7 @@ Future<ApiResponse> login(String email, String password) async {
         break;
     }
   } catch (e) {
+    
     apiResponse.error = serverError;
   }
 
@@ -52,8 +54,6 @@ Future<ApiResponse> register(String name, String email, String password) async {
       'password_confirmation': password
     });
 
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
 
     switch (response.statusCode) {
       case 200:
@@ -68,7 +68,6 @@ Future<ApiResponse> register(String name, String email, String password) async {
         break;
     }
   } catch (e) {
-    print('Exception: $e');
     apiResponse.error = serverError;
   }
   return apiResponse;
@@ -83,9 +82,6 @@ Future<ApiResponse> getUserDetail() async {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     });
-
-    print('Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
   
     switch (response.statusCode) {
       case 200:
@@ -105,7 +101,7 @@ Future<ApiResponse> getUserDetail() async {
 }
 
 // Update user
-Future<ApiResponse> updateUser(String name, String? image) async {
+Future<ApiResponse> updateUser(String name, String email, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -114,11 +110,9 @@ Future<ApiResponse> updateUser(String name, String? image) async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token'
         },
-        body: image == null
-            ? {
-                'name': name,
-              }
-            : {'name': name, 'image': image});
+        body: image != null
+            ? {'name': name, 'email': email, 'image': image}
+            : {'name': name, 'email': email});
     // user can update his/her name or name and image
 
     switch (response.statusCode) {
@@ -129,7 +123,6 @@ Future<ApiResponse> updateUser(String name, String? image) async {
         apiResponse.error = unauthorized;
         break;
       default:
-        print(response.body);
         apiResponse.error = somethingWentWrong;
         break;
     }
@@ -153,7 +146,6 @@ Future<int> getUserId() async {
 
 // logout
 Future<bool> logout(BuildContext context) async {
-  print("Logout!");
   SharedPreferences pref = await SharedPreferences.getInstance();
   bool result = await pref.remove('token');
   if (result) {

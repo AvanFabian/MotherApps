@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/post.dart';
@@ -67,22 +68,24 @@ class _PostFormState extends State<PostForm> {
 
   // edit post
   void _editPost(int postId) async {
+    String header = _txtControllerHeader.text;
+    String subheader = _txtControllerSubHeader.text;
+    String body = _txtControllerBody.text;
+
     ApiResponse response = await editPost(
-        postId,
-        _txtControllerHeader.text,
-        _txtControllerSubHeader.text,
-        _txtControllerBody.text,
-        _imageFile == null ? null : getStringImage(_imageFile));
+        postId, header, subheader, body, getStringImage(_imageFile));
     if (response.error == null) {
       if (mounted) {
         Navigator.of(context).pop();
       }
     } else if (response.error == unauthorized) {
-      logout(context).then((value) => {
-            Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false)
-          });
+      if (mounted) {
+        logout(context).then((value) => {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  (route) => false)
+            });
+      }
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -116,31 +119,45 @@ class _PostFormState extends State<PostForm> {
             )
           : ListView(
               children: [
-                widget.post != null
-                    ? const SizedBox()
-                    : Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 200,
-                        decoration: BoxDecoration(
-                            image: _imageFile == null
-                                ? null
-                                : DecorationImage(
-                                    image: FileImage(_imageFile ?? File('')),
-                                    fit: BoxFit.cover)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.image,
-                                  size: 50, color: Colors.black38),
-                              onPressed: () {
-                                getImage();
-                              },
-                            ),
-                            const Text('Add photos / images'),
-                          ],
-                        ),
+                // widget.post != null
+                //     ? const SizedBox()
+                //     :
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    radius: const Radius.circular(12),
+                    padding: const EdgeInsets.all(6),
+                    strokeWidth: 1,
+                    dashPattern: const [6, 4],
+                    child: Container(
+                      // your container
+                      margin: const EdgeInsets.all(8),
+                      width: MediaQuery.of(context).size.width,
+                      height: 200,
+                      decoration: BoxDecoration(
+                        image: _imageFile == null
+                            ? null
+                            : DecorationImage(
+                                image: FileImage(_imageFile ?? File('')),
+                                fit: BoxFit.cover),
                       ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.image,
+                                size: 50, color: Colors.black38),
+                            onPressed: () {
+                              getImage();
+                            },
+                          ),
+                          const Text('Add photos / images'),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 Form(
                   key: _formKeyHeader,
                   child: Padding(
