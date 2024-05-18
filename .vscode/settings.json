@@ -1,4 +1,5 @@
 {
     "editor.defaultFormatter": "Dart-Code.flutter",
-    "bladeFormatter.format.indentSize": 2
+    "bladeFormatter.format.indentSize": 2,
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

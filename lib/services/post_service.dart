@@ -5,7 +5,6 @@ import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/post.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_parser/http_parser.dart';
 
 import '../res/constants.dart';
 

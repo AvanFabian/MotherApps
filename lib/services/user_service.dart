@@ -17,6 +17,8 @@ Future<ApiResponse> login(String email, String password) async {
         headers: {'Accept': 'application/json'},
         body: {'email': email, 'password': password});
 
+    // debug
+    print(response.body);
 
     switch (response.statusCode) {
       case 200:
@@ -30,7 +32,8 @@ Future<ApiResponse> login(String email, String password) async {
         apiResponse.error = jsonDecode(response.body)['message'];
         break;
       default:
-        apiResponse.error = somethingWentWrong;
+        var responseBody = json.decode(response.body);
+        apiResponse.error = 'somethingWentWrong: ${responseBody['message']}';
         break;
     }
   } catch (e) {
