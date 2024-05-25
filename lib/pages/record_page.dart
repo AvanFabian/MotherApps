@@ -1,6 +1,6 @@
+import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/pages/home_page.dart';
-// import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 
 class RecordPage extends StatefulWidget {
@@ -20,8 +20,10 @@ class _RecordPageState extends State<RecordPage> {
   };
 
   String? selectedExercise;
-
   List<String> selectedSubMovements = [];
+  bool isPressed = false;
+  Timer? timer;
+  int duration = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -151,8 +153,81 @@ class _RecordPageState extends State<RecordPage> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('Hello World!'),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+              ),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(left: 16.0, top: 24.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Total Time',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '00:00:00',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 16.0, top: 24.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Burned Calories:',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          '0',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 6,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+              ),
+              child: const Center(
+                // Center the text
+                child: Text(
+                  '00:00:00',
+                  style: TextStyle(
+                    fontSize: 50.0, // Increase the font size
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(bottom: 24.0),
@@ -241,7 +316,8 @@ class _RecordPageState extends State<RecordPage> {
                                         child: Text(
                                           'Close',
                                           style: TextStyle(
-                                              color: Color.fromARGB(255, 239, 77, 2),
+                                              color: Color.fromARGB(
+                                                  255, 239, 77, 2),
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.w500),
                                         ),
@@ -261,14 +337,59 @@ class _RecordPageState extends State<RecordPage> {
                   }
                 },
               ),
-              FloatingActionButton(
-                mini: false,
-                backgroundColor: Colors.amber,
-                onPressed: () {},
-                shape: const CircleBorder(),
-                child: const Text('Start'),
+              // start button
+              ElevatedButton(
+                onPressed: () {
+                  if (selectedExercise == null ||
+                      selectedSubMovements.isEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Warning'),
+                          content: const Text(
+                              'Please choose an activity and their sub-movement first.'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Success'),
+                          content: Text(isPressed
+                              ? 'Activity Stopped!'
+                              : 'Activity Started!'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                    setState(() {
+                      isPressed = !isPressed; // Toggle the state of the button
+                    });
+                  }
+                },
+                child:
+                    Icon(isPressed ? Icons.stop : Icons.play_arrow, size: 40.0),
               ),
-              const Icon(Icons.map, size: 40.0),
+              // clock icon
+              const Icon(Icons.access_time, size: 40.0),
             ],
           ),
         ),
