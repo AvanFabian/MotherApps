@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
+import 'package:monitoring_hamil/services/user_service.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -339,7 +340,7 @@ class _RecordPageState extends State<RecordPage> {
               ),
               // start button
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (selectedExercise == null ||
                       selectedSubMovements.isEmpty) {
                     showDialog(
@@ -361,6 +362,33 @@ class _RecordPageState extends State<RecordPage> {
                       },
                     );
                   } else {
+                    if (isPressed) {
+                      timer?.cancel(); // Stop the timer
+                      // Get the user ID
+                      int userId = await getUserId();
+                      // Make a POST request to store the duration in the database
+                      var response = await http.post(
+                        Uri.parse('http://10.0.2.2:8000/api/activity_records'),
+                        body: {
+                          'user_id': userId.toString(),
+                          // 'activity_id': 'your-activity-id',
+                          'duration': duration.toString(),
+                        },
+                      );
+                      // Check the status code of the response
+                      if (response.statusCode == 200) {
+                        print('Duration successfully stored in the database');
+                      } else {
+                        print('Failed to store the duration in the database');
+                      }
+                      duration = 0; // Reset the duration
+                    } else {
+                      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+                        setState(() {
+                          duration++; // Increase the duration every second
+                        });
+                      });
+                    }
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
