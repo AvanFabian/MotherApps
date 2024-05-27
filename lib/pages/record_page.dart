@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
+import 'package:monitoring_hamil/services/activity_service.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -12,19 +12,44 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
-  List<String> exercises = ['Yoga', 'Bersih-Berish Rumah', 'Lompat Tali'];
+  // List<String> exercises = ['Yoga', 'Bersih-Berish Rumah', 'Lompat Tali'];
 
-  Map<String, List<String>> subMovements = {
-    'Yoga': ['Movement 1', 'Movement 2', 'Movement 3'],
-    'Bersih-Berish Rumah': ['Movement 1', 'Movement 2', 'Movement 3'],
-    'Lompat Tali': ['Movement 1', 'Movement 2', 'Movement 3'],
-  };
+  // Map<String, List<String>> subMovements = {
+  //   'Yoga': ['Movement 1', 'Movement 2', 'Movement 3'],
+  //   'Bersih-Berish Rumah': ['Movement 1', 'Movement 2', 'Movement 3'],
+  //   'Lompat Tali': ['Movement 1', 'Movement 2', 'Movement 3'],
+  // };
+
+  List<String> exercises = [];
+  Map<String, List<String>> subMovements = {};
 
   String? selectedExercise;
   List<String> selectedSubMovements = [];
+  List<int> sportMovementIds = [];
   bool isPressed = false;
   Timer? timer;
   int duration = 0;
+  bool isPaused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadExercisesAndMovements();
+  }
+
+  void togglePause() {
+    setState(() {
+      isPaused = !isPaused;
+    });
+  }
+
+  void loadExercisesAndMovements() async {
+    var data = await fetchExercisesAndMovements();
+    setState(() {
+      exercises = data['exercises'];
+      subMovements = data['subMovements'];
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -366,15 +391,20 @@ class _RecordPageState extends State<RecordPage> {
                       timer?.cancel(); // Stop the timer
                       // Get the user ID
                       int userId = await getUserId();
+                      // Get the ID of the selected sport activity
+                      int sportActivityId =
+                          await getSportActivityId(selectedExercise!);
+                      // Get the IDs of the selected sport movements
+                      List<int> sportMovementIds =
+                          await getSportMovementIds(selectedSubMovements);
                       // Make a POST request to store the duration in the database
-                      var response = await http.post(
-                        Uri.parse('http://10.0.2.2:8000/api/activity_records'),
-                        body: {
-                          'user_id': userId.toString(),
-                          // 'activity_id': 'your-activity-id',
-                          'duration': duration.toString(),
-                        },
-                      );
+                      var response = await postActivityRecord({
+                        'user_id': userId.toString(),
+                        'sport_activity_id': sportActivityId.toString(),
+                        'sport_movement_ids': sportMovementIds.join(','),
+                        'duration': duration.toString(),
+                        // 'calories_prediction': caloriesPrediction.toString(), //TODO: sementara dibikin nullable di database-nya!
+                      });
                       // Check the status code of the response
                       if (response.statusCode == 200) {
                         print('Duration successfully stored in the database');
@@ -383,11 +413,15 @@ class _RecordPageState extends State<RecordPage> {
                       }
                       duration = 0; // Reset the duration
                     } else {
-                      timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-                        setState(() {
-                          duration++; // Increase the duration every second
+                      if (!isPaused) {
+                        // Only start the timer when isPaused is false
+                        timer =
+                            Timer.periodic(const Duration(seconds: 1), (timer) {
+                          setState(() {
+                            duration++; // Increase the duration every second
+                          });
                         });
-                      });
+                      }
                     }
                     showDialog(
                       context: context,
@@ -415,6 +449,27 @@ class _RecordPageState extends State<RecordPage> {
                 },
                 child:
                     Icon(isPressed ? Icons.stop : Icons.play_arrow, size: 40.0),
+              ),
+              // pause button
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isPaused =
+                        !isPaused; // Toggle the state of the pause button
+                    if (isPaused) {
+                      timer?.cancel(); // Stop the timer
+                    } else {
+                      timer =
+                          Timer.periodic(const Duration(seconds: 1), (timer) {
+                        setState(() {
+                          duration++; // Increase the duration every second
+                        });
+                      });
+                    }
+                  });
+                },
+                child:
+                    Icon(isPaused ? Icons.play_arrow : Icons.pause, size: 40.0),
               ),
               // clock icon
               const Icon(Icons.access_time, size: 40.0),

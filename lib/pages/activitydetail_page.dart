@@ -1,6 +1,8 @@
+// ignore_for_file: unnecessary_cast
+
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import 'package:monitoring_hamil/Models/activity.dart';
+import 'package:monitoring_hamil/models/activity.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
 
 class ActivityDetailPage extends StatefulWidget {
@@ -10,7 +12,7 @@ class ActivityDetailPage extends StatefulWidget {
   State<ActivityDetailPage> createState() => _ActivityDetailPageState();
 }
 
-// table to retrive activity details
+// table to retrieve activity details
 class _ActivityDetailPageState extends State<ActivityDetailPage> {
   late Future<Activity> futureActivity;
 
@@ -81,6 +83,18 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                   cells: <DataCell>[
                     DataCell(Text('Duration')),
                     DataCell(Text('${snapshot.data!.duration}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    DataCell(Text('Sports Activity')),
+                    DataCell(Text('${snapshot.data!.sportsActivity.sportType}')),
+                  ],
+                ),
+                DataRow(
+                  cells: <DataCell>[
+                    DataCell(Text('Sports Movements')),
+                    DataCell(Text('${snapshot.data!.sportsMovements.map((movement) => movement.name).join(', ')}')),
                   ],
                 ),
                 // Add more rows for other fields

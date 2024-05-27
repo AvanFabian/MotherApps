@@ -13,3 +13,27 @@ class Activity {
     );
   }
 }
+
+class SportsActivity {
+  final int id;
+  final String sportType;
+
+  SportsActivity({
+    required this.id,
+    required this.sportType,
+  });
+
+  // Add methods for serialization and deserialization as needed
+}
+
+class SportsMovement {
+  final int id;
+  final String name;
+
+  SportsMovement({
+    required this.id,
+    required this.name,
+  });
+
+  // Add methods for serialization and deserialization as needed
+}
