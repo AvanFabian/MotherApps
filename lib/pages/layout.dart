@@ -65,39 +65,39 @@ class _LayoutState extends State<Layout> {
                       true, // hide labels for unselected items
                   selectedLabelStyle: const TextStyle(
                       fontSize: 15.0,
-                      fontWeight: FontWeight.w500), // Adjust the size as needed
+                      fontWeight: FontWeight.w500),
                   unselectedLabelStyle: const TextStyle(
                       fontSize: 15.0,
-                      fontWeight: FontWeight.w500), // Adjust the size as needed
+                      fontWeight: FontWeight.w500),
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
                       icon: Icon(Icons.home,
-                          size: 28.0), // Adjust the size as needed
+                          size: 28.0),
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
                       // maps icon
                       icon: Icon(Icons.map,
-                          size: 28.0), // Adjust the size as needed
+                          size: 28.0),
                       label: 'Routes',
                     ),
                     // Records Activity
                     BottomNavigationBarItem(
                       // record circle
                       icon: Icon(Icons.circle,
-                          size: 28.0), // Adjust the size as needed
+                          size: 28.0),
                       label: 'Record',
                     ),
                     BottomNavigationBarItem(
                       // trophy icon
                       icon: Icon(Icons.emoji_events,
-                          size: 28.0), // Adjust the size as needed
+                          size: 28.0),
                       label: 'Rank',
                     ),
                     BottomNavigationBarItem(
                       icon: Icon(Icons.person,
-                          size: 28.0), // Adjust the size as needed
+                          size: 28.0),
                       label: 'Profile',
                     ),
                   ],

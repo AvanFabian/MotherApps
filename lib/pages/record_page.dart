@@ -12,14 +12,6 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
-  // List<String> exercises = ['Yoga', 'Bersih-Berish Rumah', 'Lompat Tali'];
-
-  // Map<String, List<String>> subMovements = {
-  //   'Yoga': ['Movement 1', 'Movement 2', 'Movement 3'],
-  //   'Bersih-Berish Rumah': ['Movement 1', 'Movement 2', 'Movement 3'],
-  //   'Lompat Tali': ['Movement 1', 'Movement 2', 'Movement 3'],
-  // };
-
   List<String> exercises = [];
   Map<String, List<String>> subMovements = {};
 
@@ -242,11 +234,11 @@ class _RecordPageState extends State<RecordPage> {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black),
               ),
-              child: const Center(
+              child: Center(
                 // Center the text
                 child: Text(
-                  '00:00:00',
-                  style: TextStyle(
+                  '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                  style: const TextStyle(
                     fontSize: 50.0, // Increase the font size
                   ),
                 ),
@@ -363,7 +355,7 @@ class _RecordPageState extends State<RecordPage> {
                   }
                 },
               ),
-              // start button
+              // start/stop button
               ElevatedButton(
                 onPressed: () async {
                   if (selectedExercise == null ||
@@ -403,13 +395,14 @@ class _RecordPageState extends State<RecordPage> {
                         'sport_activity_id': sportActivityId.toString(),
                         'sport_movement_ids': sportMovementIds.join(','),
                         'duration': duration.toString(),
-                        // 'calories_prediction': caloriesPrediction.toString(), //TODO: sementara dibikin nullable di database-nya!
+                        // 'calories_prediction': caloriesPrediction.toString(), // TODO: sementara dibikin nullable di database-nya!
                       });
                       // Check the status code of the response
-                      if (response.statusCode == 200) {
+                      if (response.statusCode == 201) {
                         print('Duration successfully stored in the database');
                       } else {
                         print('Failed to store the duration in the database');
+                        print('Response body: ${response.body}');
                       }
                       duration = 0; // Reset the duration
                     } else {
@@ -429,8 +422,8 @@ class _RecordPageState extends State<RecordPage> {
                         return AlertDialog(
                           title: const Text('Success'),
                           content: Text(isPressed
-                              ? 'Activity Stopped!'
-                              : 'Activity Started!'),
+                              ? 'Activity Started!'
+                              : 'Activity Stopped!'),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('OK'),
@@ -468,11 +461,10 @@ class _RecordPageState extends State<RecordPage> {
                     }
                   });
                 },
-                child:
-                    Icon(isPaused ? Icons.play_arrow : Icons.pause, size: 40.0),
+                child: const Icon(Icons.pause, size: 40.0),
               ),
               // clock icon
-              const Icon(Icons.access_time, size: 40.0),
+              // const Icon(Icons.access_time, size: 40.0),
             ],
           ),
         ),
