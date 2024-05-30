@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 import 'package:monitoring_hamil/models/activity.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
+import 'package:intl/intl.dart';
 
 class ActivityDetailPage extends StatefulWidget {
-  const ActivityDetailPage({Key? key}) : super(key: key);
+  final int userId;
+
+  const ActivityDetailPage({Key? key, required this.userId}) : super(key: key);
 
   @override
   State<ActivityDetailPage> createState() => _ActivityDetailPageState();
 }
 
-// table to retrieve activity details
 class _ActivityDetailPageState extends State<ActivityDetailPage> {
-  late Future<Activity> futureActivity;
+  late Future<List<ActivityRecord>> futureActivityRecords;
 
   @override
   void initState() {
     super.initState();
-    futureActivity = getActivityDetails() as Future<Activity>;
+    futureActivityRecords = getActivityRecords(widget.userId);
   }
 
   @override
@@ -47,58 +49,30 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
           ),
         ],
       ),
-      body: FutureBuilder<Activity>(
-        future: futureActivity,
+      body: FutureBuilder<List<ActivityRecord>>(
+        future: futureActivityRecords,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return DataTable(
-              columns: const <DataColumn>[
-                DataColumn(
-                  label: Text(
-                    'Field',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-                DataColumn(
-                  label: Text(
-                    'Value',
-                    style: TextStyle(fontStyle: FontStyle.italic),
-                  ),
-                ),
-              ],
-              rows: <DataRow>[
-                DataRow(
-                  cells: <DataCell>[
-                    DataCell(Text('User ID')),
-                    DataCell(Text('${snapshot.data!.userId}')),
-                  ],
-                ),
-                DataRow(
-                  cells: <DataCell>[
-                    DataCell(Text('Activity ID')),
-                    DataCell(Text('${snapshot.data!.activityId}')),
-                  ],
-                ),
-                DataRow(
-                  cells: <DataCell>[
-                    DataCell(Text('Duration')),
-                    DataCell(Text('${snapshot.data!.duration}')),
-                  ],
-                ),
-                DataRow(
-                  cells: <DataCell>[
-                    DataCell(Text('Sports Activity')),
-                    DataCell(Text('${snapshot.data!.sportsActivity.sportType}')),
-                  ],
-                ),
-                DataRow(
-                  cells: <DataCell>[
-                    DataCell(Text('Sports Movements')),
-                    DataCell(Text('${snapshot.data!.sportsMovements.map((movement) => movement.name).join(', ')}')),
-                  ],
-                ),
-                // Add more rows for other fields
-              ],
+            // Calculate total duration for each day
+            Map<String, int> totalDurations = {};
+            for (var record in snapshot.data!) {
+              String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
+              if (totalDurations.containsKey(date)) {
+                totalDurations[date] = totalDurations[date]! + record.duration;
+              } else {
+                totalDurations[date] = record.duration;
+              }
+            }
+
+            return ListView.builder(
+              itemCount: totalDurations.keys.length,
+              itemBuilder: (context, index) {
+                String date = totalDurations.keys.elementAt(index);
+                return ListTile(
+                  title: Text(date),
+                  subtitle: Text('Total duration: ${totalDurations[date]}'),
+                );
+              },
             );
           } else if (snapshot.hasError) {
             return Text('${snapshot.error}');

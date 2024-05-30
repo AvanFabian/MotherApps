@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/pages/activitydetail_page.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
@@ -463,8 +464,30 @@ class _RecordPageState extends State<RecordPage> {
                 },
                 child: const Icon(Icons.pause, size: 40.0),
               ),
-              // clock icon
-              // const Icon(Icons.access_time, size: 40.0),
+              // history icon
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FutureBuilder<int>(
+                        future: getUserId(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<int> snapshot) {
+                          if (snapshot.hasData) {
+                            return ActivityDetailPage(userId: snapshot.data!);
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          // By default, show a loading spinner.
+                          return const CircularProgressIndicator();
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: const Icon(Icons.history, size: 40.0),
+              )
             ],
           ),
         ),

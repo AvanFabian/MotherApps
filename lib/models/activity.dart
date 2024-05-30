@@ -22,8 +22,6 @@ class SportsActivity {
     required this.id,
     required this.sportType,
   });
-
-  // Add methods for serialization and deserialization as needed
 }
 
 class SportsMovement {
@@ -34,6 +32,42 @@ class SportsMovement {
     required this.id,
     required this.name,
   });
+}
 
-  // Add methods for serialization and deserialization as needed
+class ActivityRecord {
+  final int id;
+  final int userId;
+  final int sportActivityId;
+  final String sportMovementIds;
+  final int duration;
+  final int? distance;
+  final int? caloriesPrediction;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  ActivityRecord({
+    required this.id,
+    required this.userId,
+    required this.sportActivityId,
+    required this.sportMovementIds,
+    required this.duration,
+    this.distance,
+    this.caloriesPrediction,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory ActivityRecord.fromJson(Map<String, dynamic> json) {
+    return ActivityRecord(
+      id: json['id'],
+      userId: json['user_id'],
+      sportActivityId: json['sport_activity_id'],
+      sportMovementIds: json['sport_movement_ids'],
+      duration: json['duration'],
+      distance: json['distance'],
+      caloriesPrediction: json['calories_prediction'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+    );
+  }
 }
