@@ -61,7 +61,7 @@ final String sportMovement;
   });
 
   factory ActivityRecord.fromJson(Map<String, dynamic> json) {
-    print("JSON: $json");
+    // print("JSON: $json");
     return ActivityRecord(
       id: json['id'],
       userId: json['user_id'],

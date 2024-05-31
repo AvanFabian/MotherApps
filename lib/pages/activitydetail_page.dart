@@ -59,6 +59,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
               Map<String, String> sportNames = {};
               Map<String, String> sportMovements = {};
               for (var record in snapshot.data!) {
+                print("record.duration: ${record.duration}");
+                print("record.sportName: ${record.sportName}");
+                print("record.sportMovement: ${record.sportMovement}");
                 String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
                 if (totalDurations.containsKey(date)) {
                   totalDurations[date] =
@@ -93,7 +96,8 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                               DataCell(Text(date)),
                               DataCell(Text('${totalDurations[date]}')),
                               DataCell(Text('${sportNames[date]}')),
-                              DataCell(Text('${sportMovements[date]}')),
+                              DataCell(Text(
+                                  '${sportMovements[date]?.isEmpty ?? true ? 'N/A' : sportMovements[date]}')),
                             ],
                           ))
                       .toList(),
