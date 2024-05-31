@@ -3,7 +3,8 @@ class Activity {
   final int activityId;
   final int duration;
 
-  Activity({required this.userId, required this.activityId, required this.duration});
+  Activity(
+      {required this.userId, required this.activityId, required this.duration});
 
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
@@ -38,7 +39,8 @@ class ActivityRecord {
   final int id;
   final int userId;
   final int sportActivityId;
-  final String sportMovementIds;
+  final String sportName;
+final String sportMovement;
   final int duration;
   final int? distance;
   final int? caloriesPrediction;
@@ -49,7 +51,8 @@ class ActivityRecord {
     required this.id,
     required this.userId,
     required this.sportActivityId,
-    required this.sportMovementIds,
+    required this.sportName,
+    required this.sportMovement, // Changed from sportMovement to sportMovement
     required this.duration,
     this.distance,
     this.caloriesPrediction,
@@ -58,11 +61,13 @@ class ActivityRecord {
   });
 
   factory ActivityRecord.fromJson(Map<String, dynamic> json) {
+    print("JSON: $json");
     return ActivityRecord(
       id: json['id'],
       userId: json['user_id'],
       sportActivityId: json['sport_activity_id'],
-      sportMovementIds: json['sport_movement_ids'],
+      sportName: json['sport_name'],
+      sportMovement: json['sport_movement'] as String,
       duration: json['duration'],
       distance: json['distance'],
       caloriesPrediction: json['calories_prediction'],

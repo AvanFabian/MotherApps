@@ -390,6 +390,7 @@ class _RecordPageState extends State<RecordPage> {
                       // Get the IDs of the selected sport movements
                       List<int> sportMovementIds =
                           await getSportMovementIds(selectedSubMovements);
+                      print("Selected sub-movements: $selectedSubMovements");
                       // Make a POST request to store the duration in the database
                       var response = await postActivityRecord({
                         'user_id': userId.toString(),
