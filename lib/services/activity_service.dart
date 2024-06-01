@@ -14,7 +14,6 @@ Future<List<ActivityRecord>> getActivityRecords(int userId) async {
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response, then parse the JSON.
     List<dynamic> body = jsonDecode(response.body);
-print('Server Response: $body');
     print('Server Response: $body');
     return body.map((dynamic item) => ActivityRecord.fromJson(item)).toList();
   } else {
