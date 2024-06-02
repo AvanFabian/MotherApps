@@ -4,6 +4,7 @@ import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/pages/record_page.dart';
+import 'package:monitoring_hamil/res/constants.dart';
 import '../Components/AnyForm/post_form.dart';
 
 class Layout extends StatefulWidget {
@@ -115,7 +116,7 @@ class _LayoutState extends State<Layout> {
                             )));
                   },
                   // color of the button
-                  backgroundColor: const Color.fromARGB(255, 255, 228, 0),
+                  backgroundColor: signatureAppColor,
                   child: const Icon(Icons.add),
                 )
               : Container(), // Empty container when not on HomePage

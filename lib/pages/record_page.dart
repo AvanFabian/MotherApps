@@ -49,7 +49,7 @@ class _RecordPageState extends State<RecordPage> {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-          padding: const EdgeInsets.only(left: 12.0),
+          padding: const EdgeInsets.only(left: 8.0),
           child: Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
@@ -61,13 +61,9 @@ class _RecordPageState extends State<RecordPage> {
                   (route) => false,
                 );
               },
-              child: const Text(
-                'Close',
-                style: TextStyle(
-                  fontSize: 16.0, // Adjust the size as needed
-                  fontWeight: FontWeight.w500,
-                  color: Color.fromARGB(255, 239, 77, 2),
-                ),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
               ),
             ),
           ),
@@ -174,74 +170,64 @@ class _RecordPageState extends State<RecordPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
+          const Expanded(
             flex: 1,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-              ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 16.0, top: 24.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Total Time',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(left: 16.0, top: 24.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Total Time',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Text(
-                          '00:00:00',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      Text(
+                        '00:00:00',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 16.0, top: 24.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Burned Calories:',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 16.0, top: 24.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Burned Calories',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
                         ),
-                        Text(
-                          '0',
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                          ),
+                      ),
+                      Text(
+                        '0',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Expanded(
             flex: 6,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
-              ),
-              child: Center(
-                // Center the text
-                child: Text(
-                  '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-                  style: const TextStyle(
-                    fontSize: 50.0, // Increase the font size
-                  ),
+            child: Center(
+              // Center the text
+              child: Text(
+                '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  fontSize: 50.0, // Increase the font size
                 ),
               ),
             ),
@@ -487,7 +473,11 @@ class _RecordPageState extends State<RecordPage> {
                     ),
                   );
                 },
-                child: const Icon(Icons.history, size: 40.0),
+                child: const Icon(
+                  Icons.history,
+                  size: 40.0,
+                  color: Colors.black,
+                ),
               )
             ],
           ),

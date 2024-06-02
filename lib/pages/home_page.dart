@@ -70,9 +70,9 @@ class _HomePageState extends State<HomePage> {
                                 Text(
                                   'See More',
                                   style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color.fromARGB(255, 249, 133, 1)),
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 )
                               ],
                             ),

@@ -56,20 +56,22 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
             if (snapshot.hasData) {
               // Calculate total duration for each day
               Map<String, int> totalDurations = {};
-              Map<String, String> sportNames = {};
-              Map<String, String> sportMovements = {};
+              Map<String, List<String>> sportNames = {};
+              Map<String, List<String>> sportMovements = {};
               for (var record in snapshot.data!) {
                 print("record.duration: ${record.duration}");
                 print("record.sportName: ${record.sportName}");
                 print("record.sportMovement: ${record.sportMovement}");
                 String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
                 if (totalDurations.containsKey(date)) {
-                  totalDurations[date] =
-                      totalDurations[date]! + record.duration;
+                  // totalDurations[date] += record.duration;
+                  totalDurations[date] = (totalDurations[date] ?? 0) + record.duration;
+                  sportNames[date]!.add(record.sportName);
+                  sportMovements[date]!.add(record.sportMovement);
                 } else {
                   totalDurations[date] = record.duration;
-                  sportNames[date] = record.sportName;
-                  sportMovements[date] = record.sportMovement;
+                  sportNames[date] = [record.sportName];
+                  sportMovements[date] = [record.sportMovement];
                 }
               }
 
@@ -95,9 +97,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                             cells: <DataCell>[
                               DataCell(Text(date)),
                               DataCell(Text('${totalDurations[date]}')),
-                              DataCell(Text('${sportNames[date]}')),
-                              DataCell(Text(
-                                  '${sportMovements[date]?.isEmpty ?? true ? 'N/A' : sportMovements[date]}')),
+                              DataCell(Text('${sportNames[date]!.join(', ')}')),
+                              DataCell(
+                                  Text('${sportMovements[date]!.join(', ')}')),
                             ],
                           ))
                       .toList(),

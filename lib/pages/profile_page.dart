@@ -104,8 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Colors
                                     .black), // This makes the text color black
                             backgroundColor: MaterialStateProperty.all<Color>(
-                                Colors
-                                    .yellow), // This makes the button color yellow
+                                signatureAppColor),
                             padding: MaterialStateProperty.all<EdgeInsets>(
                                 const EdgeInsets.only(
                                     left: 44, right: 44, top: 16, bottom: 16)),
