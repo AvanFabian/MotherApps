@@ -27,91 +27,119 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Activity Detail',
-            style: TextStyle(
-              fontSize: 22.0, // Adjust the size as needed
-              fontWeight: FontWeight.bold,
-            ),
+      appBar: AppBar(
+        title: const Text(
+          'Activity Detail',
+          style: TextStyle(
+            fontSize: 22.0, // Adjust the size as needed
+            fontWeight: FontWeight.bold,
           ),
-          centerTitle: true, // This centers the title
-          backgroundColor: signatureAppColor,
-          elevation: 0, // z-coordinate of the app bar
-          actions: <Widget>[
-            IconButton(
-              // settings icon
-              icon: const Icon(Icons.settings, size: 30.0),
-              color: Colors.black,
-              onPressed: () {
-                // Pop the current route off the navigation stack
-                Navigator.pop(context);
-              },
-            ),
-          ],
         ),
-        body: FutureBuilder<List<ActivityRecord>>(
-          future: futureActivityRecords,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              // Calculate total duration for each day
-              Map<String, int> totalDurations = {};
-              Map<String, List<String>> sportNames = {};
-              Map<String, List<String>> sportMovements = {};
-              for (var record in snapshot.data!) {
-                print("record.duration: ${record.duration}");
-                print("record.sportName: ${record.sportName}");
-                print("record.sportMovement: ${record.sportMovement}");
-                String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
-                if (totalDurations.containsKey(date)) {
-                  // totalDurations[date] += record.duration;
-                  totalDurations[date] = (totalDurations[date] ?? 0) + record.duration;
-                  sportNames[date]!.add(record.sportName);
-                  sportMovements[date]!.add(record.sportMovement);
-                } else {
-                  totalDurations[date] = record.duration;
-                  sportNames[date] = [record.sportName];
-                  sportMovements[date] = [record.sportMovement];
-                }
-              }
-
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text('Date'),
-                    ),
-                    DataColumn(
-                      label: Text('Total Duration'),
-                    ),
-                    DataColumn(
-                      label: Text('Sport Name'),
-                    ),
-                    DataColumn(
-                      label: Text('Sport Movement'),
-                    ),
-                  ],
-                  rows: totalDurations.keys
-                      .map((date) => DataRow(
-                            cells: <DataCell>[
-                              DataCell(Text(date)),
-                              DataCell(Text('${totalDurations[date]}')),
-                              DataCell(Text('${sportNames[date]!.join(', ')}')),
-                              DataCell(
-                                  Text('${sportMovements[date]!.join(', ')}')),
-                            ],
-                          ))
-                      .toList(),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
+        centerTitle: true, // This centers the title
+        backgroundColor: signatureAppColor,
+        elevation: 0, // z-coordinate of the app bar
+        actions: <Widget>[
+          IconButton(
+            // settings icon
+            icon: const Icon(Icons.settings, size: 30.0),
+            color: Colors.black,
+            onPressed: () {
+              // Pop the current route off the navigation stack
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+      body: FutureBuilder<List<ActivityRecord>>(
+        future: futureActivityRecords,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // Create a list of records and calculate total duration for each day
+            List<Map<String, dynamic>> records = [];
+            Map<String, int> totalDurations = {};
+            for (var record in snapshot.data!) {
+              String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
+              records.add({
+                'date': date,
+                'duration': record.duration,
+                'sportName': record.sportName,
+                'sportMovement': record.sportMovement,
+              });
+              totalDurations[date] =
+                  (totalDurations[date] ?? 0) + record.duration;
             }
 
-            // By default, show a loading spinner.
-            return CircularProgressIndicator();
-          },
-        ));
+            return Column(
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text('Date'),
+                      ),
+                      DataColumn(
+                        label: Text('Duration'),
+                      ),
+                      DataColumn(
+                        label: Text('Sport Name'),
+                      ),
+                      DataColumn(
+                        label: Text('Sport Movement'),
+                      ),
+                    ],
+                    rows: records
+                        .map((record) => DataRow(
+                              cells: <DataCell>[
+                                DataCell(Text(record['date'])),
+                                DataCell(Text('${record['duration']} sec.')),
+                                DataCell(Text(record['sportName'])),
+                                DataCell(Text(record['sportMovement'])),
+                              ],
+                            ))
+                        .toList(),
+                  ),
+                ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 0,
+                    columns: <DataColumn>[
+                      DataColumn(
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width /
+                              2, // Set the width to half of the screen width
+                          child: Text('Date'),
+                        ),
+                      ),
+                      DataColumn(
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width /
+                              2, // Set the width to half of the screen width
+                          child: Text('Total Duration'),
+                        ),
+                      ),
+                    ],
+                    rows: totalDurations.keys
+                        .map((date) => DataRow(
+                              cells: <DataCell>[
+                                DataCell(Text(date)),
+                                DataCell(Text('${totalDurations[date]} sec.')),
+                              ],
+                            ))
+                        .toList(),
+                  ),
+                )
+              ],
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+
+          // By default, show a loading spinner.
+          return CircularProgressIndicator();
+        },
+      ),
+    );
   }
 }
