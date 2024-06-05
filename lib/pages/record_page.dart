@@ -24,10 +24,31 @@ class _RecordPageState extends State<RecordPage> {
   int duration = 0;
   bool isPaused = false;
 
+  late StreamController<int> _streamController;
+  late Stream<int> _stream;
+  late List<int> caloriesBurnedPredictions = [];
+
+  @override
   @override
   void initState() {
     super.initState();
     loadExercisesAndMovements();
+
+    _streamController =
+        StreamController<int>.broadcast(); // Use a broadcast stream
+    _stream = _streamController.stream;
+
+    // Add the listener here
+    _stream.listen((totalCaloriesBurned) {
+      print('Total calories burned: $totalCaloriesBurned');
+    });
+  }
+
+  @override
+  void dispose() {
+    _streamController.close();
+    timer?.cancel();
+    super.dispose();
   }
 
   void togglePause() {
@@ -170,12 +191,12 @@ class _RecordPageState extends State<RecordPage> {
       ),
       body: Column(
         children: <Widget>[
-          const Expanded(
+          Expanded(
             flex: 1,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(left: 16.0, top: 24.0),
                   child: Column(
                     children: [
@@ -197,23 +218,42 @@ class _RecordPageState extends State<RecordPage> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 16.0, top: 24.0),
+                  padding: const EdgeInsets.only(right: 16.0, top: 24.0),
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'Burned Calories',
                         style: TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Text(
-                        '0',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      StreamBuilder<int>(
+                        stream: _stream,
+                        initialData: 0,
+                        builder: (BuildContext context,
+                            AsyncSnapshot<int> snapshot) {
+                          if (snapshot.hasData) {
+                            return Text(
+                              '${snapshot.data} kcal', // Display the total calories burned
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text(
+                              'Error: ${snapshot.error}',
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            );
+                          }
+                          // By default, show a loading spinner.
+                          return CircularProgressIndicator();
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -353,7 +393,7 @@ class _RecordPageState extends State<RecordPage> {
                         return AlertDialog(
                           title: const Text('Warning'),
                           content: const Text(
-                              'Please choose an activity and their sub-movement first.'),
+                              'Please choose an Activity and the Movement First.'),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('OK'),
@@ -377,13 +417,21 @@ class _RecordPageState extends State<RecordPage> {
                       List<int> sportMovementIds =
                           await getSportMovementIds(selectedSubMovements);
                       print("Selected sub-movements: $selectedSubMovements");
-                      // Make a POST request to store the duration in the database
+
+                      // Calculate the total calories burned
+                      int totalCaloriesBurned = 0;
+                      for (int i = 0; i < selectedSubMovements.length; i++) {
+                        totalCaloriesBurned +=
+                            (duration * caloriesBurnedPredictions[i] / 3600)
+                                .round();
+                      }
+                      // Make a POST request to store the duration and total calories burned in the database
                       var response = await postActivityRecord({
                         'user_id': userId.toString(),
                         'sport_activity_id': sportActivityId.toString(),
                         'sport_movement_ids': sportMovementIds.join(','),
                         'duration': duration.toString(),
-                        // 'calories_prediction': caloriesPrediction.toString(), // TODO: sementara dibikin nullable di database-nya!
+                        'total_calories_burned': totalCaloriesBurned.toString(),
                       });
                       // Check the status code of the response
                       if (response.statusCode == 201) {
@@ -394,15 +442,60 @@ class _RecordPageState extends State<RecordPage> {
                       }
                       duration = 0; // Reset the duration
                     } else {
-                      if (!isPaused) {
-                        // Only start the timer when isPaused is false
-                        timer =
-                            Timer.periodic(const Duration(seconds: 1), (timer) {
-                          setState(() {
-                            duration++; // Increase the duration every second
-                          });
+                      // Fetch the IDs of the selected sub movements
+                      getSportMovementIds(selectedSubMovements).then((ids) {
+                        // Fetch the calories burned predictions and start the timer when the start button is pressed
+                        getCaloriesBurnedPredictions(ids).then((predictions) {
+                          caloriesBurnedPredictions = predictions;
+
+                          if (caloriesBurnedPredictions.isNotEmpty) {
+                            timer = Timer.periodic(const Duration(seconds: 1),
+                                (Timer t) {
+                              if (!isPaused) {
+                                print('isPaused: $isPaused');
+                                print('ids: $ids');
+                                print(
+                                    'caloriesBurnedPredictions: $caloriesBurnedPredictions');
+                                print('duration: $duration');
+                                // Calculate the total calories burned
+                                double totalCaloriesBurned = 0;
+                                double caloriesBurnedPerSecond = 0;
+
+                                for (int i = 0; i < ids.length; i++) {
+                                  // Subtract 1 from the id to get the correct index
+                                  int index = ids[i] - 1;
+                                  totalCaloriesBurned +=
+                                      caloriesBurnedPredictions[index];
+                                }
+
+// Calculate the calories burned per second
+                                caloriesBurnedPerSecond =
+                                    totalCaloriesBurned / 3600;
+
+// Increase the total calories burned every second
+                                totalCaloriesBurned =
+                                    caloriesBurnedPerSecond * duration;
+
+// Add the total calories burned to the stream
+                                _streamController
+                                    .add(totalCaloriesBurned.round());
+
+// Increase the duration
+                                setState(() {
+                                  duration++;
+                                });
+                              }
+                            });
+                          } else {
+                            print('No calories burned predictions available');
+                          }
+                        }).catchError((e) {
+                          print(
+                              'Failed to load calories burned predictions: $e');
                         });
-                      }
+                      }).catchError((e) {
+                        print('Failed to load sport movement IDs: $e');
+                      });
                     }
                     showDialog(
                       context: context,

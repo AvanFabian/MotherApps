@@ -70,6 +70,32 @@ Future<List<int>> getSportMovementIds(List<String> selectedSubMovements) async {
   return ids;
 }
 
+// mendapatkan data kalori terbakar untuk setiap gerakan olahraga dari database
+
+Future<List<int>> getCaloriesBurnedPredictions(List<int> ids) async {
+  print('IDs: ${ids.join(',')}');
+  String token = await getToken();
+  var response = await http.get(
+    Uri.parse(
+        'http://10.0.2.2:8000/api/sports_movements/calories?ids=${ids.join(',')}'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    },
+  );
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+  if (response.statusCode == 200) {
+    // If the server returns a 200 OK response, parse the JSON.
+    return (jsonDecode(response.body) as List)
+        .map((item) => item as int)
+        .toList();
+  } else {
+    // If the server returns an unexpected response, throw an exception.
+    throw Exception('Failed to load calories burned predictions');
+  }
+}
+
 Future<http.Response> postActivityRecord(Map<String, String> body) async {
   String token = await getToken();
   return http.post(

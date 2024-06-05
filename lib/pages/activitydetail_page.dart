@@ -109,14 +109,14 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                         label: SizedBox(
                           width: MediaQuery.of(context).size.width /
                               2, // Set the width to half of the screen width
-                          child: Text('Date'),
+                          child: const Text('Date'),
                         ),
                       ),
                       DataColumn(
                         label: SizedBox(
                           width: MediaQuery.of(context).size.width /
                               2, // Set the width to half of the screen width
-                          child: Text('Total Duration'),
+                          child: const Text('Total Duration'),
                         ),
                       ),
                     ],
@@ -137,7 +137,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
           }
 
           // By default, show a loading spinner.
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         },
       ),
     );
