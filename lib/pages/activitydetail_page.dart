@@ -64,11 +64,11 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                 'duration': record.duration,
                 'sportName': record.sportName,
                 'sportMovement': record.sportMovement,
+                'caloriesBurned': record.caloriesPrediction,
               });
               totalDurations[date] =
                   (totalDurations[date] ?? 0) + record.duration;
             }
-
             return Column(
               children: [
                 SingleChildScrollView(
@@ -82,6 +82,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                         label: Text('Duration'),
                       ),
                       DataColumn(
+                        label: Text('Calories Burned'),
+                      ),
+                      DataColumn(
                         label: Text('Sport Name'),
                       ),
                       DataColumn(
@@ -93,6 +96,8 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                               cells: <DataCell>[
                                 DataCell(Text(record['date'])),
                                 DataCell(Text('${record['duration']} sec.')),
+                                DataCell(Text(
+                                    '${record['caloriesBurned'].toStringAsFixed(2)} cal.')),
                                 DataCell(Text(record['sportName'])),
                                 DataCell(Text(record['sportMovement'])),
                               ],

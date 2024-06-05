@@ -26,7 +26,8 @@ class _RecordPageState extends State<RecordPage> {
 
   late StreamController<int> _streamController;
   late Stream<int> _stream;
-  late List<int> caloriesBurnedPredictions = [];
+  late Map<int, int> caloriesBurnedPredictions = {};
+  // late List<int> caloriesBurnedPredictions = [];
 
   @override
   @override
@@ -421,9 +422,13 @@ class _RecordPageState extends State<RecordPage> {
                       // Calculate the total calories burned
                       int totalCaloriesBurned = 0;
                       for (int i = 0; i < selectedSubMovements.length; i++) {
-                        totalCaloriesBurned +=
-                            (duration * caloriesBurnedPredictions[i] / 3600)
-                                .round();
+                        totalCaloriesBurned += (duration *
+                                (caloriesBurnedPredictions[i] ?? 0) /
+                                3600)
+                            .round();
+                        // totalCaloriesBurned +=
+                        //     (duration * caloriesBurnedPredictions[i] / 3600)
+                        //         .round();
                       }
                       // Make a POST request to store the duration and total calories burned in the database
                       var response = await postActivityRecord({
@@ -462,11 +467,19 @@ class _RecordPageState extends State<RecordPage> {
                                 double caloriesBurnedPerSecond = 0;
 
                                 for (int i = 0; i < ids.length; i++) {
-                                  // Subtract 1 from the id to get the correct index
-                                  int index = ids[i] - 1;
+                                  // Use the id to access the corresponding prediction
                                   totalCaloriesBurned +=
-                                      caloriesBurnedPredictions[index];
+                                      caloriesBurnedPredictions[ids[i]] ?? 0;
+                                  // totalCaloriesBurned +=
+                                  //     caloriesBurnedPredictions[ids[i]];
                                 }
+
+                                // for (int i = 0; i < ids.length; i++) {
+                                //   // Subtract 1 from the id to get the correct index
+                                //   int index = ids[i] - 1;
+                                //   totalCaloriesBurned +=
+                                //       caloriesBurnedPredictions[index];
+                                // }
 
 // Calculate the calories burned per second
                                 caloriesBurnedPerSecond =

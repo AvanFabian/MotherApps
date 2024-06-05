@@ -72,7 +72,7 @@ Future<List<int>> getSportMovementIds(List<String> selectedSubMovements) async {
 
 // mendapatkan data kalori terbakar untuk setiap gerakan olahraga dari database
 
-Future<List<int>> getCaloriesBurnedPredictions(List<int> ids) async {
+Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
   print('IDs: ${ids.join(',')}');
   String token = await getToken();
   var response = await http.get(
@@ -83,17 +83,29 @@ Future<List<int>> getCaloriesBurnedPredictions(List<int> ids) async {
       'Authorization': 'Bearer $token',
     },
   );
+
   print('Response status: ${response.statusCode}');
   print('Response body: ${response.body}');
+
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response, parse the JSON.
-    return (jsonDecode(response.body) as List)
-        .map((item) => item as int)
-        .toList();
+    Map<int, int> predictions = (jsonDecode(response.body) as Map)
+        .map((key, value) => MapEntry(int.parse(key), value));
+    return predictions;
   } else {
     // If the server returns an unexpected response, throw an exception.
     throw Exception('Failed to load calories burned predictions');
   }
+
+  // if (response.statusCode == 200) {
+  //   // If the server returns a 200 OK response, parse the JSON.
+  //   return (jsonDecode(response.body) as List)
+  //       .map((item) => item as int)
+  //       .toList();
+  // } else {
+  //   // If the server returns an unexpected response, throw an exception.
+  //   throw Exception('Failed to load calories burned predictions');
+  // }
 }
 
 Future<http.Response> postActivityRecord(Map<String, String> body) async {

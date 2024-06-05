@@ -40,10 +40,10 @@ class ActivityRecord {
   final int userId;
   final int sportActivityId;
   final String sportName;
-final String sportMovement;
+  final String sportMovement;
+  final double caloriesPrediction; // Ensure this property exists
   final int duration;
   final int? distance;
-  final int? caloriesPrediction;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -53,9 +53,9 @@ final String sportMovement;
     required this.sportActivityId,
     required this.sportName,
     required this.sportMovement, // Changed from sportMovement to sportMovement
+    required this.caloriesPrediction, // Ensure this property exists
     required this.duration,
     this.distance,
-    this.caloriesPrediction,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -68,9 +68,9 @@ final String sportMovement;
       sportActivityId: json['sport_activity_id'],
       sportName: json['sport_name'],
       sportMovement: json['sport_movement'] as String,
+      caloriesPrediction: json['calories_prediction'],
       duration: json['duration'],
       distance: json['distance'],
-      caloriesPrediction: json['calories_prediction'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
