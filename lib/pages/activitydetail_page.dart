@@ -54,9 +54,11 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         future: futureActivityRecords,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            // Create a list of records and calculate total duration for each day
+            // Create a list of records and calculate total duration and total calories burned for each day
             List<Map<String, dynamic>> records = [];
             Map<String, int> totalDurations = {};
+            Map<String, double> totalCaloriesBurned =
+                {}; // New map to store total calories burned
             for (var record in snapshot.data!) {
               String date = DateFormat('yyyy-MM-dd').format(record.createdAt);
               records.add({
@@ -64,10 +66,14 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                 'duration': record.duration,
                 'sportName': record.sportName,
                 'sportMovement': record.sportMovement,
-                'caloriesBurned': record.caloriesPrediction,
+                'caloriesBurned': record
+                    .totalCaloriesBurned, // Use totalCaloriesBurned instead of caloriesPrediction
               });
               totalDurations[date] =
                   (totalDurations[date] ?? 0) + record.duration;
+              totalCaloriesBurned[date] = (totalCaloriesBurned[date] ?? 0.0) +
+                  (record
+                      .totalCaloriesBurned); // Use totalCaloriesBurned instead of caloriesPrediction
             }
             return Column(
               children: [
@@ -112,16 +118,21 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                     columns: <DataColumn>[
                       DataColumn(
                         label: SizedBox(
-                          width: MediaQuery.of(context).size.width /
-                              2, // Set the width to half of the screen width
+                          width: MediaQuery.of(context).size.width / 2,
                           child: const Text('Date'),
                         ),
                       ),
                       DataColumn(
                         label: SizedBox(
-                          width: MediaQuery.of(context).size.width /
-                              2, // Set the width to half of the screen width
+                          width: MediaQuery.of(context).size.width / 2,
                           child: const Text('Total Duration'),
+                        ),
+                      ),
+                      DataColumn(
+                        // New DataColumn for total calories burned
+                        label: SizedBox(
+                          width: MediaQuery.of(context).size.width / 2,
+                          child: const Text('Total Calories Burned'),
                         ),
                       ),
                     ],
@@ -130,6 +141,8 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                               cells: <DataCell>[
                                 DataCell(Text(date)),
                                 DataCell(Text('${totalDurations[date]} sec.')),
+                                DataCell(Text(
+                                    '${totalCaloriesBurned[date]?.toStringAsFixed(2)} cal.')), // Use totalCaloriesBurned instead of caloriesPrediction
                               ],
                             ))
                         .toList(),

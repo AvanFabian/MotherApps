@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 const signatureAppColor = Color.fromARGB(255, 253, 232, 232);
-// rgb(253, 232, 232)
+const signatureTextColor = Color.fromARGB(255, 53, 42, 42);
 const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
 

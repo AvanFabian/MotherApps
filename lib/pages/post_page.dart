@@ -98,7 +98,9 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return _loading
         ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
+      : _postList.isEmpty
+          ? Center(child: Text('No Post Available Yet.'))
+          : RefreshIndicator(
             onRefresh: () {
               return retrievePosts();
             },

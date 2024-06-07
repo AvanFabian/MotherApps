@@ -71,7 +71,6 @@ Future<List<int>> getSportMovementIds(List<String> selectedSubMovements) async {
 }
 
 // mendapatkan data kalori terbakar untuk setiap gerakan olahraga dari database
-
 Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
   print('IDs: ${ids.join(',')}');
   String token = await getToken();

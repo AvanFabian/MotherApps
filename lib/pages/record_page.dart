@@ -4,6 +4,7 @@ import 'package:monitoring_hamil/pages/activitydetail_page.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
+import 'package:monitoring_hamil/res/constants.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -27,7 +28,6 @@ class _RecordPageState extends State<RecordPage> {
   late StreamController<int> _streamController;
   late Stream<int> _stream;
   late Map<int, int> caloriesBurnedPredictions = {};
-  // late List<int> caloriesBurnedPredictions = [];
 
   @override
   @override
@@ -97,12 +97,12 @@ class _RecordPageState extends State<RecordPage> {
           ),
           child: SizedBox(
             width:
-                MediaQuery.of(context).size.width * 0.45, // 75% of screen width
+                MediaQuery.of(context).size.width * 0.6, // 75% of screen width
             child: TextButton(
               child: Text(
                 selectedExercise ?? "Choose Activity",
                 style: const TextStyle(
-                  color: Colors.deepPurple,
+                  color: signatureTextColor,
                   fontSize: 20.0,
                   fontWeight: FontWeight.w500,
                 ),
@@ -120,7 +120,7 @@ class _RecordPageState extends State<RecordPage> {
                               height: MediaQuery.of(context).size.height /
                                   2, // Adjust this value to change the height of the modal
                               width: MediaQuery.of(context).size.width *
-                                  0.8, // Adjust this value to change the width of the modal
+                                  0.9, // Adjust this value to change the width of the modal
                               child: ListView.builder(
                                 itemCount: exercises.length,
                                 itemBuilder: (BuildContext context, int index) {
@@ -128,8 +128,7 @@ class _RecordPageState extends State<RecordPage> {
                                     title: Text(
                                       exercises[index],
                                       style: const TextStyle(
-                                        color: Colors
-                                            .deepPurple, // Change the color
+                                        color: signatureTextColor,
                                         fontSize: 20.0, // Change the font size
                                         fontWeight: FontWeight
                                             .w500, // Change the font weight
@@ -175,8 +174,8 @@ class _RecordPageState extends State<RecordPage> {
             ),
           ),
         ),
-        centerTitle: true, // This centers the title
-        backgroundColor: Colors.white70,
+        centerTitle: true, 
+        backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
         actions: <Widget>[
           Padding(
@@ -223,10 +222,11 @@ class _RecordPageState extends State<RecordPage> {
                   child: Column(
                     children: [
                       const Text(
-                        'Burned Calories',
+                        'Burned Calories :',
                         style: TextStyle(
                           fontSize: 20.0,
-                          fontWeight: FontWeight.w500,
+                          color: signatureTextColor,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       StreamBuilder<int>(
@@ -252,7 +252,7 @@ class _RecordPageState extends State<RecordPage> {
                             );
                           }
                           // By default, show a loading spinner.
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         },
                       )
                     ],
@@ -384,205 +384,219 @@ class _RecordPageState extends State<RecordPage> {
                 },
               ),
               // start/stop button
-              ElevatedButton(
-                onPressed: () async {
-                  if (selectedExercise == null ||
-                      selectedSubMovements.isEmpty) {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Warning'),
-                          content: const Text(
-                              'Please choose an Activity and the Movement First.'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  } else {
-                    if (isPressed) {
-                      timer?.cancel(); // Stop the timer
-                      // Get the user ID
-                      int userId = await getUserId();
-                      // Get the ID of the selected sport activity
-                      int sportActivityId =
-                          await getSportActivityId(selectedExercise!);
-                      // Get the IDs of the selected sport movements
-                      List<int> sportMovementIds =
-                          await getSportMovementIds(selectedSubMovements);
-                      print("Selected sub-movements: $selectedSubMovements");
-
-                      // Calculate the total calories burned
-                      int totalCaloriesBurned = 0;
-                      for (int i = 0; i < selectedSubMovements.length; i++) {
-                        totalCaloriesBurned += (duration *
-                                (caloriesBurnedPredictions[i] ?? 0) /
-                                3600)
-                            .round();
-                        // totalCaloriesBurned +=
-                        //     (duration * caloriesBurnedPredictions[i] / 3600)
-                        //         .round();
-                      }
-                      // Make a POST request to store the duration and total calories burned in the database
-                      var response = await postActivityRecord({
-                        'user_id': userId.toString(),
-                        'sport_activity_id': sportActivityId.toString(),
-                        'sport_movement_ids': sportMovementIds.join(','),
-                        'duration': duration.toString(),
-                        'total_calories_burned': totalCaloriesBurned.toString(),
-                      });
-                      // Check the status code of the response
-                      if (response.statusCode == 201) {
-                        print('Duration successfully stored in the database');
-                      } else {
-                        print('Failed to store the duration in the database');
-                        print('Response body: ${response.body}');
-                      }
-                      duration = 0; // Reset the duration
+              SizedBox(
+                height: 70.0,
+                width: 70.0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(0), // remove extra space
+                    shape: const CircleBorder(), // set the shape to circle
+                  ),
+                  onPressed: () async {
+                    if (selectedExercise == null ||
+                        selectedSubMovements.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Warning'),
+                            content: const Text(
+                                'Please choose an Activity and the Movement First.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     } else {
-                      // Fetch the IDs of the selected sub movements
-                      getSportMovementIds(selectedSubMovements).then((ids) {
-                        // Fetch the calories burned predictions and start the timer when the start button is pressed
-                        getCaloriesBurnedPredictions(ids).then((predictions) {
-                          caloriesBurnedPredictions = predictions;
+                      if (isPressed) {
+                        timer?.cancel(); // Stop the timer
+                        // Get the user ID
+                        int userId = await getUserId();
+                        // Get the ID of the selected sport activity
+                        int sportActivityId =
+                            await getSportActivityId(selectedExercise!);
+                        // Get the IDs of the selected sport movements
+                        List<int> sportMovementIds =
+                            await getSportMovementIds(selectedSubMovements);
+                        print("Selected sub-movements: $selectedSubMovements");
 
-                          if (caloriesBurnedPredictions.isNotEmpty) {
-                            timer = Timer.periodic(const Duration(seconds: 1),
-                                (Timer t) {
-                              if (!isPaused) {
-                                print('isPaused: $isPaused');
-                                print('ids: $ids');
-                                print(
-                                    'caloriesBurnedPredictions: $caloriesBurnedPredictions');
-                                print('duration: $duration');
-                                // Calculate the total calories burned
-                                double totalCaloriesBurned = 0;
-                                double caloriesBurnedPerSecond = 0;
-
-                                for (int i = 0; i < ids.length; i++) {
-                                  // Use the id to access the corresponding prediction
-                                  totalCaloriesBurned +=
-                                      caloriesBurnedPredictions[ids[i]] ?? 0;
-                                  // totalCaloriesBurned +=
-                                  //     caloriesBurnedPredictions[ids[i]];
-                                }
-
-                                // for (int i = 0; i < ids.length; i++) {
-                                //   // Subtract 1 from the id to get the correct index
-                                //   int index = ids[i] - 1;
-                                //   totalCaloriesBurned +=
-                                //       caloriesBurnedPredictions[index];
-                                // }
-
-// Calculate the calories burned per second
-                                caloriesBurnedPerSecond =
-                                    totalCaloriesBurned / 3600;
-
-// Increase the total calories burned every second
-                                totalCaloriesBurned =
-                                    caloriesBurnedPerSecond * duration;
-
-// Add the total calories burned to the stream
-                                _streamController
-                                    .add(totalCaloriesBurned.round());
-
-// Increase the duration
-                                setState(() {
-                                  duration++;
-                                });
-                              }
-                            });
-                          } else {
-                            print('No calories burned predictions available');
-                          }
-                        }).catchError((e) {
-                          print(
-                              'Failed to load calories burned predictions: $e');
+                        // Calculate the total calories burned
+                        int totalCaloriesBurned = 0;
+                        for (int i = 0; i < selectedSubMovements.length; i++) {
+                          totalCaloriesBurned += (duration *
+                                  (caloriesBurnedPredictions[i] ?? 0) /
+                                  3600)
+                              .round();
+                        }
+                        // Make a POST request to store the duration and total calories burned in the database
+                        var response = await postActivityRecord({
+                          'user_id': userId.toString(),
+                          'sport_activity_id': sportActivityId.toString(),
+                          'sport_movement_ids': sportMovementIds.join(','),
+                          'duration': duration.toString(),
+                          'total_calories_burned':
+                              totalCaloriesBurned.toString(),
                         });
-                      }).catchError((e) {
-                        print('Failed to load sport movement IDs: $e');
+                        // Check the status code of the response
+                        if (response.statusCode == 201) {
+                          print('Duration successfully stored in the database');
+                        } else {
+                          print('Failed to store the duration in the database');
+                          print('Response body: ${response.body}');
+                        }
+                        duration = 0; // Reset the duration
+                      } else {
+                        // Fetch the IDs of the selected sub movements
+                        getSportMovementIds(selectedSubMovements).then((ids) {
+                          // Fetch the calories burned predictions and start the timer when the start button is pressed
+                          getCaloriesBurnedPredictions(ids).then((predictions) {
+                            caloriesBurnedPredictions = predictions;
+
+                            if (caloriesBurnedPredictions.isNotEmpty) {
+                              timer = Timer.periodic(const Duration(seconds: 1),
+                                  (Timer t) {
+                                if (!isPaused) {
+                                  print('isPaused: $isPaused');
+                                  print('ids: $ids');
+                                  print(
+                                      'caloriesBurnedPredictions: $caloriesBurnedPredictions');
+                                  print('duration: $duration');
+                                  // Calculate the total calories burned
+                                  double totalCaloriesBurned = 0;
+                                  double caloriesBurnedPerSecond = 0;
+
+                                  for (int i = 0; i < ids.length; i++) {
+                                    // Use the id to access the corresponding prediction
+                                    totalCaloriesBurned +=
+                                        caloriesBurnedPredictions[ids[i]] ?? 0;
+                                  }
+
+                                  // Calculate the calories burned per second
+                                  caloriesBurnedPerSecond =
+                                      totalCaloriesBurned / 3600;
+                                  // Increase the total calories burned every second
+                                  totalCaloriesBurned =
+                                      caloriesBurnedPerSecond * duration;
+                                  // Add the total calories burned to the stream
+                                  _streamController
+                                      .add(totalCaloriesBurned.round());
+                                  // Increase the duration
+                                  setState(() {
+                                    duration++;
+                                  });
+                                }
+                              });
+                            } else {
+                              print('No calories burned predictions available');
+                            }
+                          }).catchError((e) {
+                            print(
+                                'Failed to load calories burned predictions: $e');
+                          });
+                        }).catchError((e) {
+                          print('Failed to load sport movement IDs: $e');
+                        });
+                      }
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Success'),
+                            content: Text(isPressed
+                                ? 'Activity Started!'
+                                : 'Activity Stopped!'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      setState(() {
+                        isPressed =
+                            !isPressed; // Toggle the state of the button
                       });
                     }
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Success'),
-                          content: Text(isPressed
-                              ? 'Activity Started!'
-                              : 'Activity Stopped!'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    setState(() {
-                      isPressed = !isPressed; // Toggle the state of the button
-                    });
-                  }
-                },
-                child:
-                    Icon(isPressed ? Icons.stop : Icons.play_arrow, size: 40.0),
+                  },
+                  child: Icon(isPressed ? Icons.stop : Icons.play_arrow,
+                      size: 40.0, color: Colors.black ),
+                ),
               ),
               // pause button
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isPaused =
-                        !isPaused; // Toggle the state of the pause button
-                    if (isPaused) {
-                      timer?.cancel(); // Stop the timer
-                    } else {
-                      timer =
-                          Timer.periodic(const Duration(seconds: 1), (timer) {
-                        setState(() {
-                          duration++; // Increase the duration every second
+              SizedBox(
+                height: 70.0,
+                width: 70.0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(0), // remove extra space
+                    shape: const CircleBorder(), // set the shape to circle
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isPaused =
+                          !isPaused; // Toggle the state of the pause button
+                      if (isPaused) {
+                        timer?.cancel(); // Stop the timer
+                      } else {
+                        timer =
+                            Timer.periodic(const Duration(seconds: 1), (timer) {
+                          setState(() {
+                            duration++; // Increase the duration every second
+                          });
                         });
-                      });
-                    }
-                  });
-                },
-                child: const Icon(Icons.pause, size: 40.0),
+                      }
+                    });
+                  },
+                  child:
+                      const Icon(Icons.pause, size: 40.0, color: Colors.black),
+                ),
               ),
+
               // history icon
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FutureBuilder<int>(
-                        future: getUserId(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<int> snapshot) {
-                          if (snapshot.hasData) {
-                            return ActivityDetailPage(userId: snapshot.data!);
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-                          // By default, show a loading spinner.
-                          return const CircularProgressIndicator();
-                        },
+              SizedBox(
+                height: 70.0, // or the size that you need
+                width:
+                    70.0, // to make it a perfect circle, width should be equal to height
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(0), // remove extra space
+                    shape: const CircleBorder(), // set the shape to circle
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FutureBuilder<int>(
+                          future: getUserId(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<int> snapshot) {
+                            if (snapshot.hasData) {
+                              return ActivityDetailPage(userId: snapshot.data!);
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
+                            // By default, show a loading spinner.
+                            return const CircularProgressIndicator();
+                          },
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: const Icon(
-                  Icons.history,
-                  size: 40.0,
-                  color: Colors.black,
+                    );
+                  },
+                  child: const Icon(
+                    Icons.history,
+                    size: 40.0,
+                    color: Colors.black,
+                  ),
                 ),
               )
             ],
