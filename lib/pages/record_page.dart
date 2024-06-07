@@ -30,7 +30,6 @@ class _RecordPageState extends State<RecordPage> {
   late Map<int, int> caloriesBurnedPredictions = {};
 
   @override
-  @override
   void initState() {
     super.initState();
     loadExercisesAndMovements();
@@ -39,7 +38,6 @@ class _RecordPageState extends State<RecordPage> {
         StreamController<int>.broadcast(); // Use a broadcast stream
     _stream = _streamController.stream;
 
-    // Add the listener here
     _stream.listen((totalCaloriesBurned) {
       print('Total calories burned: $totalCaloriesBurned');
     });
@@ -174,7 +172,7 @@ class _RecordPageState extends State<RecordPage> {
             ),
           ),
         ),
-        centerTitle: true, 
+        centerTitle: true,
         backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
         actions: <Widget>[
@@ -426,14 +424,24 @@ class _RecordPageState extends State<RecordPage> {
                             await getSportMovementIds(selectedSubMovements);
                         print("Selected sub-movements: $selectedSubMovements");
 
-                        // Calculate the total calories burned
+                        // Calculate the total calories burned V1
+                        // int totalCaloriesBurned = 0;
+                        // for (int i = 0; i < selectedSubMovements.length; i++) {
+                        //   totalCaloriesBurned += (duration *
+                        //           (caloriesBurnedPredictions[i] ?? 0) /
+                        //           3600)
+                        //       .round();
+                        // }
+
+                        // Calculate the total calories burned V2
                         int totalCaloriesBurned = 0;
-                        for (int i = 0; i < selectedSubMovements.length; i++) {
+                        for (int id in sportMovementIds) {
                           totalCaloriesBurned += (duration *
-                                  (caloriesBurnedPredictions[i] ?? 0) /
+                                  (caloriesBurnedPredictions[id] ?? 0) /
                                   3600)
                               .round();
                         }
+
                         // Make a POST request to store the duration and total calories burned in the database
                         var response = await postActivityRecord({
                           'user_id': userId.toString(),
@@ -529,7 +537,7 @@ class _RecordPageState extends State<RecordPage> {
                     }
                   },
                   child: Icon(isPressed ? Icons.stop : Icons.play_arrow,
-                      size: 40.0, color: Colors.black ),
+                      size: 40.0, color: Colors.black),
                 ),
               ),
               // pause button

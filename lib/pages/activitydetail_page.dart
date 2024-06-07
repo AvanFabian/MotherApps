@@ -54,6 +54,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         future: futureActivityRecords,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            if (snapshot.data!.isEmpty) {
+              return const Text("No Recent Activity Yet.");
+            }
             // Create a list of records and calculate total duration and total calories burned for each day
             List<Map<String, dynamic>> records = [];
             Map<String, int> totalDurations = {};
@@ -101,9 +104,9 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                     source: _DataSource(records),
                   ),
                   PaginatedDataTable(
-                    header: Text('Total Records'),
+                    header: const Text('Total Records'),
                     rowsPerPage: 5,
-                    columns: <DataColumn>[
+                    columns: const <DataColumn>[
                       DataColumn(
                         label: Text('Date'),
                       ),
