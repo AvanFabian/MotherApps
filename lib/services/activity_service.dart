@@ -120,7 +120,9 @@ Future<http.Response> postActivityRecord(Map<String, String> body) async {
 }
 
 Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
+
   String token = await getToken();
+
   // Fetch exercises
   var exercisesResponse = await http.get(
     Uri.parse('http://10.0.2.2:8000/api/sports_activities'),
@@ -128,14 +130,18 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
       'Authorization': 'Bearer $token',
     },
   );
+
   var exercisesData = jsonDecode(exercisesResponse.body);
   print("Exercises data: $exercisesData");
+
   List<String> exercises = (exercisesData as List)
       .map((item) => item['sport_type'] as String)
       .toList();
-  // Fetch movements for each exercise
+
   Map<String, List<String>> subMovements = {};
+
   for (var exercise in exercises) {
+
     var movementsResponse = await http.get(
       Uri.parse(
           'http://10.0.2.2:8000/api/sports_movements?activity_name=$exercise'),
@@ -143,10 +149,28 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
         'Authorization': 'Bearer $token',
       },
     );
+
     var movementsData = jsonDecode(movementsResponse.body);
     subMovements[exercise] =
         (movementsData as List).map((item) => item['name'] as String).toList();
   }
 
   return {'exercises': exercises, 'subMovements': subMovements};
+}
+
+Future<String> getImageUrlForMovement(String movementName) async {
+  final response = await http.get(Uri.parse('http://10.0.2.2:8000/api/sports_movements?activity_name=$movementName'));
+
+  if (response.statusCode == 200) {
+    List<dynamic> sportsMovements = jsonDecode(response.body);
+    for (var movement in sportsMovements) {
+      if (movement['name'] == movementName) {
+        return movement['image'] ?? '';
+      }
+    }
+  } else {
+    throw Exception('Failed to load sports movements');
+  }
+
+  return ''; // return an empty string if the image URL is not found
 }

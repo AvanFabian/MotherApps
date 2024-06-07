@@ -280,6 +280,7 @@ class _RecordPageState extends State<RecordPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
+              // sport movement icon
               TextButton(
                 child: const Icon(Icons.accessibility_new_sharp,
                     size: 40.0, color: Colors.black),
@@ -314,16 +315,13 @@ class _RecordPageState extends State<RecordPage> {
                               child: Stack(
                                 children: <Widget>[
                                   Padding(
-                                    padding: const EdgeInsets.only(
-                                        top:
-                                            52.0), // Adjust this value to change the vertical gap
+                                    padding: const EdgeInsets.only(top: 52.0),
                                     child: SizedBox(
-                                      height: MediaQuery.of(context)
-                                              .size
-                                              .height /
-                                          2, // Adjust this value to change the height of the modal
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              2,
                                       width: MediaQuery.of(context).size.width *
-                                          0.8, // Adjust this value to change the width of the modal
+                                          0.8,
                                       child: ListView.builder(
                                         itemCount:
                                             subMovements[selectedExercise!]!
@@ -332,21 +330,50 @@ class _RecordPageState extends State<RecordPage> {
                                             (BuildContext context, int index) {
                                           String value = subMovements[
                                               selectedExercise!]![index];
-                                          return CheckboxListTile(
-                                            title: Text(value),
-                                            value: selectedSubMovements
-                                                .contains(value),
-                                            onChanged: (bool? newValue) {
-                                              setState(() {
-                                                if (newValue == true) {
-                                                  selectedSubMovements
-                                                      .add(value);
-                                                } else {
-                                                  selectedSubMovements
-                                                      .remove(value);
-                                                }
-                                              });
-                                            },
+                                          return Column(
+                                            children: <Widget>[
+                                              CheckboxListTile(
+                                                title: Text(value),
+                                                value: selectedSubMovements
+                                                    .contains(value),
+                                                onChanged: (bool? newValue) {
+                                                  setState(() {
+                                                    if (newValue == true) {
+                                                      selectedSubMovements
+                                                          .add(value);
+                                                    } else {
+                                                      selectedSubMovements
+                                                          .remove(value);
+                                                    }
+                                                  });
+                                                },
+                                              ),
+                                              FutureBuilder<String>(
+                                                future: getImageUrlForMovement(
+                                                    value),
+                                                builder: (BuildContext context,
+                                                    AsyncSnapshot<String>
+                                                        snapshot) {
+                                                  if (snapshot
+                                                          .connectionState ==
+                                                      ConnectionState.waiting) {
+                                                    return const SizedBox
+                                                        .shrink(); // or a loading indicator
+                                                  } else {
+                                                    return snapshot.hasData
+                                                        ? Image.network(
+                                                            snapshot.data!)
+                                                        : const SizedBox(
+                                                            width: 50,
+                                                            height: 50,
+                                                            child: DecoratedBox(
+                                                                decoration: BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey)));
+                                                  }
+                                                },
+                                              ),
+                                            ],
                                           );
                                         },
                                       ),
@@ -424,16 +451,7 @@ class _RecordPageState extends State<RecordPage> {
                             await getSportMovementIds(selectedSubMovements);
                         print("Selected sub-movements: $selectedSubMovements");
 
-                        // Calculate the total calories burned V1
-                        // int totalCaloriesBurned = 0;
-                        // for (int i = 0; i < selectedSubMovements.length; i++) {
-                        //   totalCaloriesBurned += (duration *
-                        //           (caloriesBurnedPredictions[i] ?? 0) /
-                        //           3600)
-                        //       .round();
-                        // }
-
-                        // Calculate the total calories burned V2
+                        // Calculate the total calories burned
                         int totalCaloriesBurned = 0;
                         for (int id in sportMovementIds) {
                           totalCaloriesBurned += (duration *
@@ -470,11 +488,10 @@ class _RecordPageState extends State<RecordPage> {
                               timer = Timer.periodic(const Duration(seconds: 1),
                                   (Timer t) {
                                 if (!isPaused) {
-                                  print('isPaused: $isPaused');
-                                  print('ids: $ids');
-                                  print(
-                                      'caloriesBurnedPredictions: $caloriesBurnedPredictions');
-                                  print('duration: $duration');
+                                  // print('ids: $ids');
+                                  // print(
+                                  //     'caloriesBurnedPredictions: $caloriesBurnedPredictions');
+                                  // print('duration: $duration');
                                   // Calculate the total calories burned
                                   double totalCaloriesBurned = 0;
                                   double caloriesBurnedPerSecond = 0;
@@ -614,3 +631,4 @@ class _RecordPageState extends State<RecordPage> {
     );
   }
 }
+
