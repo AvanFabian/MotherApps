@@ -75,11 +75,12 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                   (record
                       .totalCaloriesBurned); // Use totalCaloriesBurned instead of caloriesPrediction
             }
-            return Column(
-              children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  PaginatedDataTable(
+                    header: const Text('Activity Records'),
+                    rowsPerPage: 5,
                     columns: const <DataColumn>[
                       DataColumn(
                         label: Text('Date'),
@@ -97,67 +98,100 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
                         label: Text('Sport Movement'),
                       ),
                     ],
-                    rows: records
-                        .map((record) => DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(record['date'])),
-                                DataCell(Text('${record['duration']} sec.')),
-                                DataCell(Text(
-                                    '${record['caloriesBurned'].toStringAsFixed(2)} cal.')),
-                                DataCell(Text(record['sportName'])),
-                                DataCell(Text(record['sportMovement'])),
-                              ],
-                            ))
-                        .toList(),
+                    source: _DataSource(records),
                   ),
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columnSpacing: 0,
+                  PaginatedDataTable(
+                    header: Text('Total Records'),
+                    rowsPerPage: 5,
                     columns: <DataColumn>[
                       DataColumn(
-                        label: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: const Text('Date'),
-                        ),
+                        label: Text('Date'),
                       ),
                       DataColumn(
-                        label: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: const Text('Total Duration'),
-                        ),
+                        label: Text('Total Duration'),
                       ),
                       DataColumn(
-                        // New DataColumn for total calories burned
-                        label: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: const Text('Total Calories Burned'),
-                        ),
+                        label: Text('Total Calories Burned'),
                       ),
                     ],
-                    rows: totalDurations.keys
-                        .map((date) => DataRow(
-                              cells: <DataCell>[
-                                DataCell(Text(date)),
-                                DataCell(Text('${totalDurations[date]} sec.')),
-                                DataCell(Text(
-                                    '${totalCaloriesBurned[date]?.toStringAsFixed(2)} cal.')), // Use totalCaloriesBurned instead of caloriesPrediction
-                              ],
-                            ))
-                        .toList(),
-                  ),
-                )
-              ],
+                    source: _TotalDataSource(totalDurations.keys
+                        .map((date) => {
+                              'date': date,
+                              'duration': totalDurations[date],
+                              'caloriesBurned': totalCaloriesBurned[date],
+                            })
+                        .toList()),
+                  )
+                ],
+              ),
             );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
-
           // By default, show a loading spinner.
           return const CircularProgressIndicator();
         },
       ),
     );
   }
+}
+
+class _DataSource extends DataTableSource {
+  final List<Map<String, dynamic>> _records;
+
+  _DataSource(this._records);
+
+  @override
+  DataRow? getRow(int index) {
+    assert(index >= 0);
+    if (index >= _records.length) return null;
+    final record = _records[index];
+    return DataRow(
+      cells: <DataCell>[
+        DataCell(Text(record['date'])),
+        DataCell(Text('${record['duration']} sec.')),
+        DataCell(Text('${record['caloriesBurned'].toStringAsFixed(2)} cal.')),
+        DataCell(Text(record['sportName'])),
+        DataCell(Text(record['sportMovement'])),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _records.length;
+
+  @override
+  int get selectedRowCount => 0;
+}
+
+class _TotalDataSource extends DataTableSource {
+  final List<Map<String, dynamic>> _totals;
+
+  _TotalDataSource(this._totals);
+
+  @override
+  DataRow? getRow(int index) {
+    assert(index >= 0);
+    if (index >= _totals.length) return null;
+    final total = _totals[index];
+    return DataRow(
+      cells: <DataCell>[
+        DataCell(Text(total['date'])),
+        DataCell(Text('${total['duration']} sec.')),
+        DataCell(Text('${total['caloriesBurned'].toStringAsFixed(2)} cal.')),
+      ],
+    );
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => _totals.length;
+
+  @override
+  int get selectedRowCount => 0;
 }
