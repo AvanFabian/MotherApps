@@ -332,20 +332,18 @@ class _RecordPageState extends State<RecordPage> {
                                               selectedExercise!]![index];
                                           return Column(
                                             children: <Widget>[
-                                              CheckboxListTile(
-                                                title: Text(value),
-                                                value: selectedSubMovements
+                                              _MyCheckboxListTile(
+                                                value: value,
+                                                isChecked: selectedSubMovements
                                                     .contains(value),
                                                 onChanged: (bool? newValue) {
-                                                  setState(() {
-                                                    if (newValue == true) {
-                                                      selectedSubMovements
-                                                          .add(value);
-                                                    } else {
-                                                      selectedSubMovements
-                                                          .remove(value);
-                                                    }
-                                                  });
+                                                  if (newValue == true) {
+                                                    selectedSubMovements
+                                                        .add(value);
+                                                  } else {
+                                                    selectedSubMovements
+                                                        .remove(value);
+                                                  }
                                                 },
                                               ),
                                               FutureBuilder<String>(
@@ -364,8 +362,8 @@ class _RecordPageState extends State<RecordPage> {
                                                         ? Image.network(
                                                             snapshot.data!)
                                                         : const SizedBox(
-                                                            width: 50,
-                                                            height: 50,
+                                                            width: 100,
+                                                            height: 75,
                                                             child: DecoratedBox(
                                                                 decoration: BoxDecoration(
                                                                     color: Colors
@@ -632,3 +630,72 @@ class _RecordPageState extends State<RecordPage> {
   }
 }
 
+class _MyCheckboxListTile extends StatefulWidget {
+  final String value;
+  final bool isChecked;
+  final ValueChanged<bool?> onChanged;
+
+  _MyCheckboxListTile({
+    required this.value,
+    required this.isChecked,
+    required this.onChanged,
+  });
+
+  @override
+  _MyCheckboxListTileState createState() => _MyCheckboxListTileState(isChecked: isChecked);
+}
+
+class _MyCheckboxListTileState extends State<_MyCheckboxListTile> {
+  bool isChecked;
+
+  _MyCheckboxListTileState({required this.isChecked});
+
+  @override
+  Widget build(BuildContext context) {
+    return CheckboxListTile(
+      title: Text(widget.value),
+      value: isChecked,
+      onChanged: (bool? newValue) {
+        setState(() {
+          isChecked = newValue!;
+        });
+        widget.onChanged(newValue);
+      },
+    );
+  }
+}
+
+// class MyCheckboxListTile extends StatefulWidget {
+//   final String value;
+//   final bool isChecked;
+//   final ValueChanged<bool?> onChanged;
+
+//   const MyCheckboxListTile({super.key, 
+//     required this.value,
+//     required this.isChecked,
+//     required this.onChanged,
+//   });
+
+//   @override
+//   _MyCheckboxListTileState createState() => _MyCheckboxListTileState(isChecked: isChecked);
+// }
+
+// class _MyCheckboxListTileState extends State<MyCheckboxListTile> {
+//   bool isChecked;
+
+//   _MyCheckboxListTileState({required this.isChecked});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return CheckboxListTile(
+//       title: Text(widget.value),
+//       value: isChecked,
+//       onChanged: (bool? newValue) {
+//         setState(() {
+//           isChecked = newValue!;
+//         });
+//         widget.onChanged(newValue);
+//       },
+//     );
+//   }
+// }
