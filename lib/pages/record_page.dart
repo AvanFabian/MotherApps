@@ -24,9 +24,12 @@ class _RecordPageState extends State<RecordPage> {
   Timer? timer;
   int duration = 0;
   bool isPaused = false;
+  int totalDuration = 0;
 
-  late StreamController<int> _streamController;
-  late Stream<int> _stream;
+  // late StreamController<int> _streamController;
+  StreamController<double> _streamController = StreamController<double>();
+  // late Stream<int> _stream;
+  late Stream<double> _stream;
   late Map<int, int> caloriesBurnedPredictions = {};
 
   @override
@@ -35,7 +38,7 @@ class _RecordPageState extends State<RecordPage> {
     loadExercisesAndMovements();
 
     _streamController =
-        StreamController<int>.broadcast(); // Use a broadcast stream
+        StreamController<double>.broadcast(); // Use a broadcast stream
     _stream = _streamController.stream;
 
     _stream.listen((totalCaloriesBurned) {
@@ -75,9 +78,7 @@ class _RecordPageState extends State<RecordPage> {
             child: GestureDetector(
               onTap: () {
                 Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const Layout()), // Replace HomePage() with your actual homepage widget
+                  MaterialPageRoute(builder: (context) => const Layout()),
                   (route) => false,
                 );
               },
@@ -102,7 +103,7 @@ class _RecordPageState extends State<RecordPage> {
                 style: const TextStyle(
                   color: signatureTextColor,
                   fontSize: 20.0,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
               onPressed: () {
@@ -182,7 +183,11 @@ class _RecordPageState extends State<RecordPage> {
               // settings icon
               icon: const Icon(Icons.refresh, size: 30.0),
               color: Colors.black,
-              onPressed: () {},
+              onPressed: () {
+                setState(() {
+                  // This will rebuild your widget
+                });
+              },
             ),
           ),
         ],
@@ -194,11 +199,11 @@ class _RecordPageState extends State<RecordPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                const Padding(
-                  padding: EdgeInsets.only(left: 16.0, top: 24.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, top: 24.0),
                   child: Column(
                     children: [
-                      Text(
+                      const Text(
                         'Total Time',
                         style: TextStyle(
                           fontSize: 20.0,
@@ -206,8 +211,12 @@ class _RecordPageState extends State<RecordPage> {
                         ),
                       ),
                       Text(
-                        '00:00:00',
-                        style: TextStyle(
+                        formatDuration(
+                          Duration(
+                              seconds:
+                                  totalDuration), // Use totalDuration instead of duration
+                        ),
+                        style: const TextStyle(
                           fontSize: 20.0,
                           fontWeight: FontWeight.w500,
                         ),
@@ -227,14 +236,14 @@ class _RecordPageState extends State<RecordPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      StreamBuilder<int>(
+                      StreamBuilder<double>(
                         stream: _stream,
-                        initialData: 0,
+                        initialData: 0.0,
                         builder: (BuildContext context,
-                            AsyncSnapshot<int> snapshot) {
+                            AsyncSnapshot<double> snapshot) {
                           if (snapshot.hasData) {
                             return Text(
-                              '${snapshot.data} kcal', // Display the total calories burned
+                              '${snapshot.data?.toStringAsFixed(2)} kcal', // Display the total calories burned
                               style: const TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w500,
@@ -418,6 +427,7 @@ class _RecordPageState extends State<RecordPage> {
                   onPressed: () async {
                     if (selectedExercise == null ||
                         selectedSubMovements.isEmpty) {
+                      // DISINI
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -438,6 +448,7 @@ class _RecordPageState extends State<RecordPage> {
                       );
                     } else {
                       if (isPressed) {
+                        totalDuration = duration; // Store the total duration
                         timer?.cancel(); // Stop the timer
                         // Get the user ID
                         int userId = await getUserId();
@@ -450,14 +461,13 @@ class _RecordPageState extends State<RecordPage> {
                         print("Selected sub-movements: $selectedSubMovements");
 
                         // Calculate the total calories burned
-                        int totalCaloriesBurned = 0;
+                        double totalCaloriesBurned = 0.0;
                         for (int id in sportMovementIds) {
-                          totalCaloriesBurned += (duration *
-                                  (caloriesBurnedPredictions[id] ?? 0) /
-                                  3600)
-                              .round();
+                          totalCaloriesBurned += duration *
+                              (caloriesBurnedPredictions[id] ?? 0) /
+                              3600;
                         }
-
+                        print("Total calories burned: $totalCaloriesBurned");
                         // Make a POST request to store the duration and total calories burned in the database
                         var response = await postActivityRecord({
                           'user_id': userId.toString(),
@@ -465,8 +475,9 @@ class _RecordPageState extends State<RecordPage> {
                           'sport_movement_ids': sportMovementIds.join(','),
                           'duration': duration.toString(),
                           'total_calories_burned':
-                              totalCaloriesBurned.toString(),
+                              totalCaloriesBurned.toStringAsFixed(2),
                         });
+
                         // Check the status code of the response
                         if (response.statusCode == 201) {
                           print('Duration successfully stored in the database');
@@ -476,9 +487,7 @@ class _RecordPageState extends State<RecordPage> {
                         }
                         duration = 0; // Reset the duration
                       } else {
-                        // Fetch the IDs of the selected sub movements
                         getSportMovementIds(selectedSubMovements).then((ids) {
-                          // Fetch the calories burned predictions and start the timer when the start button is pressed
                           getCaloriesBurnedPredictions(ids).then((predictions) {
                             caloriesBurnedPredictions = predictions;
 
@@ -486,16 +495,11 @@ class _RecordPageState extends State<RecordPage> {
                               timer = Timer.periodic(const Duration(seconds: 1),
                                   (Timer t) {
                                 if (!isPaused) {
-                                  // print('ids: $ids');
-                                  // print(
-                                  //     'caloriesBurnedPredictions: $caloriesBurnedPredictions');
-                                  // print('duration: $duration');
                                   // Calculate the total calories burned
-                                  double totalCaloriesBurned = 0;
-                                  double caloriesBurnedPerSecond = 0;
+                                  double totalCaloriesBurned = 0.0;
+                                  double caloriesBurnedPerSecond = 0.0;
 
                                   for (int i = 0; i < ids.length; i++) {
-                                    // Use the id to access the corresponding prediction
                                     totalCaloriesBurned +=
                                         caloriesBurnedPredictions[ids[i]] ?? 0;
                                   }
@@ -507,8 +511,7 @@ class _RecordPageState extends State<RecordPage> {
                                   totalCaloriesBurned =
                                       caloriesBurnedPerSecond * duration;
                                   // Add the total calories burned to the stream
-                                  _streamController
-                                      .add(totalCaloriesBurned.round());
+                                  _streamController.add(totalCaloriesBurned);
                                   // Increase the duration
                                   setState(() {
                                     duration++;
@@ -565,20 +568,40 @@ class _RecordPageState extends State<RecordPage> {
                     shape: const CircleBorder(), // set the shape to circle
                   ),
                   onPressed: () {
-                    setState(() {
-                      isPaused =
-                          !isPaused; // Toggle the state of the pause button
-                      if (isPaused) {
-                        timer?.cancel(); // Stop the timer
-                      } else {
-                        timer =
-                            Timer.periodic(const Duration(seconds: 1), (timer) {
-                          setState(() {
-                            duration++; // Increase the duration every second
+                    if (selectedExercise == null ||
+                        selectedSubMovements.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Warning'),
+                          content: const Text(
+                              'Please select a sport name and sport movement before pausing.'),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      setState(() {
+                        isPaused =
+                            !isPaused; // Toggle the state of the pause button
+                        if (isPaused) {
+                          timer?.cancel(); // Stop the timer
+                        } else {
+                          timer = Timer.periodic(const Duration(seconds: 1),
+                              (timer) {
+                            setState(() {
+                              duration++; // Increase the duration every second
+                            });
                           });
-                        });
-                      }
-                    });
+                        }
+                      });
+                    }
                   },
                   child:
                       const Icon(Icons.pause, size: 40.0, color: Colors.black),
@@ -608,7 +631,6 @@ class _RecordPageState extends State<RecordPage> {
                             } else if (snapshot.hasError) {
                               return Text('Error: ${snapshot.error}');
                             }
-                            // By default, show a loading spinner.
                             return const CircularProgressIndicator();
                           },
                         ),
@@ -635,14 +657,15 @@ class _MyCheckboxListTile extends StatefulWidget {
   final bool isChecked;
   final ValueChanged<bool?> onChanged;
 
-  _MyCheckboxListTile({
+  const _MyCheckboxListTile({
     required this.value,
     required this.isChecked,
     required this.onChanged,
   });
 
   @override
-  _MyCheckboxListTileState createState() => _MyCheckboxListTileState(isChecked: isChecked);
+  _MyCheckboxListTileState createState() =>
+      _MyCheckboxListTileState(isChecked: isChecked);
 }
 
 class _MyCheckboxListTileState extends State<_MyCheckboxListTile> {
@@ -664,38 +687,3 @@ class _MyCheckboxListTileState extends State<_MyCheckboxListTile> {
     );
   }
 }
-
-// class MyCheckboxListTile extends StatefulWidget {
-//   final String value;
-//   final bool isChecked;
-//   final ValueChanged<bool?> onChanged;
-
-//   const MyCheckboxListTile({super.key, 
-//     required this.value,
-//     required this.isChecked,
-//     required this.onChanged,
-//   });
-
-//   @override
-//   _MyCheckboxListTileState createState() => _MyCheckboxListTileState(isChecked: isChecked);
-// }
-
-// class _MyCheckboxListTileState extends State<MyCheckboxListTile> {
-//   bool isChecked;
-
-//   _MyCheckboxListTileState({required this.isChecked});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return CheckboxListTile(
-//       title: Text(widget.value),
-//       value: isChecked,
-//       onChanged: (bool? newValue) {
-//         setState(() {
-//           isChecked = newValue!;
-//         });
-//         widget.onChanged(newValue);
-//       },
-//     );
-//   }
-// }

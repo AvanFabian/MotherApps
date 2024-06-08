@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 
 const signatureAppColor = Color.fromARGB(255, 253, 232, 232);
+const secondaryAppColor = Color.fromARGB(255, 66, 55, 44);
+const thirdAppColor = Color.fromARGB(255, 248, 139, 139);
 const signatureTextColor = Color.fromARGB(255, 53, 42, 42);
 const kPrimaryColor = Color(0xFF6F35A5);
 const kPrimaryLightColor = Color(0xFFF1E6FF);
@@ -28,29 +30,40 @@ const somethingWentWrong = 'Something went wrong, try again!';
 const String GOOGLE_MAPS_API_KEY = "API_KEY_HERE";
 
 // --- input decoration
-InputDecoration kInputDecoration(String label) {
+InputDecoration kInputDecoration(String hint, {Color bgColor = Colors.white, Color hintColor = Colors.grey}) {
   return InputDecoration(
-      labelText: label,
-      contentPadding: const EdgeInsets.all(10),
-      border: const OutlineInputBorder(
-          borderSide: BorderSide(width: 1, color: Colors.black)));
+    hintText: hint,
+    hintStyle: TextStyle(color: hintColor), // Change the color of the hint text
+    filled: true,
+    fillColor: bgColor, // Change the background color
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10.0),
+      borderSide: BorderSide.none,
+    ),
+  );
 }
 
 // button
-TextButton kTextButton(String label, Function onPressed) {
+TextButton kTextButton(String label, Function onPressed, {Color? backgroundColor}) {
   return TextButton(
     style: ButtonStyle(
-        backgroundColor:
-            MaterialStateColor.resolveWith((states) => signatureAppColor),
-        padding: MaterialStateProperty.resolveWith(
+        backgroundColor: WidgetStateProperty.resolveWith(
+            (states) => backgroundColor ?? signatureAppColor),
+        padding: WidgetStateProperty.resolveWith(
             (states) => const EdgeInsets.symmetric(vertical: 10))),
     onPressed: () => onPressed(),
     child: Text(
       label,
-      style:
-          const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
     ),
   );
+}
+
+// format duration
+String formatDuration(Duration duration) {
+  final twoDigitMinutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final twoDigitSeconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  return "${duration.inHours}:$twoDigitMinutes:$twoDigitSeconds";
 }
 
 // loginRegisterHint

@@ -38,17 +38,6 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         centerTitle: true, // This centers the title
         backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
-        actions: <Widget>[
-          IconButton(
-            // settings icon
-            icon: const Icon(Icons.settings, size: 30.0),
-            color: Colors.black,
-            onPressed: () {
-              // Pop the current route off the navigation stack
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
       body: FutureBuilder<List<ActivityRecord>>(
         future: futureActivityRecords,

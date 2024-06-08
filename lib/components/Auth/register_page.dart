@@ -52,7 +52,10 @@ class _RegisterPageState extends State<RegisterPage> {
     await pref.setInt('userId', user.id ?? 0);
     if (mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const Layout(initialPage: 4,)),
+          MaterialPageRoute(
+              builder: (context) => const Layout(
+                    initialPage: 4,
+                  )),
           (route) => false);
     }
   }
@@ -70,39 +73,50 @@ class _RegisterPageState extends State<RegisterPage> {
           padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
           children: [
             TextFormField(
-                controller: nameController,
-                validator: (val) => val!.isEmpty ? 'Invalid name' : null,
-                decoration: kInputDecoration('Name')),
+              controller: nameController,
+              validator: (val) => val!.isEmpty ? 'Invalid name' : null,
+              decoration: kInputDecoration('Name',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
-                controller: emailController,
-                keyboardType: TextInputType.emailAddress,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
-                decoration: kInputDecoration('Email')),
+              controller: emailController,
+              keyboardType: TextInputType.emailAddress,
+              validator: (val) => val!.isEmpty ? 'Invalid email address' : null,
+              decoration: kInputDecoration('Email',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
-                controller: passwordController,
-                obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
-                decoration: kInputDecoration('Password')),
+              controller: passwordController,
+              obscureText: true,
+              validator: (val) =>
+                  val!.length < 6 ? 'Required at least 6 chars' : null,
+              decoration: kInputDecoration('Password',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
               height: 20,
             ),
             TextFormField(
-                controller: passwordConfirmController,
-                obscureText: true,
-                validator: (val) => val != passwordController.text
-                    ? 'Confirm password does not match'
-                    : null,
-                decoration: kInputDecoration('Confirm password')),
+              controller: passwordConfirmController,
+              obscureText: true,
+              validator: (val) => val != passwordController.text
+                  ? 'Confirm password does not match'
+                  : null,
+              decoration: kInputDecoration('Confirm password',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
             loading
                 ? const Center(child: CircularProgressIndicator())
@@ -113,6 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         _registerUser(); // Call _registerUser directly
                       }
                     },
+                    backgroundColor: secondaryAppColor,
                   ),
             const SizedBox(
               height: 20,

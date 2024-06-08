@@ -61,35 +61,44 @@ class _LoginPageState extends State<LoginPage> {
           padding: const EdgeInsets.all(32),
           children: [
             TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: txtEmail,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
-                decoration: kInputDecoration('Email')),
+              keyboardType: TextInputType.emailAddress,
+              controller: txtEmail,
+              validator: (val) => val!.isEmpty ? 'Invalid email address' : null,
+              decoration: kInputDecoration('Email',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
               height: 10,
             ),
             TextFormField(
-                controller: txtPassword,
-                obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
-                decoration: kInputDecoration('Password')),
+              controller: txtPassword,
+              obscureText: true,
+              validator: (val) =>
+                  val!.length < 6 ? 'Required at least 6 chars' : null,
+              decoration: kInputDecoration('Password',
+                  bgColor: secondaryAppColor, hintColor: Colors.white),
+              style: const TextStyle(color: Colors.white),
+            ),
             const SizedBox(
-              height: 10,
+              height: 40,
             ),
             loading
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : kTextButton('Login', () {
-                    if (formkey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                        _loginUser();
-                      });
-                    }
-                  }),
+                : kTextButton(
+                    'Login',
+                    () {
+                      if (formkey.currentState!.validate()) {
+                        setState(() {
+                          loading = true;
+                          _loginUser();
+                        });
+                      }
+                    },
+                    backgroundColor: secondaryAppColor,
+                  ),
             const SizedBox(
               height: 10,
             ),
