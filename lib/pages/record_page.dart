@@ -59,6 +59,31 @@ class _RecordPageState extends State<RecordPage> {
     });
   }
 
+  void startTimer(List<int> ids) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      if (!isPaused) {
+        // Calculate the total calories burned
+        double totalCaloriesBurned = 0.0;
+        double caloriesBurnedPerSecond = 0.0;
+
+        for (int i = 0; i < ids.length; i++) {
+          totalCaloriesBurned += caloriesBurnedPredictions[ids[i]] ?? 0;
+        }
+
+        // Calculate the calories burned per second
+        caloriesBurnedPerSecond = totalCaloriesBurned / 3600;
+        // Increase the total calories burned every second
+        totalCaloriesBurned = caloriesBurnedPerSecond * duration;
+        // Add the total calories burned to the stream
+        _streamController.add(totalCaloriesBurned);
+        // Increase the duration
+        setState(() {
+          duration++;
+        });
+      }
+    });
+  }
+
   void loadExercisesAndMovements() async {
     var data = await fetchExercisesAndMovements();
     setState(() {
@@ -427,7 +452,6 @@ class _RecordPageState extends State<RecordPage> {
                   onPressed: () async {
                     if (selectedExercise == null ||
                         selectedSubMovements.isEmpty) {
-                      // DISINI
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
@@ -492,32 +516,7 @@ class _RecordPageState extends State<RecordPage> {
                             caloriesBurnedPredictions = predictions;
 
                             if (caloriesBurnedPredictions.isNotEmpty) {
-                              timer = Timer.periodic(const Duration(seconds: 1),
-                                  (Timer t) {
-                                if (!isPaused) {
-                                  // Calculate the total calories burned
-                                  double totalCaloriesBurned = 0.0;
-                                  double caloriesBurnedPerSecond = 0.0;
-
-                                  for (int i = 0; i < ids.length; i++) {
-                                    totalCaloriesBurned +=
-                                        caloriesBurnedPredictions[ids[i]] ?? 0;
-                                  }
-
-                                  // Calculate the calories burned per second
-                                  caloriesBurnedPerSecond =
-                                      totalCaloriesBurned / 3600;
-                                  // Increase the total calories burned every second
-                                  totalCaloriesBurned =
-                                      caloriesBurnedPerSecond * duration;
-                                  // Add the total calories burned to the stream
-                                  _streamController.add(totalCaloriesBurned);
-                                  // Increase the duration
-                                  setState(() {
-                                    duration++;
-                                  });
-                                }
-                              });
+                              startTimer(ids); // Start the timer
                             } else {
                               print('No calories burned predictions available');
                             }
@@ -564,18 +563,17 @@ class _RecordPageState extends State<RecordPage> {
                 width: 70.0,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(0), // remove extra space
-                    shape: const CircleBorder(), // set the shape to circle
+                    padding: const EdgeInsets.all(0),
+                    shape: const CircleBorder(),
                   ),
                   onPressed: () {
-                    if (selectedExercise == null ||
-                        selectedSubMovements.isEmpty) {
+                    if (!isPressed) {
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(
                           title: const Text('Warning'),
                           content: const Text(
-                              'Please select a sport name and sport movement before pausing.'),
+                              'Cannot Pause the Timer without Starting the Activity First.'),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('OK'),
@@ -593,11 +591,10 @@ class _RecordPageState extends State<RecordPage> {
                         if (isPaused) {
                           timer?.cancel(); // Stop the timer
                         } else {
-                          timer = Timer.periodic(const Duration(seconds: 1),
-                              (timer) {
-                            setState(() {
-                              duration++; // Increase the duration every second
-                            });
+                          getSportMovementIds(selectedSubMovements).then((ids) {
+                            startTimer(ids); // Start the timer
+                          }).catchError((e) {
+                            print('Failed to load sport movement IDs: $e');
                           });
                         }
                       });
