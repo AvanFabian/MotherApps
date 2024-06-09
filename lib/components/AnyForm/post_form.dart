@@ -146,7 +146,7 @@ class _PostFormState extends State<PostForm> {
                             icon: const Icon(Icons.image,
                                 size: 50, color: Colors.black38),
                             onPressed: () {
-                              getImage();
+                              // getImage();
                             },
                           ),
                           const Text('Add photos / images'),
