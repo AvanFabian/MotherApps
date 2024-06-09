@@ -99,7 +99,7 @@ class _PostPageState extends State<PostPage> {
     return _loading
         ? const Center(child: CircularProgressIndicator())
       : _postList.isEmpty
-          ? Center(child: Text('No Post Available Yet.'))
+          ? const Center(child: Text('No Post Available Yet.'))
           : RefreshIndicator(
             onRefresh: () {
               return retrievePosts();
