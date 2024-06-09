@@ -1,7 +1,9 @@
+import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/pages/post_page.dart';
 // import 'package:monitoring_hamil/components/profile.dart';
 // import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 // import '../components/Auth/login_page.dart';
 
@@ -33,7 +35,15 @@ class _HomePageState extends State<HomePage> {
               // account icon
               icon: const Icon(Icons.account_circle, size: 35.0),
               color: Colors.black,
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const Layout(
+                        initialPage: 4), 
+                  ),
+                );
+              },
             ),
           ],
         ),

@@ -57,7 +57,30 @@ class _LayoutState extends State<Layout> {
               ? null
               : BottomNavigationBar(
                   currentIndex: _selectedIndex,
-                  onTap: _navigateBottomBar,
+                  onTap: (index) {
+                    if (index == 1) {
+                      // Check if the user is trying to navigate to the Routes page
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Alert'),
+                            content: const Text('This Page is still under development'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    } else {
+                      _navigateBottomBar(index);
+                    }
+                  },
                   // Selected item color
                   selectedItemColor: Colors.black87,
                   unselectedItemColor: Colors.black54,
@@ -65,40 +88,33 @@ class _LayoutState extends State<Layout> {
                   showUnselectedLabels:
                       true, // hide labels for unselected items
                   selectedLabelStyle: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500),
+                      fontSize: 15.0, fontWeight: FontWeight.w500),
                   unselectedLabelStyle: const TextStyle(
-                      fontSize: 15.0,
-                      fontWeight: FontWeight.w500),
+                      fontSize: 15.0, fontWeight: FontWeight.w500),
                   backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                   items: const <BottomNavigationBarItem>[
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.home,
-                          size: 28.0),
+                      icon: Icon(Icons.home, size: 28.0),
                       label: 'Home',
                     ),
                     BottomNavigationBarItem(
                       // maps icon
-                      icon: Icon(Icons.map,
-                          size: 28.0),
+                      icon: Icon(Icons.map, size: 28.0),
                       label: 'Routes',
                     ),
                     // Records Activity
                     BottomNavigationBarItem(
                       // record circle
-                      icon: Icon(Icons.circle,
-                          size: 28.0),
+                      icon: Icon(Icons.circle, size: 28.0),
                       label: 'Record',
                     ),
                     BottomNavigationBarItem(
                       // trophy icon
-                      icon: Icon(Icons.emoji_events,
-                          size: 28.0),
+                      icon: Icon(Icons.emoji_events, size: 28.0),
                       label: 'Rank',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person,
-                          size: 28.0),
+                      icon: Icon(Icons.person, size: 28.0),
                       label: 'Profile',
                     ),
                   ],

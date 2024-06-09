@@ -119,9 +119,6 @@ class _PostFormState extends State<PostForm> {
             )
           : ListView(
               children: [
-                // widget.post != null
-                //     ? const SizedBox()
-                //     :
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: DottedBorder(

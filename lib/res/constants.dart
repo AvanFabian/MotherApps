@@ -13,13 +13,13 @@ const double defaultPadding = 16.0;
 
 // ----- API URLS -----
 const baseURL = 'http://10.0.2.2:8000/api';
-// const baseURL = 'http://192.168.1.7:8000/api';
-const loginURL = '$baseURL/login';
-const registerURL = '$baseURL/register';
-const logoutURL = '$baseURL/logout';
-const userURL = '$baseURL/user';
-const postsURL = '$baseURL/posts';
-const commentsURL = '$baseURL/comments';
+const prodURL = 'https://api.motherserver.site/api';
+const loginURL = '$prodURL/login';
+const registerURL = '$prodURL/register';
+const logoutURL = '$prodURL/logout';
+const userURL = '$prodURL/user';
+const postsURL = '$prodURL/posts';
+const commentsURL = '$prodURL/comments';
 
 // ----- Errors -----
 const serverError = 'Server error';

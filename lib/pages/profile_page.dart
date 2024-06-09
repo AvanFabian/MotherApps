@@ -93,19 +93,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             );
                           },
                           style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
+                            shape: WidgetStateProperty.all<
                                 RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     24.0), // Adjust this to make the border less rounded
                               ),
                             ),
-                            foregroundColor: MaterialStateProperty.all<Color>(
+                            foregroundColor: WidgetStateProperty.all<Color>(
                                 Colors
                                     .black), // This makes the text color black
-                            backgroundColor: MaterialStateProperty.all<Color>(
+                            backgroundColor: WidgetStateProperty.all<Color>(
                                 signatureAppColor),
-                            padding: MaterialStateProperty.all<EdgeInsets>(
+                            padding: WidgetStateProperty.all<EdgeInsets>(
                                 const EdgeInsets.only(
                                     left: 44, right: 44, top: 16, bottom: 16)),
                           ),

@@ -44,7 +44,15 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data!.isEmpty) {
-              return const Text("No Recent Activity Yet.");
+              return const Center(
+                child: Text(
+                  "No Recent Activity Yet.",
+                  style: TextStyle(
+                    fontSize: 22.0, // Adjust the size as needed
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
             }
             // Create a list of records and calculate total duration and total calories burned for each day
             List<Map<String, dynamic>> records = [];
