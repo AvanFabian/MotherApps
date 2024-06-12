@@ -1,11 +1,7 @@
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/pages/post_page.dart';
-// import 'package:monitoring_hamil/components/profile.dart';
-// import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-// import '../components/Auth/login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

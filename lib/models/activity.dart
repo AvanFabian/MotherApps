@@ -69,7 +69,7 @@ class ActivityRecord {
       sportActivityId: json['sport_activity_id'],
       sportName: json['sport_name'],
       sportMovement: json['sport_movement'] as String,
-      caloriesPrediction: json['calories_prediction'] != null ? json['calories_prediction'].toDouble() : null,  // This can be null according to your server response
+      caloriesPrediction: json['calories_prediction']?.toDouble(),  // This can be null according to your server response
       totalCaloriesBurned: json['total_calories_burned'].toDouble(),  // New field for total calories burned
       duration: json['duration'],
       distance: json['distance'],

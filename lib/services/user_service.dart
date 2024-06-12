@@ -8,6 +8,8 @@ import 'package:monitoring_hamil/Models/api_response.dart';
 import 'package:monitoring_hamil/Models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:monitoring_hamil/services/activity_service.dart';
+import 'package:monitoring_hamil/Models/activity.dart';
 
 // login
 Future<ApiResponse> login(String email, String password) async {
@@ -18,12 +20,25 @@ Future<ApiResponse> login(String email, String password) async {
         body: {'email': email, 'password': password});
 
     // debug
-    print(response.body);
+    print("Login Response user_service: ${response.body}");
 
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
+      // case 200:
+      //   var responseBody = jsonDecode(response.body);
+      //   if (responseBody['user'] is Map<String, dynamic>) {
+      //     print('User object: ${responseBody['user']}');
+      //     try {
+      //       apiResponse.data = User.fromJson(responseBody['user']);
+      //     } catch (e) {
+      //       print('Error parsing user: $e');
+      //     }
+      //   } else {
+      //     print('Unexpected format for user: ${responseBody['user']}');
+      //   }
+      //   break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
@@ -37,7 +52,6 @@ Future<ApiResponse> login(String email, String password) async {
         break;
     }
   } catch (e) {
-    
     apiResponse.error = serverError;
   }
 
@@ -57,11 +71,15 @@ Future<ApiResponse> register(String name, String email, String password) async {
       'password_confirmation': password
     });
 
-
     switch (response.statusCode) {
       case 200:
         apiResponse.data = User.fromJson(jsonDecode(response.body));
         break;
+      // case 200:
+      //   var responseBody = jsonDecode(response.body);
+      //   apiResponse.data = User.fromJson(responseBody['user']);
+      //   apiResponse.token = responseBody['token'];
+      //   break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
@@ -76,7 +94,7 @@ Future<ApiResponse> register(String name, String email, String password) async {
   return apiResponse;
 }
 
-// User
+// Fetch single user detail
 Future<ApiResponse> getUserDetail() async {
   ApiResponse apiResponse = ApiResponse();
   try {
@@ -85,10 +103,17 @@ Future<ApiResponse> getUserDetail() async {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
     });
-  
+
+    print("User Detail Response: ${response.body}");
+
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
+        var responseBody = jsonDecode(response.body);
+        if (responseBody['user'] is Map<String, dynamic>) {
+          apiResponse.data = User.fromJson(responseBody['user']);
+        } else {
+          print('Unexpected format for user: ${responseBody['user']}');
+        }
         break;
       case 401:
         apiResponse.error = unauthorized;
@@ -101,6 +126,46 @@ Future<ApiResponse> getUserDetail() async {
     apiResponse.error = serverError;
   }
   return apiResponse;
+}
+
+// Fetch all users details
+Future<List<User>> getUsersDetails() async {
+  List<User> users = [];
+  try {
+    String token = await getToken();
+    final response = await http.get(Uri.parse(allUsersURL), headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    });
+
+    if (response.statusCode == 200) {
+      var jsonData = jsonDecode(response.body);
+      var usersJson = jsonData['users']; // Access the 'users' key
+      for (var userJson in usersJson) {
+        User user = User.fromJson(userJson);
+        if (user.id != null) {
+          List<ActivityRecord> activityRecords =
+              (await getActivityRecords(user.id!)).cast<ActivityRecord>();
+          int totalPoints = activityRecords.fold(
+              0,
+              (sum, record) =>
+                  sum +
+                  (record.duration) +
+                  (record.totalCaloriesBurned.toInt()));
+          user.totalPoints = totalPoints;
+        }
+        users.add(user);
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception(unauthorized);
+    } else {
+      throw Exception(somethingWentWrong);
+    }
+  } catch (e) {
+    print('Failed to fetch user details: $e');
+    throw Exception('Failed to fetch user details');
+  }
+  return users;
 }
 
 // Update user
