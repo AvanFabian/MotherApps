@@ -21,6 +21,7 @@ class _ActivityDetailPageState extends State<ActivityDetailPage> {
   @override
   void initState() {
     super.initState();
+    // print('User ID: ${widget.userId}');
     futureActivityRecords = getActivityRecords(widget.userId);
   }
 

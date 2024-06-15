@@ -2,13 +2,13 @@ import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import 'package:monitoring_hamil/Models/api_response.dart';
-import 'package:monitoring_hamil/Models/post.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/models/post.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import '../Auth/login_page.dart';
+import '../auth/login_page.dart';
 
 class PostForm extends StatefulWidget {
   final Post? post;

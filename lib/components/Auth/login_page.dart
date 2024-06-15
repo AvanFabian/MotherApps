@@ -1,6 +1,6 @@
 import 'register_page.dart';
-import 'package:monitoring_hamil/Models/api_response.dart';
-import 'package:monitoring_hamil/Models/user.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _loginUser() async {
     ApiResponse response = await login(txtEmail.text, txtPassword.text);
-    print('Login Response: ${response.data}');
+    // print('Login Response: ${response.data}');
     if (response.error == null) {
       _saveAndRedirectToHome(response.data as User);
     } else {

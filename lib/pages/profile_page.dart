@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/Models/api_response.dart';
-import 'package:monitoring_hamil/Models/user.dart';
-import 'package:monitoring_hamil/components/AnyForm/edit_profile_form.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/models/user.dart';
+import 'package:monitoring_hamil/components/any_form/edit_profile_form.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 
@@ -67,12 +67,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: (user.image == null ||
-                                  user.image!.isEmpty)
-                              ? const AssetImage(
-                                      'assets/images/default_avatar.png')
-                                  as ImageProvider 
-                              : NetworkImage(user.image!),
+                          backgroundImage:
+                              (user.image == null || user.image!.isEmpty)
+                                  ? const AssetImage(
+                                          'assets/images/default_avatar.png')
+                                      as ImageProvider
+                                  : NetworkImage(user.image!),
                         ),
                         const SizedBox(height: 10),
                         Text(
@@ -93,8 +93,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             );
                           },
                           style: ButtonStyle(
-                            shape: WidgetStateProperty.all<
-                                RoundedRectangleBorder>(
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(
                                     24.0), // Adjust this to make the border less rounded

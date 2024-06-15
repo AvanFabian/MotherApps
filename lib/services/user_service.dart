@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/welcome_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import 'package:monitoring_hamil/Models/api_response.dart';
-import 'package:monitoring_hamil/Models/user.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
-import 'package:monitoring_hamil/Models/activity.dart';
+import 'package:monitoring_hamil/models/activity.dart';
 
 // login
 Future<ApiResponse> login(String email, String password) async {
@@ -23,22 +23,18 @@ Future<ApiResponse> login(String email, String password) async {
     print("Login Response user_service: ${response.body}");
 
     switch (response.statusCode) {
-      case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
-        break;
       // case 200:
-      //   var responseBody = jsonDecode(response.body);
-      //   if (responseBody['user'] is Map<String, dynamic>) {
-      //     print('User object: ${responseBody['user']}');
-      //     try {
-      //       apiResponse.data = User.fromJson(responseBody['user']);
-      //     } catch (e) {
-      //       print('Error parsing user: $e');
-      //     }
-      //   } else {
-      //     print('Unexpected format for user: ${responseBody['user']}');
-      //   }
+      //   apiResponse.data = User.fromJson(jsonDecode(response.body));
       //   break;
+      case 200:
+        User user = User.fromJson(jsonDecode(response.body));
+        apiResponse.data = user;
+        if (user.id != null) {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setInt('userId', user.id!);
+          print('User ID after setting: ${pref.getInt('userId')}');
+        }
+        break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
@@ -73,13 +69,14 @@ Future<ApiResponse> register(String name, String email, String password) async {
 
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = User.fromJson(jsonDecode(response.body));
+        User user = User.fromJson(jsonDecode(response.body));
+        apiResponse.data = user;
+        if (user.id != null) {
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.setInt('userId', user.id!);
+          print('User ID after setting: ${pref.getInt('userId')}');
+        }
         break;
-      // case 200:
-      //   var responseBody = jsonDecode(response.body);
-      //   apiResponse.data = User.fromJson(responseBody['user']);
-      //   apiResponse.token = responseBody['token'];
-      //   break;
       case 422:
         final errors = jsonDecode(response.body)['errors'];
         apiResponse.error = errors[errors.keys.elementAt(0)][0];
@@ -145,7 +142,7 @@ Future<List<User>> getUsersDetails() async {
         User user = User.fromJson(userJson);
         if (user.id != null) {
           List<ActivityRecord> activityRecords =
-              (await getActivityRecords(user.id!)).cast<ActivityRecord>();
+              (await getActivityRecords(user.id!));
           int totalPoints = activityRecords.fold(
               0,
               (sum, record) =>

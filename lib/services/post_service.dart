@@ -1,8 +1,8 @@
 import 'dart:convert';
 // import 'dart:developer';
 
-import 'package:monitoring_hamil/Models/api_response.dart';
-import 'package:monitoring_hamil/Models/post.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
+import 'package:monitoring_hamil/models/post.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:http/http.dart' as http;
 
@@ -84,7 +84,8 @@ Future<ApiResponse> createPost(
 }
 
 // Edit post
-Future<ApiResponse> editPost(int postId, String header, String subheader, String body, String? image) async {
+Future<ApiResponse> editPost(int postId, String header, String subheader,
+    String body, String? image) async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
@@ -100,7 +101,6 @@ Future<ApiResponse> editPost(int postId, String header, String subheader, String
 
     // DEBUG response
     // print(response.body);
-    
 
     switch (response.statusCode) {
       case 200:

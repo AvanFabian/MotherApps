@@ -3,6 +3,29 @@ import 'package:http/http.dart' as http;
 import 'package:monitoring_hamil/models/activity.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 
+// Future<List<ActivityRecord>> getActivityRecords(int userId) async {
+//   String token = await getToken();
+//   final response = await http.get(
+//     Uri.parse('http://10.0.2.2:8000/api/activity_records/user/$userId'),
+//     headers: <String, String>{
+//       'Authorization': 'Bearer $token',
+//     },
+//   );
+//   if (response.statusCode == 200) {
+//     // If the server returns a 200 OK response, then parse the JSON.
+//     List<dynamic> body = jsonDecode(response.body);
+//     // status code
+//     print('Status Code: ${response.statusCode}');
+//     print('Server Response: $body');
+//     return body.map((dynamic item) => ActivityRecord.fromJson(item)).toList();
+//   } else {
+//     // If the server returns an unsuccessful response code, then throw an exception.
+//     print('Status Code: ${response.statusCode}');
+//     print('Response Body: ${response.body}');
+//     throw Exception('Failed to load activity records');
+//   }
+// }
+
 Future<List<ActivityRecord>> getActivityRecords(int userId) async {
   String token = await getToken();
   final response = await http.get(
@@ -14,6 +37,8 @@ Future<List<ActivityRecord>> getActivityRecords(int userId) async {
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response, then parse the JSON.
     List<dynamic> body = jsonDecode(response.body);
+    // status code
+    print('Status Code: ${response.statusCode}');
     print('Server Response: $body');
     return body.map((dynamic item) => ActivityRecord.fromJson(item)).toList();
   } else {

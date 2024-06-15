@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/Models/user.dart';
+import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 
 class LeaderboardPage extends StatefulWidget {
@@ -166,7 +166,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 ),
 
                 // for rank 1st
-                if (users.length > 0)
+                if (users.isNotEmpty)
                   Positioned(
                     top: 80,
                     right: 165,

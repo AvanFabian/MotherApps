@@ -41,8 +41,9 @@ class ActivityRecord {
   final int sportActivityId;
   final String sportName;
   final String sportMovement;
-  final double? caloriesPrediction;  // This can be null according to your server response
-  final double totalCaloriesBurned;  // New field for total calories burned
+  final double?
+      caloriesPrediction; // This can be null according to your server response
+  final double totalCaloriesBurned; // New field for total calories burned
   final int duration;
   final int? distance;
   final DateTime createdAt;
@@ -54,8 +55,8 @@ class ActivityRecord {
     required this.sportActivityId,
     required this.sportName,
     required this.sportMovement,
-    this.caloriesPrediction,  // This can be null according to your server response
-    required this.totalCaloriesBurned,  // New field for total calories burned
+    this.caloriesPrediction, // This can be null according to your server response
+    required this.totalCaloriesBurned, // New field for total calories burned
     required this.duration,
     this.distance,
     required this.createdAt,
@@ -63,14 +64,17 @@ class ActivityRecord {
   });
 
   factory ActivityRecord.fromJson(Map<String, dynamic> json) {
+    print('JSON data: $json');
     return ActivityRecord(
       id: json['id'],
       userId: json['user_id'],
       sportActivityId: json['sport_activity_id'],
       sportName: json['sport_name'],
       sportMovement: json['sport_movement'] as String,
-      caloriesPrediction: json['calories_prediction']?.toDouble(),  // This can be null according to your server response
-      totalCaloriesBurned: json['total_calories_burned'].toDouble(),  // New field for total calories burned
+      caloriesPrediction: json['calories_prediction']
+          ?.toDouble(), // This can be null according to your server response
+      totalCaloriesBurned: json['total_calories_burned']
+          .toDouble(), // New field for total calories burned
       duration: json['duration'],
       distance: json['distance'],
       createdAt: DateTime.parse(json['created_at']),

@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:monitoring_hamil/components/Auth/login_page.dart';
+import 'package:monitoring_hamil/components/auth/login_page.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import 'package:monitoring_hamil/Models/api_response.dart';
+import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileForm extends StatefulWidget {
@@ -54,7 +54,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
       String name = _txtControllerName.text;
       String email = _txtControllerEmail.text;
 
-      ApiResponse response = await updateUser(name, email, getStringImage(_imageFile));
+      ApiResponse response =
+          await updateUser(name, email, getStringImage(_imageFile));
       if (response.error == null) {
         if (mounted) {
           Navigator.of(context).pop();

@@ -620,7 +620,11 @@ class _RecordPageState extends State<RecordPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => FutureBuilder<int>(
-                          future: getUserId(),
+                          // future: getUserId(),
+                          future: getUserId().then((value) {
+                            // print('User ID: $value');
+                            return value;
+                          }),
                           builder: (BuildContext context,
                               AsyncSnapshot<int> snapshot) {
                             if (snapshot.hasData) {
