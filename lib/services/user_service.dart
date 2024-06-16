@@ -166,49 +166,17 @@ Future<List<User>> getUsersDetails() async {
 }
 
 // Update user
-Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, File? image) async {
-  ApiResponse apiResponse = ApiResponse();
-  try {
-    String token = await getToken();
-    var headers = {'Accept': 'application/json', 'Authorization': 'Bearer $token'};
-    var body = {'name': name, 'email': email, 'email_confirmation': emailConfirmation};
-    var response = await http.put(Uri.parse(userURL), headers: headers, body: body);
-
-    switch (response.statusCode) {
-      case 200:
-        apiResponse.data = jsonDecode(response.body)['message'];
-        break;
-      case 401:
-        apiResponse.error = unauthorized;
-        break;
-      default:
-        apiResponse.error = somethingWentWrong;
-        break;
-    }
-  } catch (e) {
-    apiResponse.error = serverError;
-  }
-  return apiResponse;
-}
 // Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, File? image) async {
 //   ApiResponse apiResponse = ApiResponse();
 //   try {
 //     String token = await getToken();
-//     var request = http.MultipartRequest('PUT', Uri.parse(userURL));
-//     request.headers.addAll(
-//         {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
-//     request.fields['name'] = name;
-//     request.fields['email'] = email;
-//     request.fields['email_confirmation'] = emailConfirmation;
-//     if (image != null) {
-//       request.files.add(await http.MultipartFile.fromPath('image', image.path));
-//     }
-//     var response = await request.send();
+//     var headers = {'Accept': 'application/json', 'Authorization': 'Bearer $token'};
+//     var body = {'name': name, 'email': email, 'email_confirmation': emailConfirmation};
+//     var response = await http.put(Uri.parse(userURL), headers: headers, body: body);
 
 //     switch (response.statusCode) {
 //       case 200:
-//         var respStr = await response.stream.bytesToString();
-//         apiResponse.data = jsonDecode(respStr)['message'];
+//         apiResponse.data = jsonDecode(response.body)['message'];
 //         break;
 //       case 401:
 //         apiResponse.error = unauthorized;
@@ -222,6 +190,47 @@ Future<ApiResponse> updateUser(String name, String email, String emailConfirmati
 //   }
 //   return apiResponse;
 // }
+// V2:
+Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, File? image) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    var headers = {'Accept': 'application/json', 'Authorization': 'Bearer $token'};
+    var body = {'name': name, 'email': email, 'email_confirmation': emailConfirmation};
+
+    if (image != null) {
+      var request = http.MultipartRequest('PUT', Uri.parse(userURL));
+      request.headers.addAll(headers);
+      request.fields.addAll(body);
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        var respStr = await response.stream.bytesToString();
+        apiResponse.data = jsonDecode(respStr)['message'];
+      } else {
+        apiResponse.error = somethingWentWrong;
+      }
+    } else {
+      var response = await http.put(Uri.parse(userURL), headers: headers, body: body);
+
+      switch (response.statusCode) {
+        case 200:
+          apiResponse.data = jsonDecode(response.body)['message'];
+          break;
+        case 401:
+          apiResponse.error = unauthorized;
+          break;
+        default:
+          apiResponse.error = somethingWentWrong;
+          break;
+      }
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
 
 // get token
 Future<String> getToken() async {

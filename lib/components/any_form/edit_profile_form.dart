@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:monitoring_hamil/components/auth/login_page.dart';
+import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/res/constants.dart';
@@ -40,10 +41,16 @@ class _EditProfileFormState extends State<EditProfileForm> {
     _getUser();
   }
 
-  void _getUser() async {
-    ApiResponse user = await getUserDetail();
+void _getUser() async {
+  ApiResponse apiResponse = await getUserDetail();
+  if (apiResponse.data is User) {
+    User user = apiResponse.data as User;
     _txtControllerName.text = user.name ?? '';
+    _txtControllerEmail.text = user.email ?? '';
+  } else {
+    print('Unexpected data format: ${apiResponse.data}');
   }
+}
 
   void _updateProfile() async {
     if (_formKey.currentState!.validate()) {
@@ -53,9 +60,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
       String name = _txtControllerName.text;
       String email = _txtControllerEmail.text;
+      String emailConfirmation = _txtControllerEmailConfirm.text;
 
-      ApiResponse response =
-          await updateUser(name, email, getStringImage(_imageFile));
+      ApiResponse response = await updateUser(name, email, emailConfirmation, _imageFile);
       if (response.error == null) {
         if (mounted) {
           Navigator.of(context).pop();
@@ -92,6 +99,12 @@ class _EditProfileFormState extends State<EditProfileForm> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              if (_imageFile != null) Image.file(_imageFile!),
+              IconButton(
+                icon: const Icon(Icons.photo_library),
+                onPressed: getImage,
+                tooltip: 'Select Image from Gallery',
+              ),
               TextFormField(
                 controller: _txtControllerName,
                 decoration: const InputDecoration(labelText: 'Name'),
