@@ -143,6 +143,14 @@ Future<List<User>> getUsersDetails() async {
         if (user.id != null) {
           List<ActivityRecord> activityRecords =
               (await getActivityRecords(user.id!));
+          double totalDuration = activityRecords.fold(
+              0, (sum, record) => sum + (record.duration.toDouble()));
+          user.totalDuration = totalDuration;
+          double totalCaloriesBurned = activityRecords.fold(
+              0,
+              (sum, record) =>
+                  sum + (record.totalCaloriesBurned.toDouble()));
+          user.totalCaloriesBurned = totalCaloriesBurned;
           int totalPoints = activityRecords.fold(
               0,
               (sum, record) =>

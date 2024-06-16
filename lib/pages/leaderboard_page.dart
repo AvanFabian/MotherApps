@@ -27,7 +27,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           if (snapshot.hasData) {
             List<User> users = snapshot.data!;
             users.sort(
-                (a, b) => (b.totalPoints ?? 0).compareTo(a.totalPoints ?? 0));
+                (a, b) => (b.totalDuration ?? 0).compareTo(a.totalDuration ?? 0));
 
             return Stack(
               children: [
@@ -125,19 +125,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      const RotatedBox(
-                                        quarterTurns: 1,
-                                        child: Icon(
-                                          Icons.back_hand,
-                                          color:
-                                              Color.fromARGB(255, 255, 187, 0),
-                                        ),
-                                      ),
                                       const SizedBox(
                                         width: 5,
                                       ),
                                       Text(
-                                        user.totalPoints.toString(),
+                                        user.totalDuration.toString(),
                                         style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 10,
@@ -154,7 +146,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 ),
                 // Leaderboard Text
                 const Positioned(
-                  top: 30,
+                  top: 55,
                   right: 150,
                   child: Text(
                     "Leaderboard",
@@ -168,20 +160,23 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                 // for rank 1st
                 if (users.isNotEmpty)
                   Positioned(
-                    top: 80,
-                    right: 165,
+                    top: 125,
+                    right: 100,
                     child: rank(
                         radius: 45.0,
                         height: 15,
                         image: users[0].image ??
                             'assets/images/default_avatar.png',
                         name: users[0].name ?? 'Anonymous',
-                        point: users[0].totalPoints.toString()),
+                        totalDuration: users[0].totalDuration.toString(),
+                        totalCaloriesBurned:
+                            users[0].totalCaloriesBurned.toString(),
+                        point: users[0].totalDuration.toString()),
                   ),
                 // for rank 2nd
                 if (users.length > 1)
                   Positioned(
-                    top: 180,
+                    top: 230,
                     left: 45,
                     child: rank(
                         radius: 30.0,
@@ -189,12 +184,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         image: users[1].image ??
                             'assets/images/default_avatar.png',
                         name: users[1].name ?? 'Anonymous',
-                        point: users[1].totalPoints.toString()),
+                        totalDuration: users[1].totalDuration.toString(),
+                        totalCaloriesBurned:
+                            users[1].totalCaloriesBurned.toString(),
+                        point: users[1].totalDuration.toString()),
                   ),
                 // For 3rd rank
                 if (users.length > 2)
                   Positioned(
-                    top: 193,
+                    top: 250,
                     right: 50,
                     child: rank(
                         radius: 30.0,
@@ -202,7 +200,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         image: users[2].image ??
                             'assets/images/default_avatar.png',
                         name: users[2].name ?? 'Anonymous',
-                        point: users[2].totalPoints.toString()),
+                        totalDuration: users[2].totalDuration.toString(),
+                        totalCaloriesBurned:
+                            users[2].totalCaloriesBurned.toString(),
+                        point: users[2].totalDuration.toString()),
                   ),
               ],
             );
@@ -225,6 +226,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     required double height,
     required String image,
     required String name,
+    required String totalDuration,
+    required String totalCaloriesBurned,
     required String point,
   }) {
     return Column(
@@ -243,6 +246,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         SizedBox(
           height: height,
         ),
+        // All Users Rank
         Container(
           height: 25,
           width: 70,
@@ -253,15 +257,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               const SizedBox(
                 width: 5,
               ),
-              const Icon(
-                Icons.back_hand,
-                color: Color.fromARGB(255, 255, 187, 0),
-              ),
+              // const Icon(
+              //   Icons.back_hand,
+              //   color: Color.fromARGB(255, 255, 187, 0),
+              // ),
               const SizedBox(
                 width: 5,
               ),
               Text(
-                point,
+                "$totalDuration sec",
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
