@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 
 import '../Components/Auth/login_page.dart';
-import '../Components/AnyForm/post_form.dart';
+import '../Components/any_form/post_form.dart';
 
 class PostPage extends StatefulWidget {
   const PostPage({super.key});

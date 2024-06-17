@@ -28,10 +28,12 @@ class SportsActivity {
 class SportsMovement {
   final int id;
   final String name;
+  final String youtubeLink;
 
   SportsMovement({
     required this.id,
     required this.name,
+    required this.youtubeLink,
   });
 }
 
@@ -64,7 +66,7 @@ class ActivityRecord {
   });
 
   factory ActivityRecord.fromJson(Map<String, dynamic> json) {
-    print('JSON data: $json');
+    // print('JSON data: $json');
     return ActivityRecord(
       id: json['id'],
       userId: json['user_id'],

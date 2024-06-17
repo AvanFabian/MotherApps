@@ -172,6 +172,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
         'Authorization': 'Bearer $token',
       },
     );
+    // print("Movements response: ${movementsResponse.body}");
 
     var movementsData = jsonDecode(movementsResponse.body);
     subMovements[exercise] =
@@ -181,20 +182,30 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
   return {'exercises': exercises, 'subMovements': subMovements};
 }
 
-Future<String> getImageUrlForMovement(String movementName) async {
-  final response = await http.get(Uri.parse(
-      'http://10.0.2.2:8000/api/sports_movements?activity_name=$movementName'));
+Future<String> getYoutubeUrlForMovement(String exerciseName, String movementName) async {
+  String token = await getToken();
+  print('Exercise name: $exerciseName');
+  final response = await http.get(
+    Uri.parse(
+        'http://10.0.2.2:8000/api/sports_movements?activity_name=$exerciseName'),
+    headers: <String, String>{
+      'Authorization': 'Bearer $token',
+    },
+  );
 
+  print('Response status code: ${response.statusCode}');
   if (response.statusCode == 200) {
     List<dynamic> sportsMovements = jsonDecode(response.body);
     for (var movement in sportsMovements) {
+      print('Movement: $movement');
       if (movement['name'] == movementName) {
-        return movement['image'] ?? '';
+        print('Youtube link: ${movement['youtube_link']}');
+        return movement['youtube_link'] ?? '';
       }
     }
   } else {
     throw Exception('Failed to load sports movements');
   }
 
-  return ''; // return an empty string if the image URL is not found
+  return ''; // return an empty string if the youtube link is not found
 }

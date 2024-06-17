@@ -151,6 +151,14 @@ Future<List<User>> getUsersDetails() async {
               (sum, record) =>
                   sum + (record.totalCaloriesBurned.toDouble()));
           user.totalCaloriesBurned = totalCaloriesBurned;
+          String sportName = activityRecords.isNotEmpty
+              ? activityRecords[0].sportName
+              : '';
+          user.sportName = sportName;
+          String sportMovement = activityRecords.isNotEmpty
+              ? activityRecords[0].sportMovement
+              : '';
+          user.sportMovement = sportMovement;
           int totalPoints = activityRecords.fold(
               0,
               (sum, record) =>

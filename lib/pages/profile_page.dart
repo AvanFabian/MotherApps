@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/components/any_form/edit_profile_form.dart';
+import 'package:monitoring_hamil/pages/activitydetail_page.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 
@@ -153,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               // right arrow icon
                               trailing: const Icon(Icons.arrow_right_rounded),
-                              onTap: tile.onTap(context),
+                              onTap: () => tile.onTap(context),
                             ),
                           ),
                         );
@@ -183,10 +184,10 @@ List<CustomListTile> customListTiles = [
   CustomListTile(
     icon: Icons.accessibility_new,
     title: "Your Activity",
-    onTap: (context) {},
+    onTap: navigateToActivityDetailPage,
   ),
   CustomListTile(
-    title: "Friend Lists",
+    title: "All Users Joined",
     // icon of people
     icon: Icons.people,
     onTap: (context) {
@@ -204,7 +205,16 @@ List<CustomListTile> customListTiles = [
   CustomListTile(
     title: "Logout",
     icon: Icons.logout,
-    onTap: (context) =>
-        () => logout(context), // Use a lambda function to call logout(context)
+    onTap: logout,
   ),
 ];
+
+void navigateToActivityDetailPage(BuildContext context) async {
+  int? userId = await getUserId();
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => ActivityDetailPage(userId: userId),
+    ),
+  );
+}

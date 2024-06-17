@@ -6,6 +6,8 @@ class User {
   String? token;
   double? totalDuration;
   double? totalCaloriesBurned;
+  String? sportName;
+  String? sportMovement;
   int? totalPoints;
 
   User(
@@ -16,6 +18,8 @@ class User {
       this.token,
       this.totalDuration,
       this.totalCaloriesBurned,
+      this.sportName,
+      this.sportMovement,
       this.totalPoints});
 
   // function to convert json data to user model
@@ -37,6 +41,14 @@ class User {
             ? userData['activity_records']
                 .fold(0, (sum, record) => sum + record['total_calories_burned'])
             : 0,
+        sportName: userData['activity_records'] != null &&
+                userData['activity_records'].isNotEmpty
+            ? userData['activity_records'][0]['sport_name']
+            : '',
+        sportMovement: userData['activity_records'] != null &&
+                userData['activity_records'].isNotEmpty
+            ? userData['activity_records'][0]['sport_movement']
+            : '',
         totalPoints: userData['activity_records'] != null
             ? userData['activity_records'].fold(
                 0,

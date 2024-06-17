@@ -26,8 +26,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
           if (snapshot.hasData) {
             List<User> users = snapshot.data!;
-            users.sort(
-                (a, b) => (b.totalDuration ?? 0).compareTo(a.totalDuration ?? 0));
+            users.sort((a, b) =>
+                (b.totalDuration ?? 0).compareTo(a.totalDuration ?? 0));
 
             return Stack(
               children: [
@@ -86,58 +86,93 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           return Padding(
                             padding: const EdgeInsets.only(
                                 right: 20, left: 20, bottom: 15),
-                            child: Row(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment.start, // Add this line
                               children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      (index + 1).toString(),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: AssetImage(user.image ??
+                                          'assets/images/default_avatar.png'),
+                                    ),
+                                    const SizedBox(
+                                      width: 15,
+                                    ),
+                                    Text(
+                                      user.name ?? 'Anonymous',
+                                      style: const TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const Spacer(),
+                                    Container(
+                                      height: 25,
+                                      width: 70,
+                                      decoration: BoxDecoration(
+                                          color: Colors.black12,
+                                          borderRadius:
+                                              BorderRadius.circular(50)),
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Text(
+                                            user.totalDuration.toString(),
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 10,
+                                                color: Colors.black),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                                 Text(
-                                  (index + 1).toString(),
+                                  'Total Duration: ${user.totalDuration}',
                                   style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage: AssetImage(user.image ??
-                                      'assets/images/default_avatar.png'),
-                                ),
-                                const SizedBox(
-                                  width: 15,
-                                ),
-                                Text(
-                                  user.name ?? 'Anonymous',
-                                  style: const TextStyle(
-                                    fontSize: 17,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const Spacer(),
-                                Container(
-                                  height: 25,
-                                  width: 70,
-                                  decoration: BoxDecoration(
-                                      color: Colors.black12,
-                                      borderRadius: BorderRadius.circular(50)),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        user.totalDuration.toString(),
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 10,
-                                            color: Colors.black),
-                                      ),
-                                    ],
+                                Text(
+                                  'Total Calories Burned: ${user.totalCaloriesBurned}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                )
+                                ),
+                                Text(
+                                  'Sport Name: ${user.sportName}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Text(
+                                  'Sport Movement: ${user.sportMovement}',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ],
                             ),
                           );
@@ -169,8 +204,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             'assets/images/default_avatar.png',
                         name: users[0].name ?? 'Anonymous',
                         totalDuration: users[0].totalDuration.toString(),
-                        totalCaloriesBurned:
-                            users[0].totalCaloriesBurned.toString(),
+                        totalCaloriesBurned: users[0].totalCaloriesBurned !=
+                                null
+                            ? users[0].totalCaloriesBurned!.toStringAsFixed(2)
+                            : '0.00',
                         point: users[0].totalDuration.toString()),
                   ),
                 // for rank 2nd
@@ -185,8 +222,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             'assets/images/default_avatar.png',
                         name: users[1].name ?? 'Anonymous',
                         totalDuration: users[1].totalDuration.toString(),
-                        totalCaloriesBurned:
-                            users[1].totalCaloriesBurned.toString(),
+                        totalCaloriesBurned: users[1].totalCaloriesBurned !=
+                                null
+                            ? users[1].totalCaloriesBurned!.toStringAsFixed(2)
+                            : '0.00',
                         point: users[1].totalDuration.toString()),
                   ),
                 // For 3rd rank
@@ -201,8 +240,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             'assets/images/default_avatar.png',
                         name: users[2].name ?? 'Anonymous',
                         totalDuration: users[2].totalDuration.toString(),
-                        totalCaloriesBurned:
-                            users[2].totalCaloriesBurned.toString(),
+                        totalCaloriesBurned: users[2].totalCaloriesBurned !=
+                                null
+                            ? users[2].totalCaloriesBurned!.toStringAsFixed(2)
+                            : '0.00',
                         point: users[2].totalDuration.toString()),
                   ),
               ],
@@ -257,15 +298,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               const SizedBox(
                 width: 5,
               ),
-              // const Icon(
-              //   Icons.back_hand,
-              //   color: Color.fromARGB(255, 255, 187, 0),
-              // ),
               const SizedBox(
                 width: 5,
               ),
               Text(
-                "$totalDuration sec",
+                "$totalCaloriesBurned kcal.",
                 style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 10,

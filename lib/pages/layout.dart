@@ -5,7 +5,7 @@ import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/pages/record_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import '../Components/AnyForm/post_form.dart';
+import '../Components/any_form/post_form.dart';
 
 class Layout extends StatefulWidget {
   final int initialPage;

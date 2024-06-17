@@ -5,6 +5,7 @@ import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -25,6 +26,7 @@ class _RecordPageState extends State<RecordPage> {
   int duration = 0;
   bool isPaused = false;
   int totalDuration = 0;
+  bool isActivityStarted = false;
 
   // late StreamController<int> _streamController;
   StreamController<double> _streamController = StreamController<double>();
@@ -163,6 +165,7 @@ class _RecordPageState extends State<RecordPage> {
                                     onTap: () {
                                       setState(() {
                                         selectedExercise = exercises[index];
+                                        selectedSubMovements = [];
                                       });
                                       Navigator.pop(context);
                                     },
@@ -381,8 +384,10 @@ class _RecordPageState extends State<RecordPage> {
                                                 },
                                               ),
                                               FutureBuilder<String>(
-                                                future: getImageUrlForMovement(
-                                                    value),
+                                                future:
+                                                    getYoutubeUrlForMovement(
+                                                        selectedExercise!,
+                                                        value),
                                                 builder: (BuildContext context,
                                                     AsyncSnapshot<String>
                                                         snapshot) {
@@ -390,11 +395,43 @@ class _RecordPageState extends State<RecordPage> {
                                                           .connectionState ==
                                                       ConnectionState.waiting) {
                                                     return const SizedBox
-                                                        .shrink(); // or a loading indicator
+                                                        .shrink();
                                                   } else {
-                                                    return snapshot.hasData
-                                                        ? Image.network(
-                                                            snapshot.data!)
+                                                    print(
+                                                        'snapshot.data: ${snapshot.data}');
+                                                    print(
+                                                        'snapshot.hasData: ${snapshot.hasData}');
+                                                    String? videoId;
+                                                    if (snapshot.hasData &&
+                                                        snapshot.data != null &&
+                                                        snapshot
+                                                            .data!.isNotEmpty) {
+                                                      print(
+                                                          'Youtube URL: ${snapshot.data}');
+                                                      videoId = YoutubePlayer
+                                                          .convertUrlToId(
+                                                              snapshot.data!);
+                                                    }
+                                                    print(
+                                                        'Youtube video ID: $videoId');
+                                                    return videoId != null
+                                                        ? YoutubePlayer(
+                                                            controller:
+                                                                YoutubePlayerController(
+                                                              initialVideoId:
+                                                                  videoId,
+                                                              flags:
+                                                                  const YoutubePlayerFlags(
+                                                                autoPlay: false,
+                                                                mute: false,
+                                                              ),
+                                                            ),
+                                                            showVideoProgressIndicator:
+                                                                true,
+                                                            progressIndicatorColor:
+                                                                Colors
+                                                                    .blueAccent,
+                                                          )
                                                         : const SizedBox(
                                                             width: 100,
                                                             height: 75,
@@ -441,169 +478,194 @@ class _RecordPageState extends State<RecordPage> {
                 },
               ),
               // start/stop button
-              SizedBox(
-                height: 70.0,
-                width: 70.0,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(0), // remove extra space
-                    shape: const CircleBorder(), // set the shape to circle
-                  ),
-                  onPressed: () async {
-                    if (selectedExercise == null ||
-                        selectedSubMovements.isEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Warning'),
-                            content: const Text(
-                                'Please choose an Activity and the Movement First.'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    } else {
-                      if (isPressed) {
-                        totalDuration = duration; // Store the total duration
-                        timer?.cancel(); // Stop the timer
-                        // Get the user ID
-                        int userId = await getUserId();
-                        // Get the ID of the selected sport activity
-                        int sportActivityId =
-                            await getSportActivityId(selectedExercise!);
-                        // Get the IDs of the selected sport movements
-                        List<int> sportMovementIds =
-                            await getSportMovementIds(selectedSubMovements);
-                        print("Selected sub-movements: $selectedSubMovements");
-
-                        // Calculate the total calories burned
-                        double totalCaloriesBurned = 0.0;
-                        for (int id in sportMovementIds) {
-                          totalCaloriesBurned += duration *
-                              (caloriesBurnedPredictions[id] ?? 0) /
-                              3600;
-                        }
-                        print("Total calories burned: $totalCaloriesBurned");
-                        // Make a POST request to store the duration and total calories burned in the database
-                        var response = await postActivityRecord({
-                          'user_id': userId.toString(),
-                          'sport_activity_id': sportActivityId.toString(),
-                          'sport_movement_ids': sportMovementIds.join(','),
-                          'duration': duration.toString(),
-                          'total_calories_burned':
-                              totalCaloriesBurned.toStringAsFixed(2),
-                        });
-
-                        // Check the status code of the response
-                        if (response.statusCode == 201) {
-                          print('Duration successfully stored in the database');
-                        } else {
-                          print('Failed to store the duration in the database');
-                          print('Response body: ${response.body}');
-                        }
-                        duration = 0; // Reset the duration
+              if (!isActivityStarted || isPressed)
+                SizedBox(
+                  height: 70.0,
+                  width: 70.0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(0), // remove extra space
+                      shape: const CircleBorder(), // set the shape to circle
+                    ),
+                    onPressed: () async {
+                      if (selectedExercise == null ||
+                          selectedSubMovements.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Warning'),
+                              content: const Text(
+                                  'Please choose an Activity and the Movement First.'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       } else {
-                        getSportMovementIds(selectedSubMovements).then((ids) {
-                          getCaloriesBurnedPredictions(ids).then((predictions) {
-                            caloriesBurnedPredictions = predictions;
-
-                            if (caloriesBurnedPredictions.isNotEmpty) {
-                              startTimer(ids); // Start the timer
-                            } else {
-                              print('No calories burned predictions available');
-                            }
-                          }).catchError((e) {
-                            print(
-                                'Failed to load calories burned predictions: $e');
-                          });
-                        }).catchError((e) {
-                          print('Failed to load sport movement IDs: $e');
-                        });
-                      }
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Success'),
-                            content: Text(isPressed
-                                ? 'Activity Started!'
-                                : 'Activity Stopped!'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('OK'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                      setState(() {
-                        isPressed =
-                            !isPressed; // Toggle the state of the button
-                      });
-                    }
-                  },
-                  child: Icon(isPressed ? Icons.stop : Icons.play_arrow,
-                      size: 40.0, color: Colors.black),
-                ),
-              ),
-              // pause button
-              SizedBox(
-                height: 70.0,
-                width: 70.0,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.all(0),
-                    shape: const CircleBorder(),
-                  ),
-                  onPressed: () {
-                    if (!isPressed) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Warning'),
-                          content: const Text(
-                              'Cannot Pause the Timer without Starting the Activity First.'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('OK'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      setState(() {
-                        isPaused =
-                            !isPaused; // Toggle the state of the pause button
-                        if (isPaused) {
+                        if (isPressed) {
+                          totalDuration = duration; // Store the total duration
                           timer?.cancel(); // Stop the timer
+                          // Get the user ID
+                          int userId = await getUserId();
+                          // Get the ID of the selected sport activity
+                          int sportActivityId =
+                              await getSportActivityId(selectedExercise!);
+                          // Get the IDs of the selected sport movements
+                          List<int> sportMovementIds =
+                              await getSportMovementIds(selectedSubMovements);
+                          print(
+                              "Selected sub-movements: $selectedSubMovements");
+
+                          // Calculate the total calories burned
+                          double totalCaloriesBurned = 0.0;
+                          for (int id in sportMovementIds) {
+                            totalCaloriesBurned += duration *
+                                (caloriesBurnedPredictions[id] ?? 0) /
+                                3600;
+                          }
+
+                          // print("Total calories burned: $totalCaloriesBurned");
+
+                          // Make a POST request to store the duration and total calories burned in the database
+                          var response = await postActivityRecord({
+                            'user_id': userId.toString(),
+                            'sport_activity_id': sportActivityId.toString(),
+                            'sport_movement_ids': sportMovementIds.join(','),
+                            'duration': duration.toString(),
+                            'total_calories_burned':
+                                totalCaloriesBurned.toStringAsFixed(2),
+                          });
+
+                          // Check the status code of the response
+                          if (response.statusCode == 201) {
+                            print(
+                                'Duration successfully stored in the database');
+                          } else {
+                            print(
+                                'Failed to store the duration in the database');
+                            print('Response body: ${response.body}');
+                          }
+                          duration = 0; // Reset the duration
+
+                          setState(() {
+                            isPressed =
+                                !isPressed; // Toggle the state of the button
+                            isActivityStarted =
+                                false; // Set activity started to false
+                          });
                         } else {
                           getSportMovementIds(selectedSubMovements).then((ids) {
-                            startTimer(ids); // Start the timer
+                            getCaloriesBurnedPredictions(ids)
+                                .then((predictions) {
+                              caloriesBurnedPredictions = predictions;
+
+                              if (caloriesBurnedPredictions.isNotEmpty) {
+                                startTimer(ids); // Start the timer
+                              } else {
+                                print(
+                                    'No calories burned predictions available');
+                              }
+                            }).catchError((e) {
+                              print(
+                                  'Failed to load calories burned predictions: $e');
+                            });
                           }).catchError((e) {
                             print('Failed to load sport movement IDs: $e');
                           });
+
+                          setState(() {
+                            isPressed =
+                                !isPressed; // Toggle the state of the button
+                            isActivityStarted =
+                                true; // Set activity started to true
+                          });
                         }
-                      });
-                    }
-                  },
-                  child:
-                      const Icon(Icons.pause, size: 40.0, color: Colors.black),
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text('Success'),
+                              content: Text(isPressed
+                                  ? 'Activity Started!'
+                                  : 'Activity Stopped!'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('OK'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Icon(isPressed ? Icons.stop : Icons.play_arrow,
+                        size: 40.0, color: Colors.black),
+                  ),
                 ),
-              ),
+
+              // pause button
+              if (isActivityStarted && isPressed)
+                SizedBox(
+                  height: 70.0,
+                  width: 70.0,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.all(0),
+                      shape: const CircleBorder(),
+                    ),
+                    onPressed: () {
+                      if (!isPressed) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Warning'),
+                            content: const Text(
+                                'Cannot Pause the Timer without Starting the Activity First.'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        setState(() {
+                          isPaused =
+                              !isPaused; // Toggle the state of the pause button
+                          if (isPaused) {
+                            timer?.cancel(); // Stop the timer
+                            timer = null; // Set the timer to null
+                          } else {
+                            getSportMovementIds(selectedSubMovements)
+                                .then((ids) {
+                              timer
+                                  ?.cancel(); // Stop the timer if it's already running
+                              timer = null; // Set the timer to null
+                              startTimer(ids); // Start the timer
+                            }).catchError((e) {
+                              print('Failed to load sport movement IDs: $e');
+                            });
+                          }
+                        });
+                      }
+                    },
+                    child: Icon(isPaused ? Icons.play_arrow : Icons.pause,
+                        size: 40.0, color: Colors.black),
+                  ),
+                ),
 
               // history icon
               SizedBox(
