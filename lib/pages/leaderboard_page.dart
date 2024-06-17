@@ -78,105 +78,101 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       ),
                     ),
                     child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: users.length,
-                        itemBuilder: (context, index) {
-                          final user = users[index];
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                right: 20, left: 20, bottom: 15),
-                            child: Column(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment.start, // Add this line
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      (index + 1).toString(),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: users.length,
+                      itemBuilder: (context, index) {
+                        final user = users[index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .start, // Align items at the start
+                                children: [
+                                  Text(
+                                    (index + 1).toString(),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    CircleAvatar(
-                                      radius: 25,
-                                      backgroundImage: AssetImage(user.image ??
-                                          'assets/images/default_avatar.png'),
-                                    ),
-                                    const SizedBox(
-                                      width: 15,
-                                    ),
-                                    Text(
-                                      user.name ?? 'Anonymous',
-                                      style: const TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Container(
-                                      height: 25,
-                                      width: 70,
-                                      decoration: BoxDecoration(
-                                          color: Colors.black12,
-                                          borderRadius:
-                                              BorderRadius.circular(50)),
-                                      child: Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 5,
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  CircleAvatar(
+                                    radius: 25,
+                                    backgroundImage: AssetImage(user.image ??
+                                        'assets/images/default_avatar.png'),
+                                  ),
+                                  const SizedBox(
+                                    width: 15,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          user.name ?? 'Anonymous',
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500,
                                           ),
-                                          const SizedBox(
-                                            width: 5,
+                                        ),
+                                        const SizedBox(
+                                            height: 10), // Add vertical gap
+                                        Text(
+                                          'Total Duration: ${user.totalDuration} sec.',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w800,
                                           ),
-                                          Text(
-                                            user.totalDuration.toString(),
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 10,
-                                                color: Colors.black),
+                                        ),
+                                        const SizedBox(
+                                            height: 10), // Add vertical gap
+                                        Text(
+                                          'Total Calories Burned: ${user.totalCaloriesBurned!.toStringAsFixed(2)} kcal.',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w800,
                                           ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Text(
-                                  'Total Duration: ${user.totalDuration}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
+                                        ),
+                                        const SizedBox(
+                                            height: 10), // Add vertical gap
+                                        Text(
+                                          'Sport Name: ${user.sportName}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height: 10), // Add vertical gap
+                                        Text(
+                                          'Sport Movement: ${user.sportMovement}',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w800,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  'Total Calories Burned: ${user.totalCaloriesBurned}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  'Sport Name: ${user.sportName}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                Text(
-                                  'Sport Movement: ${user.sportMovement}',
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 // Leaderboard Text
@@ -192,17 +188,31 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   ),
                 ),
 
-                // for rank 1st
+// for rank 1st
                 if (users.isNotEmpty)
                   Positioned(
-                    top: 125,
-                    right: 100,
+                    top: 150,
+                    right: 135,
                     child: rank(
                         radius: 45.0,
-                        height: 15,
+                        height: 10,
                         image: users[0].image ??
                             'assets/images/default_avatar.png',
-                        name: users[0].name ?? 'Anonymous',
+                        name: SizedBox(
+                          width: 150, // adjust the width as needed
+                          child: Center(
+                            child: Text(
+                                (users[0].name?.length ?? 0) > 14
+                                    ? "${users[0].name!.substring(0, 14)}..."
+                                    : users[0].name ?? 'Anonymous',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                )),
+                          ),
+                        ),
                         totalDuration: users[0].totalDuration.toString(),
                         totalCaloriesBurned: users[0].totalCaloriesBurned !=
                                 null
@@ -210,17 +220,31 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             : '0.00',
                         point: users[0].totalDuration.toString()),
                   ),
-                // for rank 2nd
+// for rank 2nd
                 if (users.length > 1)
                   Positioned(
-                    top: 230,
-                    left: 45,
+                    top: 240,
+                    left: 10,
                     child: rank(
                         radius: 30.0,
                         height: 10,
                         image: users[1].image ??
                             'assets/images/default_avatar.png',
-                        name: users[1].name ?? 'Anonymous',
+                        name: SizedBox(
+                          width: 150, // adjust the width as needed
+                          child: Center(
+                            child: Text(
+                                (users[1].name?.length ?? 0) > 14
+                                    ? "${users[0].name!.substring(0, 14)}..."
+                                    : users[1].name ?? 'Anonymous',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                )),
+                          ),
+                        ),
                         totalDuration: users[1].totalDuration.toString(),
                         totalCaloriesBurned: users[1].totalCaloriesBurned !=
                                 null
@@ -228,17 +252,31 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                             : '0.00',
                         point: users[1].totalDuration.toString()),
                   ),
-                // For 3rd rank
+// For 3rd rank
                 if (users.length > 2)
                   Positioned(
-                    top: 250,
-                    right: 50,
+                    top: 270,
+                    right: 10,
                     child: rank(
                         radius: 30.0,
                         height: 10,
                         image: users[2].image ??
                             'assets/images/default_avatar.png',
-                        name: users[2].name ?? 'Anonymous',
+                        name: SizedBox(
+                          width: 150, // adjust the width as needed
+                          child: Center(
+                            child: Text(
+                                (users[2].name?.length ?? 0) > 14
+                                    ? "${users[0].name!.substring(0, 14)}..."
+                                    : users[2].name ?? 'Anonymous',
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                )),
+                          ),
+                        ),
                         totalDuration: users[2].totalDuration.toString(),
                         totalCaloriesBurned: users[2].totalCaloriesBurned !=
                                 null
@@ -266,7 +304,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
     required double radius,
     required double height,
     required String image,
-    required String name,
+    required Widget name, // Change this line
     required String totalDuration,
     required String totalCaloriesBurned,
     required String point,
@@ -280,10 +318,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         SizedBox(
           height: height,
         ),
-        Text(
-          name,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-        ),
+        name, // And this line
         SizedBox(
           height: height,
         ),
