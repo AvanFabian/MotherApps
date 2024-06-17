@@ -6,6 +6,14 @@ import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+@pragma('vm:entry-point')
+void alarmCallback() async {
+  print('Alarm fired');
+}
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -15,6 +23,7 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
+  int alarmId = 0;
   List<String> exercises = [];
   Map<String, List<String>> subMovements = {};
 
@@ -37,6 +46,7 @@ class _RecordPageState extends State<RecordPage> {
   @override
   void initState() {
     super.initState();
+    requestPermission();
     loadExercisesAndMovements();
 
     _streamController =
@@ -46,6 +56,13 @@ class _RecordPageState extends State<RecordPage> {
     _stream.listen((totalCaloriesBurned) {
       print('Total calories burned: $totalCaloriesBurned');
     });
+  }
+
+    void requestPermission() async {
+    PermissionStatus status = await Permission.scheduleExactAlarm.request();
+    if (status.isGranted) {
+      await AndroidAlarmManager.periodic(const Duration(minutes: 1), alarmId, alarmCallback);
+    }
   }
 
   @override
