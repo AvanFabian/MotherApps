@@ -47,6 +47,9 @@ dependencies:
   heart_bpm: ^2.0.0+0
   dropdown_search: ^5.0.6
   intl: ^0.19.0
+  android_alarm_manager_plus: ^4.0.3
+  youtube_player_flutter: ^9.0.1
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:

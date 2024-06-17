@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:monitoring_hamil/main.dart';
 import 'package:monitoring_hamil/pages/activitydetail_page.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/services/activity_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
-import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class RecordPage extends StatefulWidget {
-  const RecordPage({Key? key}) : super(key: key);
+class OldRecordPage extends StatefulWidget {
+  const OldRecordPage({Key? key}) : super(key: key);
 
   @override
-  State<RecordPage> createState() => _RecordPageState();
+  State<OldRecordPage> createState() => _OldRecordPageState();
 }
 
-class _RecordPageState extends State<RecordPage> {
+class _OldRecordPageState extends State<OldRecordPage> {
   List<String> exercises = [];
   Map<String, List<String>> subMovements = {};
 
@@ -30,26 +30,62 @@ class _RecordPageState extends State<RecordPage> {
   int totalDuration = 0;
   bool isActivityStarted = false;
 
-  Stream<double>? _stream;
+  // late StreamController<int> _streamController;
+  StreamController<double> _streamController = StreamController<double>();
+  // late Stream<int> _stream;
+  late Stream<double> _stream;
   late Map<int, int> caloriesBurnedPredictions = {};
 
-  @override
   @override
   void initState() {
     super.initState();
     loadExercisesAndMovements();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      TimerModel timerModel = Provider.of<TimerModel>(context, listen: false);
-      selectedExercise = timerModel.selectedExercise;
-      selectedSubMovements = timerModel.selectedSubMovements;
-      _stream = timerModel.stream;
+    _streamController =
+        StreamController<double>.broadcast(); // Use a broadcast stream
+    _stream = _streamController.stream;
+
+    _stream.listen((totalCaloriesBurned) {
+      print('Total calories burned: $totalCaloriesBurned');
     });
+  }
+
+
+  @override
+  void dispose() {
+    _streamController.close();
+    timer?.cancel();
+    super.dispose();
   }
 
   void togglePause() {
     setState(() {
       isPaused = !isPaused;
+    });
+  }
+
+  void startTimer(List<int> ids) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+      if (!isPaused) {
+        // Calculate the total calories burned
+        double totalCaloriesBurned = 0.0;
+        double caloriesBurnedPerSecond = 0.0;
+
+        for (int i = 0; i < ids.length; i++) {
+          totalCaloriesBurned += caloriesBurnedPredictions[ids[i]] ?? 0;
+        }
+
+        // Calculate the calories burned per second
+        caloriesBurnedPerSecond = totalCaloriesBurned / 3600;
+        // Increase the total calories burned every second
+        totalCaloriesBurned = caloriesBurnedPerSecond * duration;
+        // Add the total calories burned to the stream
+        _streamController.add(totalCaloriesBurned);
+        // Increase the duration
+        setState(() {
+          duration++;
+        });
+      }
     });
   }
 
@@ -63,7 +99,6 @@ class _RecordPageState extends State<RecordPage> {
 
   @override
   Widget build(BuildContext context) {
-    TimerModel timerModel = Provider.of<TimerModel>(context);
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -72,15 +107,9 @@ class _RecordPageState extends State<RecordPage> {
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: () {
-                TimerModel timerModel =
-                    Provider.of<TimerModel>(context, listen: false);
-                if (timerModel.isActivityStarted) {
-                  // Only preserve selectedExercise and selectedSubMovements if the activity is running
-                  timerModel.selectedExercise = selectedExercise;
-                  timerModel.selectedSubMovements = selectedSubMovements;
-                }
-                Navigator.of(context).pushReplacement(
+                Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const Layout()),
+                  (route) => false,
                 );
               },
               child: const Icon(
@@ -270,32 +299,15 @@ class _RecordPageState extends State<RecordPage> {
               ],
             ),
           ),
-          // Expanded(
-          //   flex: 6,
-          //   child: Center(
-          //     // Center the text
-          //     child: Text(
-          //       '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-          //       style: const TextStyle(
-          //         fontSize: 50.0, // Increase the font size
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Expanded(
             flex: 6,
             child: Center(
               // Center the text
-              child: Consumer<TimerModel>(
-                builder: (context, timerModel, child) {
-                  final duration = timerModel.duration;
-                  return Text(
-                    '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-                    style: const TextStyle(
-                      fontSize: 50.0, // Increase the font size
-                    ),
-                  );
-                },
+              child: Text(
+                '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  fontSize: 50.0, // Increase the font size
+                ),
               ),
             ),
           ),
@@ -469,7 +481,7 @@ class _RecordPageState extends State<RecordPage> {
                 },
               ),
               // start/stop button
-              if (!timerModel.isActivityStarted || timerModel.isPressed)
+              if (!isActivityStarted || isPressed)
                 SizedBox(
                   height: 70.0,
                   width: 70.0,
@@ -479,8 +491,6 @@ class _RecordPageState extends State<RecordPage> {
                       shape: const CircleBorder(), // set the shape to circle
                     ),
                     onPressed: () async {
-                      TimerModel timerModel =
-                          Provider.of<TimerModel>(context, listen: false);
                       if (selectedExercise == null ||
                           selectedSubMovements.isEmpty) {
                         showDialog(
@@ -502,17 +512,9 @@ class _RecordPageState extends State<RecordPage> {
                           },
                         );
                       } else {
-                        timerModel
-                            .toggleActivityStarted(); // Toggle the activity state only if an exercise is selected and there are sub-movements
-                        if (timerModel.isPressed) {
-                          // Get the current duration before stopping the timer
-                          TimerModel timerModel =
-                              Provider.of<TimerModel>(context, listen: false);
-                          duration = timerModel.duration;
+                        if (isPressed) {
                           totalDuration = duration; // Store the total duration
-                          print('Total duration: $totalDuration');
-                          timerModel
-                              .stopTimer(); // Stop the timer in the TimerModel
+                          timer?.cancel(); // Stop the timer
                           // Get the user ID
                           int userId = await getUserId();
                           // Get the ID of the selected sport activity
@@ -525,8 +527,7 @@ class _RecordPageState extends State<RecordPage> {
                               "Selected sub-movements: $selectedSubMovements");
 
                           // Calculate the total calories burned
-                          double totalCaloriesBurned =
-                              timerModel.totalCaloriesBurned;
+                          double totalCaloriesBurned = 0.0;
                           for (int id in sportMovementIds) {
                             totalCaloriesBurned += duration *
                                 (caloriesBurnedPredictions[id] ?? 0) /
@@ -556,24 +557,20 @@ class _RecordPageState extends State<RecordPage> {
                           }
                           duration = 0; // Reset the duration
 
-                          // setState(() {
-                          //   isPressed =
-                          //       !isPressed; // Toggle the state of the button
-                          //   isActivityStarted =
-                          //       false; // Set activity started to false
-                          // });
-
-                          timerModel
-                              .togglePressed(); // Toggle the state of the button
+                          setState(() {
+                            isPressed =
+                                !isPressed; // Toggle the state of the button
+                            isActivityStarted =
+                                false; // Set activity started to false
+                          });
                         } else {
                           getSportMovementIds(selectedSubMovements).then((ids) {
                             getCaloriesBurnedPredictions(ids)
-                                .then((predictions) async {
-                              if (predictions.isNotEmpty) {
-                                Provider.of<TimerModel>(context, listen: false)
-                                    .caloriesBurnedPredictions = predictions;
-                                Provider.of<TimerModel>(context, listen: false)
-                                    .startTimer(ids); // Start the timer
+                                .then((predictions) {
+                              caloriesBurnedPredictions = predictions;
+
+                              if (caloriesBurnedPredictions.isNotEmpty) {
+                                startTimer(ids); // Start the timer
                               } else {
                                 print(
                                     'No calories burned predictions available');
@@ -586,22 +583,19 @@ class _RecordPageState extends State<RecordPage> {
                             print('Failed to load sport movement IDs: $e');
                           });
 
-                          // setState(() {
-                          //   isPressed =
-                          //       !isPressed; // Toggle the state of the button
-                          //   isActivityStarted =
-                          //       true; // Set activity started to true
-                          // });
-
-                          timerModel
-                              .togglePressed(); // Toggle the state of the button
+                          setState(() {
+                            isPressed =
+                                !isPressed; // Toggle the state of the button
+                            isActivityStarted =
+                                true; // Set activity started to true
+                          });
                         }
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: const Text('Success'),
-                              content: Text(timerModel.isPressed
+                              content: Text(isPressed
                                   ? 'Activity Started!'
                                   : 'Activity Stopped!'),
                               actions: <Widget>[
@@ -617,16 +611,13 @@ class _RecordPageState extends State<RecordPage> {
                         );
                       }
                     },
-                    child: Icon(
-                      timerModel.isPressed ? Icons.stop : Icons.play_arrow,
-                      size: 40.0,
-                      color: Colors.black,
-                    ),
+                    child: Icon(isPressed ? Icons.stop : Icons.play_arrow,
+                        size: 40.0, color: Colors.black),
                   ),
                 ),
 
               // pause button
-              if (timerModel.isActivityStarted && timerModel.isPressed)
+              if (isActivityStarted && isPressed)
                 SizedBox(
                   height: 70.0,
                   width: 70.0,
@@ -636,7 +627,7 @@ class _RecordPageState extends State<RecordPage> {
                       shape: const CircleBorder(),
                     ),
                     onPressed: () {
-                      if (!timerModel.isActivityStarted) {
+                      if (!isPressed) {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -655,9 +646,9 @@ class _RecordPageState extends State<RecordPage> {
                         );
                       } else {
                         setState(() {
-                          timerModel.isPaused = !timerModel
-                              .isPaused; // Toggle the state of the pause button in TimerModel
-                          if (timerModel.isPaused) {
+                          isPaused =
+                              !isPaused; // Toggle the state of the pause button
+                          if (isPaused) {
                             timer?.cancel(); // Stop the timer
                             timer = null; // Set the timer to null
                           } else {
@@ -666,8 +657,7 @@ class _RecordPageState extends State<RecordPage> {
                               timer
                                   ?.cancel(); // Stop the timer if it's already running
                               timer = null; // Set the timer to null
-                              Provider.of<TimerModel>(context, listen: false)
-                                  .startTimer(ids); // Start the timer
+                              startTimer(ids); // Start the timer
                             }).catchError((e) {
                               print('Failed to load sport movement IDs: $e');
                             });
@@ -675,10 +665,8 @@ class _RecordPageState extends State<RecordPage> {
                         });
                       }
                     },
-                    child: Icon(
-                        timerModel.isPaused ? Icons.play_arrow : Icons.pause,
-                        size: 40.0,
-                        color: Colors.black),
+                    child: Icon(isPaused ? Icons.play_arrow : Icons.pause,
+                        size: 40.0, color: Colors.black),
                   ),
                 ),
 
