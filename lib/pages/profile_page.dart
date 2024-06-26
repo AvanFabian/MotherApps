@@ -4,6 +4,8 @@ import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/components/any_form/edit_profile_form.dart';
 import 'package:monitoring_hamil/pages/activitydetail_page.dart';
+import 'package:monitoring_hamil/pages/layout.dart';
+import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 
@@ -188,10 +190,12 @@ List<CustomListTile> customListTiles = [
   ),
   CustomListTile(
     title: "All Users Joined",
-    // icon of people
     icon: Icons.people,
     onTap: (context) {
-      // Handle tap
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Layout(initialPage: 3)),
+      );
     },
   ),
   CustomListTile(

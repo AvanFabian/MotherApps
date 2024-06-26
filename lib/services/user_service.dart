@@ -146,14 +146,11 @@ Future<List<User>> getUsersDetails() async {
           double totalDuration = activityRecords.fold(
               0, (sum, record) => sum + (record.duration.toDouble()));
           user.totalDuration = totalDuration;
-          double totalCaloriesBurned = activityRecords.fold(
-              0,
-              (sum, record) =>
-                  sum + (record.totalCaloriesBurned.toDouble()));
+          double totalCaloriesBurned = activityRecords.fold(0,
+              (sum, record) => sum + (record.totalCaloriesBurned.toDouble()));
           user.totalCaloriesBurned = totalCaloriesBurned;
-          String sportName = activityRecords.isNotEmpty
-              ? activityRecords[0].sportName
-              : '';
+          String sportName =
+              activityRecords.isNotEmpty ? activityRecords[0].sportName : '';
           user.sportName = sportName;
           String sportMovement = activityRecords.isNotEmpty
               ? activityRecords[0].sportMovement
@@ -207,28 +204,61 @@ Future<List<User>> getUsersDetails() async {
 //   return apiResponse;
 // }
 // V2:
-Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, File? image) async {
+
+Future<ApiResponse> updateUser(
+    String name, String email, String emailConfirmation, File? image) async {
+  print('updateUser called');
   ApiResponse apiResponse = ApiResponse();
   try {
+    print('Getting token');
     String token = await getToken();
-    var headers = {'Accept': 'application/json', 'Authorization': 'Bearer $token'};
-    var body = {'name': name, 'email': email, 'email_confirmation': emailConfirmation};
+    print('Token: $token');
+    var headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var body = {
+      'name': name,
+      'email': email,
+      'email_confirmation': emailConfirmation
+    };
 
     if (image != null) {
+      print('Image is not null');
       var request = http.MultipartRequest('PUT', Uri.parse(userURL));
       request.headers.addAll(headers);
-      request.fields.addAll(body);
-      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+
+      // Add fields to the request
+      request.fields['name'] = name;
+      request.fields['email'] = email;
+      request.fields['email_confirmation'] = emailConfirmation;
+
+      // Read the image file as bytes
+      List<int> imageBytes = image.readAsBytesSync();
+
+      // Add the image to the request
+      request.files.add(http.MultipartFile.fromBytes('image', imageBytes,
+          filename: image.path.split("/").last));
+
+      print('Sending request');
       var response = await request.send();
 
       if (response.statusCode == 200) {
         var respStr = await response.stream.bytesToString();
         apiResponse.data = jsonDecode(respStr)['message'];
       } else {
+        print('Status code: ${response.statusCode}');
+        var respStr = await response.stream.bytesToString();
+        print('Response body: $respStr');
         apiResponse.error = somethingWentWrong;
       }
     } else {
-      var response = await http.put(Uri.parse(userURL), headers: headers, body: body);
+      print('Image is null');
+      var response = await http.put(
+        Uri.parse(userURL),
+        headers: headers,
+        body: jsonEncode(body), // Encode the body as a JSON string
+      );
 
       switch (response.statusCode) {
         case 200:
@@ -238,11 +268,14 @@ Future<ApiResponse> updateUser(String name, String email, String emailConfirmati
           apiResponse.error = unauthorized;
           break;
         default:
+          print('Status code: ${response.statusCode}');
+          print('Response body: ${response.body}');
           apiResponse.error = somethingWentWrong;
           break;
       }
     }
   } catch (e) {
+    print('Error: $e');
     apiResponse.error = serverError;
   }
   return apiResponse;

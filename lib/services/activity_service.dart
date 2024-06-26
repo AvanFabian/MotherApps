@@ -182,7 +182,8 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
   return {'exercises': exercises, 'subMovements': subMovements};
 }
 
-Future<String> getYoutubeUrlForMovement(String exerciseName, String movementName) async {
+Future<String> getYoutubeUrlForMovement(
+    String exerciseName, String movementName) async {
   String token = await getToken();
   print('Exercise name: $exerciseName');
   final response = await http.get(

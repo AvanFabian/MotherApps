@@ -267,7 +267,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           child: Center(
                             child: Text(
                                 (users[2].name?.length ?? 0) > 14
-                                    ? "${users[0].name!.substring(0, 14)}..."
+                                    ? "${users[2].name!.substring(0, 14)}..."
                                     : users[2].name ?? 'Anonymous',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
