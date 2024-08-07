@@ -17,7 +17,9 @@ class EditProfileForm extends StatefulWidget {
 }
 
 class _EditProfileFormState extends State<EditProfileForm> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyName = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyEmail = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKeyEmailConfirm = GlobalKey<FormState>();
   final TextEditingController _txtControllerName = TextEditingController();
   final TextEditingController _txtControllerEmail = TextEditingController();
   final TextEditingController _txtControllerEmailConfirm =
@@ -25,6 +27,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   bool _loading = false;
   File? _imageFile;
   final _picker = ImagePicker();
+  late int userId;
 
   Future getImage() async {
     XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -43,6 +46,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   void _getUser() async {
     ApiResponse apiResponse = await getUserDetail();
+    userId = await getUserId();
     if (apiResponse.data is User) {
       User user = apiResponse.data as User;
       _txtControllerName.text = user.name ?? '';
@@ -53,7 +57,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
   }
 
   void _updateProfile() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKeyName.currentState!.validate() &&
+        _formKeyEmail.currentState!.validate() &&
+        _formKeyEmailConfirm.currentState!.validate()) {
       setState(() {
         _loading = true;
       });
@@ -62,8 +68,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
       String email = _txtControllerEmail.text;
       String emailConfirmation = _txtControllerEmailConfirm.text;
 
-      ApiResponse response =
-          await updateUser(name, email, emailConfirmation, _imageFile);
+      ApiResponse response = await updateUser(
+          name, email, emailConfirmation, getStringImage(_imageFile));
       if (response.error == null) {
         if (mounted) {
           Navigator.of(context).pop();
@@ -96,61 +102,73 @@ class _EditProfileFormState extends State<EditProfileForm> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            // Add this
-            child: Column(
-              children: <Widget>[
-                if (_imageFile != null) Image.file(_imageFile!),
-                const IconButton(
-                  icon: Icon(Icons.photo_library),
-                  // onPressed: getImage,
-                  onPressed: null,
-                  tooltip: 'Select Image from Gallery',
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              if (_imageFile != null) Image.file(_imageFile!),
+              IconButton(
+                icon: const Icon(Icons.photo_library),
+                onPressed: () {
+                  getImage();
+                },
+                tooltip: 'Select Image from Gallery',
+              ),
+              Form(
+                key: _formKeyName,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: TextFormField(
+                    controller: _txtControllerName,
+                    validator: (val) =>
+                        val!.isEmpty ? 'Name is required' : null,
+                    decoration: const InputDecoration(
+                        hintText: "Name...",
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.black38))),
+                  ),
                 ),
-                TextFormField(
-                  controller: _txtControllerName,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Name is required';
-                    }
-                    return null;
-                  },
+              ),
+              Form(
+                key: _formKeyEmail,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: TextFormField(
+                    controller: _txtControllerEmail,
+                    validator: (val) =>
+                        val!.isEmpty ? 'Email is required' : null,
+                    decoration: const InputDecoration(
+                        hintText: "Email...",
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.black38))),
+                  ),
                 ),
-                TextFormField(
-                  controller: _txtControllerEmail,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Email is required';
-                    }
-                    return null;
-                  },
+              ),
+              Form(
+                key: _formKeyEmailConfirm,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: TextFormField(
+                    controller: _txtControllerEmailConfirm,
+                    validator: (val) =>
+                        val!.isEmpty ? 'Confirm Email is required' : null,
+                    decoration: const InputDecoration(
+                        hintText: "Confirm Email...",
+                        border: OutlineInputBorder(
+                            borderSide:
+                                BorderSide(width: 1, color: Colors.black38))),
+                  ),
                 ),
-                TextFormField(
-                  controller: _txtControllerEmailConfirm,
-                  decoration: const InputDecoration(labelText: 'Confirm Email'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Confirm Email is required';
-                    }
-                    if (value != _txtControllerEmail.text) {
-                      return 'Email does not match';
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                _loading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _updateProfile,
-                        child: const Text('Update Profile'),
-                      ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 20),
+              _loading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _updateProfile,
+                      child: const Text('Update Profile'),
+                    ),
+            ],
           ),
         ),
       ),

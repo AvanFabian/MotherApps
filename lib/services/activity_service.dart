@@ -2,34 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:monitoring_hamil/models/activity.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
-
-// Future<List<ActivityRecord>> getActivityRecords(int userId) async {
-//   String token = await getToken();
-//   final response = await http.get(
-//     Uri.parse('http://10.0.2.2:8000/api/activity_records/user/$userId'),
-//     headers: <String, String>{
-//       'Authorization': 'Bearer $token',
-//     },
-//   );
-//   if (response.statusCode == 200) {
-//     // If the server returns a 200 OK response, then parse the JSON.
-//     List<dynamic> body = jsonDecode(response.body);
-//     // status code
-//     print('Status Code: ${response.statusCode}');
-//     print('Server Response: $body');
-//     return body.map((dynamic item) => ActivityRecord.fromJson(item)).toList();
-//   } else {
-//     // If the server returns an unsuccessful response code, then throw an exception.
-//     print('Status Code: ${response.statusCode}');
-//     print('Response Body: ${response.body}');
-//     throw Exception('Failed to load activity records');
-//   }
-// }
+import 'package:monitoring_hamil/res/constants.dart';
 
 Future<List<ActivityRecord>> getActivityRecords(int userId) async {
   String token = await getToken();
   final response = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/activity_records/user/$userId'),
+    Uri.parse('$baseURL2/activity_records/user/$userId'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -52,8 +30,7 @@ Future<List<ActivityRecord>> getActivityRecords(int userId) async {
 Future<int> getSportActivityId(String selectedExercise) async {
   String token = await getToken();
   var activityResponse = await http.get(
-    Uri.parse(
-        'http://10.0.2.2:8000/api/sports_activity_id?activity_name=$selectedExercise'),
+    Uri.parse('$baseURL2/sports_activity_id?activity_name=$selectedExercise'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -75,8 +52,7 @@ Future<List<int>> getSportMovementIds(List<String> selectedSubMovements) async {
   List<int> ids = [];
   for (var movement in selectedSubMovements) {
     var response = await http.get(
-      Uri.parse(
-          'http://10.0.2.2:8000/api/sports_movement_id?activity_name=$movement'),
+      Uri.parse('$baseURL2/sports_movement_id?activity_name=$movement'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -100,8 +76,7 @@ Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
   print('IDs: ${ids.join(',')}');
   String token = await getToken();
   var response = await http.get(
-    Uri.parse(
-        'http://10.0.2.2:8000/api/sports_movements/calories?ids=${ids.join(',')}'),
+    Uri.parse('$baseURL2/sports_movements/calories?ids=${ids.join(',')}'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
@@ -135,7 +110,7 @@ Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
 Future<http.Response> postActivityRecord(Map<String, String> body) async {
   String token = await getToken();
   return http.post(
-    Uri.parse('http://10.0.2.2:8000/api/activity_records'),
+    Uri.parse('$baseURL2/activity_records'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
@@ -149,7 +124,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
 
   // Fetch exercises
   var exercisesResponse = await http.get(
-    Uri.parse('http://10.0.2.2:8000/api/sports_activities'),
+    Uri.parse('$baseURL2/sports_activities'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -166,8 +141,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
 
   for (var exercise in exercises) {
     var movementsResponse = await http.get(
-      Uri.parse(
-          'http://10.0.2.2:8000/api/sports_movements?activity_name=$exercise'),
+      Uri.parse('$baseURL2/sports_movements?activity_name=$exercise'),
       headers: <String, String>{
         'Authorization': 'Bearer $token',
       },
@@ -187,8 +161,7 @@ Future<String> getYoutubeUrlForMovement(
   String token = await getToken();
   print('Exercise name: $exerciseName');
   final response = await http.get(
-    Uri.parse(
-        'http://10.0.2.2:8000/api/sports_movements?activity_name=$exerciseName'),
+    Uri.parse('$baseURL2/sports_movements?activity_name=$exerciseName'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -198,9 +171,9 @@ Future<String> getYoutubeUrlForMovement(
   if (response.statusCode == 200) {
     List<dynamic> sportsMovements = jsonDecode(response.body);
     for (var movement in sportsMovements) {
-      print('Movement: $movement');
+      // print('Movement: $movement');
       if (movement['name'] == movementName) {
-        print('Youtube link: ${movement['youtube_link']}');
+        // print('Youtube link: ${movement['youtube_link']}');
         return movement['youtube_link'] ?? '';
       }
     }

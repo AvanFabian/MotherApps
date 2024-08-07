@@ -5,7 +5,7 @@ import 'package:monitoring_hamil/pages/comment_page.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
+
 
 import '../Components/Auth/login_page.dart';
 import '../Components/any_form/post_form.dart';
@@ -145,11 +145,6 @@ class _PostPageState extends State<PostPage> {
                                             fontWeight: FontWeight.w600,
                                             fontSize: 17),
                                       ),
-                                      // Text(
-                                      //   DateFormat.yMMMd().format(post.date), Post Date
-                                      //   style: const TextStyle(
-                                      //       fontSize: 14, color: Colors.grey),
-                                      // ),
                                     ],
                                   ),
                                 ),

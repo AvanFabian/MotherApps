@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -206,73 +208,35 @@ Future<List<User>> getUsersDetails() async {
 // V2:
 
 Future<ApiResponse> updateUser(
-    String name, String email, String emailConfirmation, File? image) async {
+    String name, String email, String emailConfirmation, String? image) async {
   print('updateUser called');
   ApiResponse apiResponse = ApiResponse();
   try {
     print('Getting token');
     String token = await getToken();
     print('Token: $token');
-    var headers = {
+    final response = await http.put(Uri.parse(userURL), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'
-    };
-    var body = {
+    }, body: {
       'name': name,
       'email': email,
-      'email_confirmation': emailConfirmation
-    };
+      'email_confirmation': emailConfirmation,
+      'image': image
+    });
 
-    if (image != null) {
-      print('Image is not null');
-      var request = http.MultipartRequest('PUT', Uri.parse(userURL));
-      request.headers.addAll(headers);
-
-      // Add fields to the request
-      request.fields['name'] = name;
-      request.fields['email'] = email;
-      request.fields['email_confirmation'] = emailConfirmation;
-
-      // Read the image file as bytes
-      List<int> imageBytes = image.readAsBytesSync();
-
-      // Add the image to the request
-      request.files.add(http.MultipartFile.fromBytes('image', imageBytes,
-          filename: image.path.split("/").last));
-
-      print('Sending request');
-      var response = await request.send();
-
-      if (response.statusCode == 200) {
-        var respStr = await response.stream.bytesToString();
-        apiResponse.data = jsonDecode(respStr)['message'];
-      } else {
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
         print('Status code: ${response.statusCode}');
-        var respStr = await response.stream.bytesToString();
-        print('Response body: $respStr');
+        print('Response body: ${response.body}');
         apiResponse.error = somethingWentWrong;
-      }
-    } else {
-      print('Image is null');
-      var response = await http.put(
-        Uri.parse(userURL),
-        headers: headers,
-        body: jsonEncode(body), // Encode the body as a JSON string
-      );
-
-      switch (response.statusCode) {
-        case 200:
-          apiResponse.data = jsonDecode(response.body)['message'];
-          break;
-        case 401:
-          apiResponse.error = unauthorized;
-          break;
-        default:
-          print('Status code: ${response.statusCode}');
-          print('Response body: ${response.body}');
-          apiResponse.error = somethingWentWrong;
-          break;
-      }
+        break;
     }
   } catch (e) {
     print('Error: $e');

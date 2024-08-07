@@ -196,8 +196,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 45.0,
                         height: 10,
-                        image: users[0].image ??
-                            'assets/images/default_avatar.png',
+                        image:
+                            (users[0].image == null || users[0].image!.isEmpty)
+                                ? const AssetImage(
+                                    'assets/images/default_avatar.png')
+                                : NetworkImage(users[0].image!)
+                                    as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
@@ -228,8 +232,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 30.0,
                         height: 10,
-                        image: users[1].image ??
-                            'assets/images/default_avatar.png',
+                        image:
+                            (users[1].image == null || users[1].image!.isEmpty)
+                                ? const AssetImage(
+                                    'assets/images/default_avatar.png')
+                                : NetworkImage(users[1].image!)
+                                    as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
@@ -260,8 +268,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 30.0,
                         height: 10,
-                        image: users[2].image ??
-                            'assets/images/default_avatar.png',
+                        image:
+                            (users[2].image == null || users[2].image!.isEmpty)
+                                ? const AssetImage(
+                                    'assets/images/default_avatar.png')
+                                : NetworkImage(users[2].image!)
+                                    as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
@@ -303,7 +315,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   Column rank({
     required double radius,
     required double height,
-    required String image,
+    required ImageProvider image,
     required Widget name, // Change this line
     required String totalDuration,
     required String totalCaloriesBurned,
@@ -313,7 +325,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       children: [
         CircleAvatar(
           radius: radius,
-          backgroundImage: AssetImage(image),
+          backgroundImage: image,
         ),
         SizedBox(
           height: height,

@@ -1,6 +1,7 @@
 // ----- STRINGS ------
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 const signatureAppColor = Color.fromARGB(255, 253, 232, 232);
 const secondaryAppColor = Color.fromARGB(255, 66, 55, 44);
@@ -12,15 +13,17 @@ const kPrimaryLightColor = Color(0xFFF1E6FF);
 const double defaultPadding = 16.0;
 
 // ----- API URLS -----
-const baseURL = 'http://10.0.2.2:8000/api';
-const prodURL = 'https://api.motherserver.site/api';
-const loginURL = '$baseURL/login';
-const registerURL = '$baseURL/register';
-const logoutURL = '$baseURL/logout';
-const userURL = '$baseURL/user';
-const allUsersURL = '$baseURL/allUsers';
-const postsURL = '$baseURL/posts';
-const commentsURL = '$baseURL/comments';
+var baseURL = dotenv.env['BASE_URL'];
+var baseURL2 = dotenv.env['BASE_URL2'];
+var prodURL = dotenv.env['PROD_URL'];
+var prodURL2 = dotenv.env['PROD_URL2'];
+var loginURL = '$baseURL2/login';
+var registerURL = '$baseURL2/register';
+var logoutURL = '$baseURL2/logout';
+var userURL = '$baseURL2/user';
+var allUsersURL = '$baseURL2/allUsers';
+var postsURL = '$baseURL2/posts';
+var commentsURL = '$baseURL2/comments';
 
 // ----- Errors -----
 const serverError = 'Server error';
@@ -31,7 +34,8 @@ const somethingWentWrong = 'Something went wrong, try again!';
 const String GOOGLE_MAPS_API_KEY = "API_KEY_HERE";
 
 // --- input decoration
-InputDecoration kInputDecoration(String hint, {Color bgColor = Colors.white, Color hintColor = Colors.grey}) {
+InputDecoration kInputDecoration(String hint,
+    {Color bgColor = Colors.white, Color hintColor = Colors.grey}) {
   return InputDecoration(
     hintText: hint,
     hintStyle: TextStyle(color: hintColor), // Change the color of the hint text
@@ -45,7 +49,8 @@ InputDecoration kInputDecoration(String hint, {Color bgColor = Colors.white, Col
 }
 
 // button
-TextButton kTextButton(String label, Function onPressed, {Color? backgroundColor}) {
+TextButton kTextButton(String label, Function onPressed,
+    {Color? backgroundColor}) {
   return TextButton(
     style: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith(
@@ -62,8 +67,10 @@ TextButton kTextButton(String label, Function onPressed, {Color? backgroundColor
 
 // format duration
 String formatDuration(Duration duration) {
-  final twoDigitMinutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-  final twoDigitSeconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  final twoDigitMinutes =
+      duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final twoDigitSeconds =
+      duration.inSeconds.remainder(60).toString().padLeft(2, '0');
   return "${duration.inHours}:$twoDigitMinutes:$twoDigitSeconds";
 }
 

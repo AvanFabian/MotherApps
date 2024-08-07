@@ -1,5 +1,4 @@
 import 'dart:convert';
-// import 'dart:developer';
 
 import 'package:monitoring_hamil/models/api_response.dart';
 import 'package:monitoring_hamil/models/post.dart';
@@ -83,7 +82,7 @@ Future<ApiResponse> createPost(
   return apiResponse;
 }
 
-// Edit post
+// Edit/Update post
 Future<ApiResponse> editPost(int postId, String header, String subheader,
     String body, String? image) async {
   ApiResponse apiResponse = ApiResponse();
