@@ -7,11 +7,12 @@ import 'package:monitoring_hamil/pages/loading.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
   // Create an instance of TimerModel
   TimerModel timerModel = TimerModel();
-
+  await dotenv.load(fileName: ".env");
   runApp(
     ChangeNotifierProvider.value(
       value: timerModel,
