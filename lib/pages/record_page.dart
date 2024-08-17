@@ -34,7 +34,6 @@ class _RecordPageState extends State<RecordPage> {
   late Map<int, int> caloriesBurnedPredictions = {};
 
   @override
-  @override
   void initState() {
     super.initState();
     loadExercisesAndMovements();
@@ -270,18 +269,6 @@ class _RecordPageState extends State<RecordPage> {
               ],
             ),
           ),
-          // Expanded(
-          //   flex: 6,
-          //   child: Center(
-          //     // Center the text
-          //     child: Text(
-          //       '${duration ~/ 3600}:${(duration % 3600) ~/ 60}:${(duration % 60).toString().padLeft(2, '0')}',
-          //       style: const TextStyle(
-          //         fontSize: 50.0, // Increase the font size
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Expanded(
             flex: 6,
             child: Center(
@@ -504,6 +491,7 @@ class _RecordPageState extends State<RecordPage> {
                       } else {
                         timerModel
                             .toggleActivityStarted(); // Toggle the activity state only if an exercise is selected and there are sub-movements
+                        // STOP BUTTON CONDITION
                         if (timerModel.isPressed) {
                           // Get the current duration before stopping the timer
                           TimerModel timerModel =
@@ -532,9 +520,6 @@ class _RecordPageState extends State<RecordPage> {
                                 (caloriesBurnedPredictions[id] ?? 0) /
                                 3600;
                           }
-
-                          // print("Total calories burned: $totalCaloriesBurned");
-
                           // Make a POST request to store the duration and total calories burned in the database
                           var response = await postActivityRecord({
                             'user_id': userId.toString(),
@@ -556,16 +541,11 @@ class _RecordPageState extends State<RecordPage> {
                           }
                           duration = 0; // Reset the duration
 
-                          // setState(() {
-                          //   isPressed =
-                          //       !isPressed; // Toggle the state of the button
-                          //   isActivityStarted =
-                          //       false; // Set activity started to false
-                          // });
-
                           timerModel
                               .togglePressed(); // Toggle the state of the button
-                        } else {
+                        }
+                        // START BUTTON CONDITION
+                        else {
                           getSportMovementIds(selectedSubMovements).then((ids) {
                             getCaloriesBurnedPredictions(ids)
                                 .then((predictions) async {
@@ -585,13 +565,6 @@ class _RecordPageState extends State<RecordPage> {
                           }).catchError((e) {
                             print('Failed to load sport movement IDs: $e');
                           });
-
-                          // setState(() {
-                          //   isPressed =
-                          //       !isPressed; // Toggle the state of the button
-                          //   isActivityStarted =
-                          //       true; // Set activity started to true
-                          // });
 
                           timerModel
                               .togglePressed(); // Toggle the state of the button
