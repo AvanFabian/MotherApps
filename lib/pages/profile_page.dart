@@ -5,7 +5,6 @@ import 'package:monitoring_hamil/models/user.dart';
 import 'package:monitoring_hamil/components/any_form/edit_profile_form.dart';
 import 'package:monitoring_hamil/pages/activitydetail_page.dart';
 import 'package:monitoring_hamil/pages/layout.dart';
-import 'package:monitoring_hamil/pages/leaderboard_page.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 

@@ -17,7 +17,7 @@ class _LoadingState extends State<Loading> {
   void _loadUserInfo() async {
     try {
       String token = await getToken();
-      print('Token: $token'); // Print the token
+      // print('Token: $token'); // Print the token
       if (token == '') {
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
