@@ -15,15 +15,16 @@ const double defaultPadding = 16.0;
 // ----- API URLS -----
 var baseURL = dotenv.env['BASE_URL'];
 var baseURL2 = dotenv.env['BASE_URL2'];
+var baseURL3 = dotenv.env['BASE_URL3'];
 var prodURL = dotenv.env['PROD_URL'];
 var prodURL2 = dotenv.env['PROD_URL2'];
-var loginURL = '$baseURL2/login';
-var registerURL = '$baseURL2/register';
-var logoutURL = '$baseURL2/logout';
-var userURL = '$baseURL2/user';
-var allUsersURL = '$baseURL2/allUsers';
-var postsURL = '$baseURL2/posts';
-var commentsURL = '$baseURL2/comments';
+var loginURL = '$baseURL3/login';
+var registerURL = '$baseURL3/register';
+var logoutURL = '$baseURL3/logout';
+var userURL = '$baseURL3/user';
+var allUsersURL = '$baseURL3/allUsers';
+var postsURL = '$baseURL3/posts';
+var commentsURL = '$baseURL3/comments';
 
 // ----- Errors -----
 const serverError = 'Server error';

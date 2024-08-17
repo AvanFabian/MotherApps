@@ -103,7 +103,7 @@ Future<ApiResponse> getUserDetail() async {
       'Authorization': 'Bearer $token'
     });
 
-    print("User Detail Response: ${response.body}");
+    // print("User Detail Response: ${response.body}");
 
     switch (response.statusCode) {
       case 200:
@@ -214,7 +214,7 @@ Future<ApiResponse> updateUser(
   try {
     print('Getting token');
     String token = await getToken();
-    print('Token: $token');
+    // print('Token: $token');
     final response = await http.put(Uri.parse(userURL), headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $token'

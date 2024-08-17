@@ -8,11 +8,19 @@ import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   // Create an instance of TimerModel
   TimerModel timerModel = TimerModel();
   await dotenv.load(fileName: ".env");
+  await AndroidAlarmManager.initialize();
+
+  // Retrieve the saved time and timer value
+  await timerModel.retrieveTimeAndTimerValue();
   runApp(
     ChangeNotifierProvider.value(
       value: timerModel,
@@ -32,7 +40,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => const HomePage(),
           '/loading': (BuildContext context) => const Loading(),
-          '/routes': (BuildContext context) => const RoutePage(),
+          // '/routes': (BuildContext context) => const RoutePage(),
           '/leaderboard': (BuildContext context) => const LeaderboardPage(),
           '/profile': (BuildContext context) => const ProfilePage(),
         });
@@ -67,6 +75,46 @@ class TimerModel extends ChangeNotifier {
     _stream.listen((totalCaloriesBurned) {
       print('Total calories burned in main: $totalCaloriesBurned');
     });
+  }
+
+  // Add the new functions here
+  Future<void> saveTimeAndTimerValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('savedTime', DateTime.now().millisecondsSinceEpoch);
+    prefs.setInt('savedTimerValue', duration);
+
+    print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
+    print('Saved timer value: $duration');
+  }
+
+  Future<void> calculateElapsedTime() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('backgroundTime', DateTime.now().millisecondsSinceEpoch);
+
+    print('Background time: ${DateTime.now().millisecondsSinceEpoch}');
+  }
+
+  Future<void> retrieveTimeAndTimerValue() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedTime = prefs.getInt('savedTime');
+    final savedTimerValue = prefs.getInt('savedTimerValue');
+    final backgroundTime = prefs.getInt('backgroundTime');
+
+    if (savedTime != null &&
+        savedTimerValue != null &&
+        backgroundTime != null) {
+      final elapsedTime = backgroundTime - savedTime;
+      final newTimerValue = savedTimerValue + elapsedTime;
+
+      print('Saved time: $savedTime');
+      print('Saved timer value: $savedTimerValue');
+      print('Background time: $backgroundTime');
+      print('Elapsed time: $elapsedTime');
+      print('New timer value: $newTimerValue');
+
+      // Update the timer value
+      duration = newTimerValue;
+    }
   }
 
   void toggleActivityStarted() {
