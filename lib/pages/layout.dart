@@ -38,7 +38,7 @@ class _LayoutState extends State<Layout> {
     // home page
     const HomePage(),
     // RoutePage(),
-    // const RoutePage(),
+    const RoutePage(),
     // record page
     const RecordPage(),
     // leaderboard page

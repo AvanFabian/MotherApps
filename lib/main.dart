@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
+import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:monitoring_hamil/pages/loading.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
-import 'package:monitoring_hamil/pages/route_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
         routes: <String, WidgetBuilder>{
           '/home': (BuildContext context) => const HomePage(),
           '/loading': (BuildContext context) => const Loading(),
-          // '/routes': (BuildContext context) => const RoutePage(),
+          '/routes': (BuildContext context) => const RoutePage(),
           '/leaderboard': (BuildContext context) => const LeaderboardPage(),
           '/profile': (BuildContext context) => const ProfilePage(),
         });
