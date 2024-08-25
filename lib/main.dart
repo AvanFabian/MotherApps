@@ -1,8 +1,7 @@
-// ignore_for_file: avoid_print
-
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
 import 'package:monitoring_hamil/pages/leaderboard_page.dart';
@@ -104,27 +103,39 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
       // The app is reopened
       // Retrieve the ids list and the activity id from SharedPreferences and restart the timer
       retrieveIds().then((ids) {
-        print('Retrieved ids: $ids');
+        // print('Retrieved ids: $ids');
+        if (kDebugMode) {
+          print('Retrieved ids: $ids');
+        }
         if (ids != null) {
           startTimer(ids);
         }
       });
       retrieveActivityId().then((activityId) {
-        print('Retrieved activity id: $activityId');
+        // print('Retrieved activity id: $activityId');
+        if (kDebugMode) {
+          print('Retrieved activity id: $activityId');
+        }
         if (activityId != null) {
           sportActivityId = activityId;
         }
       });
       // CALORIES BURNED PREDICTIONS SAVING LOGIC
       retrieveTotalCaloriesBurned().then((totalCalories) {
-        print('Retrieved total calories: $totalCalories');
+        // print('Retrieved total calories: $totalCalories');
+        if (kDebugMode) {
+          print('Retrieved total calories: $totalCalories');
+        }
         if (totalCalories != null) {
           totalCaloriesBurned = totalCalories;
           _streamController.add(totalCaloriesBurned);
         }
       });
       retrieveCaloriesBurnedPredictions().then((predictions) {
-        print('Retrieved calories burned predictions: $predictions');
+        // print('Retrieved calories burned predictions: $predictions');
+        if (kDebugMode) {
+          print('Retrieved calories burned predictions: $predictions');
+        }
         if (predictions != null) {
           caloriesBurnedPredictions = predictions;
         }
@@ -135,7 +146,10 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
   TimerModel() {
     _stream = _streamController.stream;
     _stream.listen((totalCaloriesBurned) {
-      print('Total calories burned in main: $totalCaloriesBurned');
+      // print('Total calories burned in main: $totalCaloriesBurned');
+      if (kDebugMode) {
+        print('Total calories burned in main: $totalCaloriesBurned');
+      }
     });
   }
   void addToStream(double value) {
@@ -191,8 +205,14 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
       prefs.setInt('savedTimerValue', totalDuration);
     }
 
-    print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
-    print('Saved timer value: ${isStarting ? duration : totalDuration}');
+    // print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
+    if (kDebugMode) {
+      print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
+    }
+    // print('Saved timer value: ${isStarting ? duration : totalDuration}');
+    if (kDebugMode) {
+      print('Saved timer value: ${isStarting ? duration : totalDuration}');
+    }
   }
 
   Future<void> retrieveTimeAndTimerValue() async {
@@ -207,11 +227,26 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
       Duration elapsedTime = now.difference(savedTime);
       int newTimerValue = savedTimerValue + elapsedTime.inSeconds;
 
-      print('Saved time: $savedTime');
-      print('Saved timer value: $savedTimerValue');
-      print('Current time: $now');
-      print('Elapsed time: ${elapsedTime.inSeconds} seconds');
-      print('New timer value: $newTimerValue');
+      // print('Saved time: $savedTime');
+      if (kDebugMode) {
+        print('Saved time: $savedTime');
+      }
+      // print('Saved timer value: $savedTimerValue');
+      if (kDebugMode) {
+        print('Saved timer value: $savedTimerValue');
+      }
+      // print('Current time: $now');
+      if (kDebugMode) {
+        print('Current time: $now');
+      }
+      // print('Elapsed time: ${elapsedTime.inSeconds} seconds');
+      if (kDebugMode) {
+        print('Elapsed time: ${elapsedTime.inSeconds} seconds');
+      }
+      // print('New timer value: $newTimerValue');
+      if (kDebugMode) {
+        print('New timer value: $newTimerValue');
+      }
 
       // Update the timer value
       duration = newTimerValue;
@@ -270,9 +305,18 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
         saveTotalCaloriesBurned(totalCaloriesBurned);
         saveCaloriesBurnedPredictions(caloriesBurnedPredictions);
         // Debugging print statements
-        print('Total Calories Burned: $totalCaloriesBurned');
-        print('Duration: $duration');
-        print('Calories Burned Predictions: $caloriesBurnedPredictions');
+        // print('Total Calories Burned: $totalCaloriesBurned');
+        if (kDebugMode) {
+          print('Total Calories Burned: $totalCaloriesBurned');
+        }
+        // print('Duration: $duration');
+        if (kDebugMode) {
+          print('Duration: $duration');
+        }
+        // print('Calories Burned Predictions: $caloriesBurnedPredictions');
+        if (kDebugMode) {
+          print('Calories Burned Predictions: $caloriesBurnedPredictions');
+        }
       }
     });
   }

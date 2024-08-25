@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/main.dart';
 import 'package:monitoring_hamil/pages/activitydetail_page.dart';
@@ -52,14 +53,14 @@ class _RecordPageState extends State<RecordPage> {
 
       // Retrieve the totalCaloriesBurned from SharedPreferences and add it to the stream
       double? totalCalories = await timerModel.retrieveTotalCaloriesBurned();
-      print('Retrieved Total calories burned on recordpage line 55: $totalCalories');
+      // print('Retrieved Total calories burned on recordpage line 55: $totalCalories');
       if (totalCalories != null) {
         timerModel.totalCaloriesBurned = totalCalories;
         timerModel.addToStream(totalCalories);
       }
       // Retrieve the calories burned predictions from SharedPreferences
       Map<int, int>? predictions = await timerModel.retrieveCaloriesBurnedPredictions();
-      print('Retrieved Calories burned predictions on recordpage line 61: $predictions');
+      // print('Retrieved Calories burned predictions on recordpage line 61: $predictions');
       if (predictions != null) {
         timerModel.caloriesBurnedPredictions = predictions;
       }
@@ -92,7 +93,10 @@ class _RecordPageState extends State<RecordPage> {
             timer = null; // Set the timer to null
             Provider.of<TimerModel>(context, listen: false).startTimer(ids); // Start the timer
           }).catchError((e) {
-            print('Failed to load sport movement IDs: $e');
+            // print('Failed to load sport movement IDs: $e');
+            if (kDebugMode) {
+              debugPrint('Failed to load sport movement IDs: $e');
+            }
           });
         }
       }
@@ -114,6 +118,9 @@ class _RecordPageState extends State<RecordPage> {
   }
 
   void onExerciseSelected(String exercise, List<String> selectedSubMovements) async {
+    // Clear the selectedSubMovements list
+    this.selectedSubMovements.clear();
+    
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('selectedExercise', exercise);
     prefs.setStringList('selectedSubMovements', selectedSubMovements);
@@ -509,10 +516,14 @@ class _RecordPageState extends State<RecordPage> {
                           TimerModel timerModel = Provider.of<TimerModel>(context, listen: false);
                           duration = timerModel.duration;
                           totalDuration = duration; // Store the total duration
-                          print('Total duration: $totalDuration');
+                          // print('Total duration: $totalDuration');
+                          if (kDebugMode) {
+                            debugPrint('Total duration: $totalDuration');
+                          }
                           timerModel.stopTimer(); // Stop the timer in the TimerModel
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setInt('elapsedTime', 0); // Reset the elapsed time to 0 and save it to SharedPreferences
+                          await prefs.remove('selectedSubMovements'); // Delete the 'selectedSubMovements' preference
 
                           // Save the total duration to SharedPreferences
                           timerModel.saveTimeAndTimerValue(false);
@@ -522,7 +533,10 @@ class _RecordPageState extends State<RecordPage> {
                           int sportActivityId = await getSportActivityId(selectedExercise!);
                           // Get the IDs of the selected sport movements
                           List<int> sportMovementIds = await getSportMovementIds(selectedSubMovements);
-                          print("Selected sub-movements: $selectedSubMovements");
+                          // print("Selected sub-movements: $selectedSubMovements");
+                          if (kDebugMode) {
+                            debugPrint("Selected sub-movements: $selectedSubMovements");
+                          }
 
                           // Calculate the total calories burned
                           double totalCaloriesBurned = timerModel.totalCaloriesBurned;
@@ -540,10 +554,19 @@ class _RecordPageState extends State<RecordPage> {
 
                           // Check the status code of the response
                           if (response.statusCode == 201) {
-                            print('Duration successfully stored in the database');
+                            // print('Duration successfully stored in the database');
+                            if (kDebugMode) {
+                              debugPrint('Duration successfully stored in the database');
+                            }
                           } else {
-                            print('Failed to store the duration in the database');
-                            print('Response body: ${response.body}');
+                            // print('Failed to store the duration in the database');
+                            if (kDebugMode) {
+                              debugPrint('Failed to store the duration in the database');
+                            }
+                            // print('Response body: ${response.body}');
+                            if (kDebugMode) {
+                              debugPrint('Response body: ${response.body}');
+                            }
                           }
                           duration = 0; // Reset the duration
 
@@ -559,13 +582,22 @@ class _RecordPageState extends State<RecordPage> {
                                 Provider.of<TimerModel>(context, listen: false).caloriesBurnedPredictions = predictions;
                                 Provider.of<TimerModel>(context, listen: false).startTimer(ids); // Start the timer
                               } else {
-                                print('No calories burned predictions available');
+                                // print('No calories burned predictions available');
+                                if (kDebugMode) {
+                                  debugPrint('No calories burned predictions available');
+                                }
                               }
                             }).catchError((e) {
-                              print('Failed to load calories burned predictions: $e');
+                              // print('Failed to load calories burned predictions: $e');
+                              if (kDebugMode) {
+                                debugPrint('Failed to load calories burned predictions: $e');
+                              }
                             });
                           }).catchError((e) {
-                            print('Failed to load sport movement IDs: $e');
+                            // print('Failed to load sport movement IDs: $e');
+                            if (kDebugMode) {
+                              debugPrint('Failed to load sport movement IDs: $e');
+                            }
                           });
 
                           timerModel.togglePressed(); // Toggle the state of the button
@@ -639,7 +671,10 @@ class _RecordPageState extends State<RecordPage> {
                               timer = null; // Set the timer to null
                               Provider.of<TimerModel>(context, listen: false).startTimer(ids); // Start the timer
                             }).catchError((e) {
-                              print('Failed to load sport movement IDs: $e');
+                              // print('Failed to load sport movement IDs: $e');
+                              if (kDebugMode) {
+                                debugPrint('Failed to load sport movement IDs: $e');
+                              }
                             });
                           }
                         });
@@ -729,11 +764,3 @@ class _MyCheckboxListTileState extends State<_MyCheckboxListTile> {
     );
   }
 }
-
-                                    // onTap: () {
-                                    //   setState(() {
-                                    //     selectedExercise = exercises[index];
-                                    //     selectedSubMovements = [];
-                                    //   });
-                                    //   Navigator.pop(context);
-                                    // },
