@@ -11,15 +11,7 @@ import 'package:monitoring_hamil/pages/loading.dart';
 import 'package:monitoring_hamil/pages/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-@pragma('vm:entry-point')
-void callback() async {
-  print('Alarm fired!');
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setInt('backgroundTime', DateTime.now().millisecondsSinceEpoch);
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,11 +19,6 @@ void main() async {
   // Create an instance of TimerModel
   TimerModel timerModel = TimerModel();
   await dotenv.load(fileName: ".env");
-
-  await AndroidAlarmManager.initialize();
-
-  // Start the periodic alarm
-  await AndroidAlarmManager.periodic(const Duration(minutes: 1), 0, callback);
 
   // Retrieve the saved time timer value
   await timerModel.retrieveTimeAndTimerValue();

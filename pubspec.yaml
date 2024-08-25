@@ -51,7 +51,8 @@ dependencies:
   mime: ^1.0.5
   dotenv: ^4.2.0
   flutter_dotenv: ^5.1.0
-  android_alarm_manager_plus: ^3.0.4
+  rename_app: ^1.6.1
+  # android_alarm_manager_plus: ^3.0.4
   
 
 dev_dependencies:
