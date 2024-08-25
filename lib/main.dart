@@ -1,4 +1,7 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/home_page.dart';
@@ -11,22 +14,37 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@pragma('vm:entry-point')
+void callback() async {
+  print('Alarm fired!');
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setInt('backgroundTime', DateTime.now().millisecondsSinceEpoch);
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Create an instance of TimerModel
   TimerModel timerModel = TimerModel();
   await dotenv.load(fileName: ".env");
+
   await AndroidAlarmManager.initialize();
 
-  // Retrieve the saved time and timer value
+  // Start the periodic alarm
+  await AndroidAlarmManager.periodic(const Duration(minutes: 1), 0, callback);
+
+  // Retrieve the saved time timer value
   await timerModel.retrieveTimeAndTimerValue();
+
   runApp(
     ChangeNotifierProvider.value(
       value: timerModel,
       child: const MyApp(),
     ),
   );
+
+  // Add the observer
+  WidgetsBinding.instance.addObserver(timerModel);
 }
 
 class MyApp extends StatelessWidget {
@@ -34,20 +52,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: const Loading(),
-        routes: <String, WidgetBuilder>{
-          '/home': (BuildContext context) => const HomePage(),
-          '/loading': (BuildContext context) => const Loading(),
-          '/routes': (BuildContext context) => const RoutePage(),
-          '/leaderboard': (BuildContext context) => const LeaderboardPage(),
-          '/profile': (BuildContext context) => const ProfilePage(),
-        });
+    return MaterialApp(debugShowCheckedModeBanner: false, home: const Loading(), routes: <String, WidgetBuilder>{
+      '/home': (BuildContext context) => const HomePage(),
+      '/loading': (BuildContext context) => const Loading(),
+      '/routes': (BuildContext context) => const RoutePage(),
+      '/leaderboard': (BuildContext context) => const LeaderboardPage(),
+      '/profile': (BuildContext context) => const ProfilePage(),
+    });
   }
 }
 
-class TimerModel extends ChangeNotifier {
+class TimerModel with ChangeNotifier, WidgetsBindingObserver {
   int duration = 0;
   int totalDuration = 0;
   double totalCaloriesBurned = 0.0; // Add this line
@@ -59,16 +74,76 @@ class TimerModel extends ChangeNotifier {
   String? selectedExercise;
   List<String> selectedSubMovements = [];
 
+  int sportActivityId = 0; // Add this line
+
+  int _elapsedTime = 0;
+
+  int get elapsedTime => _elapsedTime;
+  set elapsedTime(int value) {
+    _elapsedTime = value;
+    notifyListeners();
+  }
+
   bool get isActivityStarted => _isActivityStarted;
+  set isActivityStarted(bool value) {
+    _isActivityStarted = value;
+    notifyListeners();
+  }
 
   bool get isPressed => _isPressed;
+  set isPressed(bool value) {
+    _isPressed = value;
+    notifyListeners();
+  }
+
   bool get isPaused => _isPaused;
   late Map<int, int> caloriesBurnedPredictions = {};
-  final StreamController<double> _streamController =
-      StreamController<double>.broadcast();
+  final StreamController<double> _streamController = StreamController<double>.broadcast();
   late Stream<double> _stream;
 
   Stream<double> get stream => _stream;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      // The app is being closed
+      // Save the ids list and the activity id to SharedPreferences
+      saveIds(selectedSubMovements.map(int.parse).toList());
+      saveActivityId(sportActivityId);
+      saveTotalCaloriesBurned(totalCaloriesBurned);
+      saveCaloriesBurnedPredictions(caloriesBurnedPredictions);
+    } else if (state == AppLifecycleState.resumed) {
+      // The app is reopened
+      // Retrieve the ids list and the activity id from SharedPreferences and restart the timer
+      retrieveIds().then((ids) {
+        print('Retrieved ids: $ids');
+        if (ids != null) {
+          startTimer(ids);
+        }
+      });
+      retrieveActivityId().then((activityId) {
+        print('Retrieved activity id: $activityId');
+        if (activityId != null) {
+          sportActivityId = activityId;
+        }
+      });
+      // CALORIES BURNED PREDICTIONS SAVING LOGIC
+      retrieveTotalCaloriesBurned().then((totalCalories) {
+        print('Retrieved total calories: $totalCalories');
+        if (totalCalories != null) {
+          totalCaloriesBurned = totalCalories;
+          _streamController.add(totalCaloriesBurned);
+        }
+      });
+      retrieveCaloriesBurnedPredictions().then((predictions) {
+        print('Retrieved calories burned predictions: $predictions');
+        if (predictions != null) {
+          caloriesBurnedPredictions = predictions;
+        }
+      });
+    }
+  }
 
   TimerModel() {
     _stream = _streamController.stream;
@@ -76,44 +151,102 @@ class TimerModel extends ChangeNotifier {
       print('Total calories burned in main: $totalCaloriesBurned');
     });
   }
-
-  // Add the new functions here
-  Future<void> saveTimeAndTimerValue() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('savedTime', DateTime.now().millisecondsSinceEpoch);
-    prefs.setInt('savedTimerValue', duration);
-
-    print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
-    print('Saved timer value: $duration');
+  void addToStream(double value) {
+    _streamController.add(value);
   }
 
-  Future<void> calculateElapsedTime() async {
+  Future<void> saveActivityId(int activityId) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('backgroundTime', DateTime.now().millisecondsSinceEpoch);
+    prefs.setInt('activityId', activityId);
+  }
 
-    print('Background time: ${DateTime.now().millisecondsSinceEpoch}');
+  Future<int?> retrieveActivityId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('activityId');
+  }
+
+  // CALORIES BURNED PREDICTIONS SAVING LOGIC
+  Future<void> saveTotalCaloriesBurned(double totalCalories) async {
+    // print('Saving total calories burned: $totalCalories');
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('totalCaloriesBurned', totalCalories);
+  }
+
+  Future<double?> retrieveTotalCaloriesBurned() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble('totalCaloriesBurned');
+  }
+
+  Future<void> saveCaloriesBurnedPredictions(Map<int, int> predictions) async {
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, int> stringKeyPredictions = predictions.map((key, value) => MapEntry(key.toString(), value));
+    prefs.setString('caloriesBurnedPredictions', jsonEncode(stringKeyPredictions));
+  }
+
+  Future<Map<int, int>?> retrieveCaloriesBurnedPredictions() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? predictionsJson = prefs.getString('caloriesBurnedPredictions');
+    if (predictionsJson != null) {
+      Map<String, int> stringKeyPredictions = Map<String, int>.from(jsonDecode(predictionsJson));
+      return stringKeyPredictions.map((key, value) => MapEntry(int.parse(key), value));
+    } else {
+      return null;
+    }
+  }
+
+  // TIMER SAVING LOGIC
+  Future<void> saveTimeAndTimerValue(bool isStarting) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('savedTime', DateTime.now().millisecondsSinceEpoch);
+    if (isStarting) {
+      prefs.setInt('savedTimerValue', duration);
+    } else {
+      prefs.setInt('savedTimerValue', totalDuration);
+    }
+
+    print('Saved time: ${DateTime.now().millisecondsSinceEpoch}');
+    print('Saved timer value: ${isStarting ? duration : totalDuration}');
   }
 
   Future<void> retrieveTimeAndTimerValue() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedTime = prefs.getInt('savedTime');
+    final savedTimeMillis = prefs.getInt('savedTime');
     final savedTimerValue = prefs.getInt('savedTimerValue');
-    final backgroundTime = prefs.getInt('backgroundTime');
+    final wasActivityStarted = prefs.getBool('isActivityStarted') ?? false;
 
-    if (savedTime != null &&
-        savedTimerValue != null &&
-        backgroundTime != null) {
-      final elapsedTime = backgroundTime - savedTime;
-      final newTimerValue = savedTimerValue + elapsedTime;
+    if (savedTimeMillis != null && savedTimerValue != null && wasActivityStarted) {
+      DateTime savedTime = DateTime.fromMillisecondsSinceEpoch(savedTimeMillis);
+      DateTime now = DateTime.now();
+      Duration elapsedTime = now.difference(savedTime);
+      int newTimerValue = savedTimerValue + elapsedTime.inSeconds;
 
       print('Saved time: $savedTime');
       print('Saved timer value: $savedTimerValue');
-      print('Background time: $backgroundTime');
-      print('Elapsed time: $elapsedTime');
+      print('Current time: $now');
+      print('Elapsed time: ${elapsedTime.inSeconds} seconds');
       print('New timer value: $newTimerValue');
 
       // Update the timer value
       duration = newTimerValue;
+    } else if (savedTimerValue != null) {
+      // If the timer was not running when the app was closed, just reset the duration to 0
+      duration = 0;
+    }
+  }
+
+  Future<void> saveIds(List<int> ids) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('savedIds', jsonEncode(ids));
+  }
+
+  Future<List<int>?> retrieveIds() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedIds = prefs.getString('savedIds');
+
+    if (savedIds != null) {
+      return List<int>.from(jsonDecode(savedIds).map((x) => x));
+    } else {
+      return null;
     }
   }
 
@@ -123,8 +256,11 @@ class TimerModel extends ChangeNotifier {
   }
 
   void startTimer(List<int> ids) {
+    // Save the ids list to SharedPreferences
+    saveIds(ids);
+    saveActivityId(sportActivityId);
     timer?.cancel();
-    timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
       if (!isPaused) {
         // Calculate the total calories burned
         totalCaloriesBurned = 0.0;
@@ -143,7 +279,9 @@ class TimerModel extends ChangeNotifier {
         // Increase the duration
         duration++;
         notifyListeners();
-
+        // Save the totalCaloriesBurned and caloriesBurnedPredictions to SharedPreferences
+        saveTotalCaloriesBurned(totalCaloriesBurned);
+        saveCaloriesBurnedPredictions(caloriesBurnedPredictions);
         // Debugging print statements
         print('Total Calories Burned: $totalCaloriesBurned');
         print('Duration: $duration');
@@ -156,19 +294,24 @@ class TimerModel extends ChangeNotifier {
     timer?.cancel();
     totalDuration = duration;
     duration = 0;
-    // Reset selectedExercise and selectedSubMovements
+    // Reset selectedExercise, selectedSubMovements, and sportActivityId
     selectedExercise = null;
     selectedSubMovements = [];
+    sportActivityId = 0;
     notifyListeners();
   }
 
-  void togglePressed() {
+  Future<void> togglePressed() async {
     _isPressed = !_isPressed;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isPressed', isPressed);
     notifyListeners();
   }
 
-  void togglePaused() {
+  Future<void> togglePaused() async {
     _isPaused = !_isPaused;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isPaused', isPaused);
     notifyListeners();
   }
 

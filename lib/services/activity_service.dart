@@ -37,6 +37,7 @@ Future<int> getSportActivityId(String selectedExercise) async {
   );
   if (activityResponse.statusCode == 200) {
     var activityId = jsonDecode(activityResponse.body);
+    print('Activity ID: $activityId');
     return activityId;
   } else {
     print('Request failed with status: ${activityResponse.statusCode}.');
