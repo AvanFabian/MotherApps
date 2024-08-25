@@ -12,8 +12,7 @@ class EditProfileForm extends StatefulWidget {
   const EditProfileForm({super.key});
 
   @override
-  State<EditProfileForm> createState() =>
-      _EditProfileFormState(); // _EditProfileFormState is a class defined below
+  State<EditProfileForm> createState() => _EditProfileFormState(); // _EditProfileFormState is a class defined below
 }
 
 class _EditProfileFormState extends State<EditProfileForm> {
@@ -22,8 +21,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   final GlobalKey<FormState> _formKeyEmailConfirm = GlobalKey<FormState>();
   final TextEditingController _txtControllerName = TextEditingController();
   final TextEditingController _txtControllerEmail = TextEditingController();
-  final TextEditingController _txtControllerEmailConfirm =
-      TextEditingController();
+  final TextEditingController _txtControllerEmailConfirm = TextEditingController();
   bool _loading = false;
   File? _imageFile;
   final _picker = ImagePicker();
@@ -57,9 +55,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   }
 
   void _updateProfile() async {
-    if (_formKeyName.currentState!.validate() &&
-        _formKeyEmail.currentState!.validate() &&
-        _formKeyEmailConfirm.currentState!.validate()) {
+    if (_formKeyName.currentState!.validate() && _formKeyEmail.currentState!.validate() && _formKeyEmailConfirm.currentState!.validate()) {
       setState(() {
         _loading = true;
       });
@@ -68,8 +64,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
       String email = _txtControllerEmail.text;
       String emailConfirmation = _txtControllerEmailConfirm.text;
 
-      ApiResponse response = await updateUser(
-          name, email, emailConfirmation, getStringImage(_imageFile));
+      ApiResponse response = await updateUser(name, email, emailConfirmation, getStringImage(_imageFile));
       if (response.error == null) {
         if (mounted) {
           Navigator.of(context).pop();
@@ -77,15 +72,12 @@ class _EditProfileFormState extends State<EditProfileForm> {
       } else if (response.error == unauthorized) {
         if (mounted) {
           logout(context).then((value) => {
-                Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
-                    (route) => false)
+                if (mounted) {Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const LoginPage()), (route) => false)}
               });
         }
       } else {
         if (mounted) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('${response.error}')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${response.error}')));
         }
         setState(() {
           _loading = !_loading;
@@ -119,13 +111,8 @@ class _EditProfileFormState extends State<EditProfileForm> {
                   padding: const EdgeInsets.all(8),
                   child: TextFormField(
                     controller: _txtControllerName,
-                    validator: (val) =>
-                        val!.isEmpty ? 'Name is required' : null,
-                    decoration: const InputDecoration(
-                        hintText: "Name...",
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.black38))),
+                    validator: (val) => val!.isEmpty ? 'Name is required' : null,
+                    decoration: const InputDecoration(hintText: "Name...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
                   ),
                 ),
               ),
@@ -135,13 +122,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
                   padding: const EdgeInsets.all(8),
                   child: TextFormField(
                     controller: _txtControllerEmail,
-                    validator: (val) =>
-                        val!.isEmpty ? 'Email is required' : null,
-                    decoration: const InputDecoration(
-                        hintText: "Email...",
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.black38))),
+                    validator: (val) => val!.isEmpty ? 'Email is required' : null,
+                    decoration:
+                        const InputDecoration(hintText: "Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
                   ),
                 ),
               ),
@@ -151,13 +134,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
                   padding: const EdgeInsets.all(8),
                   child: TextFormField(
                     controller: _txtControllerEmailConfirm,
-                    validator: (val) =>
-                        val!.isEmpty ? 'Confirm Email is required' : null,
+                    validator: (val) => val!.isEmpty ? 'Confirm Email is required' : null,
                     decoration: const InputDecoration(
-                        hintText: "Confirm Email...",
-                        border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(width: 1, color: Colors.black38))),
+                        hintText: "Confirm Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
                   ),
                 ),
               ),
@@ -169,6 +148,19 @@ class _EditProfileFormState extends State<EditProfileForm> {
                       child: const Text('Update Profile'),
                     ),
             ],
+          ),
+        ),
+      ),
+      floatingActionButton: ElevatedButton.icon(
+        onPressed: () {
+          print('Delete account');
+        },
+        icon: const Icon(Icons.delete),
+        label: const Text('Delete account'),
+        style: ElevatedButton.styleFrom(
+          // primary: Colors.red,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
           ),
         ),
       ),

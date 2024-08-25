@@ -1,6 +1,8 @@
 import 'package:monitoring_hamil/pages/layout.dart';
 import 'package:monitoring_hamil/pages/post_page.dart';
 import 'package:flutter/material.dart';
+import 'package:monitoring_hamil/pages/activitydetail_page.dart';
+import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:monitoring_hamil/res/constants.dart';
 
 class HomePage extends StatefulWidget {
@@ -35,8 +37,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Layout(
-                        initialPage: 4), 
+                    builder: (context) => const Layout(initialPage: 4),
                   ),
                 );
               },
@@ -46,16 +47,14 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 2.0, top: 0.0, right: 2.0, bottom: 0.0),
+              padding: const EdgeInsets.only(left: 2.0, top: 0.0, right: 2.0, bottom: 0.0),
               child: Card(
                 color: const Color.fromARGB(255, 255, 255, 255),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0.0),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.only(
-                      left: 16.0, top: 16.0, right: 16.0, bottom: 16.0),
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 16.0, top: 16.0, right: 16.0, bottom: 16.0),
                   child: Row(
                     children: [
                       Expanded(
@@ -66,35 +65,52 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
+                                const Text(
                                   'Your Weekly Snapshot',
                                   style: TextStyle(
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                Text(
-                                  'See More',
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FutureBuilder<int>(
+                                          future: getUserId().then((value) {
+                                            return value;
+                                          }),
+                                          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+                                            if (snapshot.hasData) {
+                                              return ActivityDetailPage(userId: snapshot.data!);
+                                            } else if (snapshot.hasError) {
+                                              return Text('Error: ${snapshot.error}');
+                                            }
+                                            return const CircularProgressIndicator();
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    'See More',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 )
                               ],
                             ),
-                            SizedBox(
-                                height:
-                                    22.0), // Adjust the height as needed to add a vertical gap
-                            Row(
+                            const SizedBox(height: 22.0), // Adjust the height as needed to add a vertical gap
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      right:
-                                          10.0), // Adjust the padding as needed
+                                  padding: EdgeInsets.only(right: 10.0), // Adjust the padding as needed
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Activity',
@@ -102,9 +118,7 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black54,
                                         ),
                                       ),
-                                      SizedBox(
-                                          height:
-                                              10.0), // Adjust the height as needed to add a vertical gap
+                                      SizedBox(height: 10.0), // Adjust the height as needed to add a vertical gap
                                       Text(
                                         '0',
                                         style: TextStyle(
@@ -116,12 +130,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          10.0), // Adjust the padding as needed
+                                  padding: EdgeInsets.symmetric(horizontal: 10.0), // Adjust the padding as needed
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         'Time',
@@ -129,9 +140,7 @@ class _HomePageState extends State<HomePage> {
                                           color: Colors.black54,
                                         ),
                                       ),
-                                      SizedBox(
-                                          height:
-                                              10.0), // Adjust the height as needed to add a vertical gap
+                                      SizedBox(height: 10.0), // Adjust the height as needed to add a vertical gap
                                       Text(
                                         '0H 0M',
                                         style: TextStyle(
@@ -143,20 +152,15 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      left:
-                                          10.0), // Adjust the padding as needed
+                                  padding: EdgeInsets.only(left: 10.0), // Adjust the padding as needed
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text('Distance',
                                           style: TextStyle(
                                             color: Colors.black54,
                                           )),
-                                      SizedBox(
-                                          height:
-                                              10.0), // Adjust the height as needed to add a vertical gap
+                                      SizedBox(height: 10.0), // Adjust the height as needed to add a vertical gap
                                       Text(
                                         '0.00 km',
                                         style: TextStyle(
@@ -178,8 +182,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const Expanded(
-                child: PostPage()), // add Expanded to take up remaining space
+            const Expanded(child: PostPage()), // add Expanded to take up remaining space
           ],
         ));
   }

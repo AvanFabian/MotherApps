@@ -120,7 +120,7 @@ class _RecordPageState extends State<RecordPage> {
   void onExerciseSelected(String exercise, List<String> selectedSubMovements) async {
     // Clear the selectedSubMovements list
     this.selectedSubMovements.clear();
-    
+
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('selectedExercise', exercise);
     prefs.setStringList('selectedSubMovements', selectedSubMovements);
@@ -239,21 +239,21 @@ class _RecordPageState extends State<RecordPage> {
         centerTitle: true,
         backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: IconButton(
-              // settings icon
-              icon: const Icon(Icons.refresh, size: 30.0),
-              color: Colors.black,
-              onPressed: () {
-                setState(() {
-                  // This will rebuild your widget
-                });
-              },
-            ),
-          ),
-        ],
+        // actions: <Widget>[
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: IconButton(
+        //       // settings icon
+        //       icon: const Icon(Icons.refresh, size: 30.0),
+        //       color: Colors.black,
+        //       onPressed: () {
+        //         setState(() {
+        //           // This will rebuild your widget
+        //         });
+        //       },
+        //     ),
+        //   ),
+        // ],
       ),
       body: Column(
         children: <Widget>[
@@ -523,7 +523,7 @@ class _RecordPageState extends State<RecordPage> {
                           timerModel.stopTimer(); // Stop the timer in the TimerModel
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setInt('elapsedTime', 0); // Reset the elapsed time to 0 and save it to SharedPreferences
-                          await prefs.remove('selectedSubMovements'); // Delete the 'selectedSubMovements' preference
+                          // await prefs.remove('selectedSubMovements'); // Delete the 'selectedSubMovements' preference
 
                           // Save the total duration to SharedPreferences
                           timerModel.saveTimeAndTimerValue(false);

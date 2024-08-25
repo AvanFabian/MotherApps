@@ -26,8 +26,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         builder: (BuildContext context, AsyncSnapshot<List<User>> snapshot) {
           if (snapshot.hasData) {
             List<User> users = snapshot.data!;
-            users.sort((a, b) =>
-                (b.totalDuration ?? 0).compareTo(a.totalDuration ?? 0));
+            users.sort((a, b) => (b.totalDuration ?? 0).compareTo(a.totalDuration ?? 0));
 
             return Stack(
               children: [
@@ -84,14 +83,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       itemBuilder: (context, index) {
                         final user = users[index];
                         return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                crossAxisAlignment: CrossAxisAlignment
-                                    .start, // Align items at the start
+                                crossAxisAlignment: CrossAxisAlignment.start, // Align items at the start
                                 children: [
                                   Text(
                                     (index + 1).toString(),
@@ -105,16 +102,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                   ),
                                   CircleAvatar(
                                     radius: 25,
-                                    backgroundImage: AssetImage(user.image ??
-                                        'assets/images/default_avatar.png'),
+                                    backgroundImage: AssetImage(user.image ?? 'assets/images/default_avatar.png'),
                                   ),
                                   const SizedBox(
                                     width: 15,
                                   ),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           user.name ?? 'Anonymous',
@@ -123,8 +118,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: 10), // Add vertical gap
+                                        const SizedBox(height: 10), // Add vertical gap
                                         Text(
                                           'Total Duration: ${user.totalDuration} sec.',
                                           style: const TextStyle(
@@ -133,8 +127,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: 10), // Add vertical gap
+                                        const SizedBox(height: 10), // Add vertical gap
                                         Text(
                                           'Total Calories Burned: ${user.totalCaloriesBurned!.toStringAsFixed(2)} kcal.',
                                           style: const TextStyle(
@@ -143,8 +136,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: 10), // Add vertical gap
+                                        const SizedBox(height: 10), // Add vertical gap
                                         Text(
                                           'Sport Name: ${user.sportName}',
                                           style: const TextStyle(
@@ -153,8 +145,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        const SizedBox(
-                                            height: 10), // Add vertical gap
+                                        const SizedBox(height: 10), // Add vertical gap
                                         Text(
                                           'Sport Movement: ${user.sportMovement}',
                                           style: const TextStyle(
@@ -196,19 +187,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 45.0,
                         height: 10,
-                        image:
-                            (users[0].image == null || users[0].image!.isEmpty)
-                                ? const AssetImage(
-                                    'assets/images/default_avatar.png')
-                                : NetworkImage(users[0].image!)
-                                    as ImageProvider<Object>,
+                        image: (users[0].image == null || users[0].image!.isEmpty)
+                            ? const AssetImage('assets/images/default_avatar.png')
+                            : NetworkImage(users[0].image!) as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
-                            child: Text(
-                                (users[0].name?.length ?? 0) > 14
-                                    ? "${users[0].name!.substring(0, 14)}..."
-                                    : users[0].name ?? 'Anonymous',
+                            child: Text((users[0].name?.length ?? 0) > 14 ? "${users[0].name!.substring(0, 14)}..." : users[0].name ?? 'Anonymous',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -218,10 +203,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           ),
                         ),
                         totalDuration: users[0].totalDuration.toString(),
-                        totalCaloriesBurned: users[0].totalCaloriesBurned !=
-                                null
-                            ? users[0].totalCaloriesBurned!.toStringAsFixed(2)
-                            : '0.00',
+                        totalCaloriesBurned: users[0].totalCaloriesBurned != null ? users[0].totalCaloriesBurned!.toStringAsFixed(2) : '0.00',
                         point: users[0].totalDuration.toString()),
                   ),
 // for rank 2nd
@@ -232,19 +214,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 30.0,
                         height: 10,
-                        image:
-                            (users[1].image == null || users[1].image!.isEmpty)
-                                ? const AssetImage(
-                                    'assets/images/default_avatar.png')
-                                : NetworkImage(users[1].image!)
-                                    as ImageProvider<Object>,
+                        image: (users[1].image == null || users[1].image!.isEmpty)
+                            ? const AssetImage('assets/images/default_avatar.png')
+                            : NetworkImage(users[1].image!) as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
-                            child: Text(
-                                (users[1].name?.length ?? 0) > 14
-                                    ? "${users[0].name!.substring(0, 14)}..."
-                                    : users[1].name ?? 'Anonymous',
+                            child: Text((users[1].name?.length ?? 0) > 14 ? "${users[0].name!.substring(0, 14)}..." : users[1].name ?? 'Anonymous',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -254,10 +230,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           ),
                         ),
                         totalDuration: users[1].totalDuration.toString(),
-                        totalCaloriesBurned: users[1].totalCaloriesBurned !=
-                                null
-                            ? users[1].totalCaloriesBurned!.toStringAsFixed(2)
-                            : '0.00',
+                        totalCaloriesBurned: users[1].totalCaloriesBurned != null ? users[1].totalCaloriesBurned!.toStringAsFixed(2) : '0.00',
                         point: users[1].totalDuration.toString()),
                   ),
 // For 3rd rank
@@ -268,19 +241,13 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     child: rank(
                         radius: 30.0,
                         height: 10,
-                        image:
-                            (users[2].image == null || users[2].image!.isEmpty)
-                                ? const AssetImage(
-                                    'assets/images/default_avatar.png')
-                                : NetworkImage(users[2].image!)
-                                    as ImageProvider<Object>,
+                        image: (users[2].image == null || users[2].image!.isEmpty)
+                            ? const AssetImage('assets/images/default_avatar.png')
+                            : NetworkImage(users[2].image!) as ImageProvider<Object>,
                         name: SizedBox(
                           width: 150, // adjust the width as needed
                           child: Center(
-                            child: Text(
-                                (users[2].name?.length ?? 0) > 14
-                                    ? "${users[2].name!.substring(0, 14)}..."
-                                    : users[2].name ?? 'Anonymous',
+                            child: Text((users[2].name?.length ?? 0) > 14 ? "${users[2].name!.substring(0, 14)}..." : users[2].name ?? 'Anonymous',
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                   fontSize: 16,
@@ -290,10 +257,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           ),
                         ),
                         totalDuration: users[2].totalDuration.toString(),
-                        totalCaloriesBurned: users[2].totalCaloriesBurned !=
-                                null
-                            ? users[2].totalCaloriesBurned!.toStringAsFixed(2)
-                            : '0.00',
+                        totalCaloriesBurned: users[2].totalCaloriesBurned != null ? users[2].totalCaloriesBurned!.toStringAsFixed(2) : '0.00',
                         point: users[2].totalDuration.toString()),
                   ),
               ],
@@ -338,8 +302,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
         Container(
           height: 25,
           width: 70,
-          decoration: BoxDecoration(
-              color: Colors.black54, borderRadius: BorderRadius.circular(50)),
+          decoration: BoxDecoration(color: Colors.black54, borderRadius: BorderRadius.circular(50)),
           child: Row(
             children: [
               const SizedBox(
@@ -348,12 +311,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               const SizedBox(
                 width: 5,
               ),
-              Text(
-                "$totalCaloriesBurned kcal.",
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 10,
-                    color: Colors.white),
+              Flexible(
+                child: Text(
+                  "$totalCaloriesBurned kcal.",
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 10, color: Colors.white),
+                ),
               ),
             ],
           ),
