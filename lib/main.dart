@@ -107,7 +107,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
         if (kDebugMode) {
           print('Retrieved ids: $ids');
         }
-        if (ids != null) {
+        if (ids != null && ids.isNotEmpty) {
           startTimer(ids);
         }
       });
@@ -323,6 +323,8 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
 
   void stopTimer() {
     timer?.cancel();
+    timer = null; // new line added
+    isActivityStarted = false; // new line added
     totalDuration = duration;
     duration = 0;
     // Reset selectedExercise, selectedSubMovements, and sportActivityId

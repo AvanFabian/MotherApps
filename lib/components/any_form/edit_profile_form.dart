@@ -155,10 +155,16 @@ class _EditProfileFormState extends State<EditProfileForm> {
         onPressed: () {
           print('Delete account');
         },
-        icon: const Icon(Icons.delete),
-        label: const Text('Delete account'),
+        icon: const Icon(
+          Icons.delete,
+          color: Colors.white, // Change color here
+        ),
+        label: const Text(
+          'Delete account',
+          style: TextStyle(color: Colors.white), // Change color here
+        ),
         style: ElevatedButton.styleFrom(
-          // primary: Colors.red,
+          backgroundColor: Colors.red,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),

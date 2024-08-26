@@ -74,7 +74,7 @@ class _RecordPageState extends State<RecordPage> {
       timerModel.selectedSubMovements = selectedSubMovements;
       _stream = timerModel.stream;
 
-      if (isActivityStarted) {
+      if (isActivityStarted && timerModel.isPressed) {
         // If the activity was started, retrieve the total duration from SharedPreferences and use it to initialize the duration
         await timerModel.retrieveTimeAndTimerValue();
         setState(() {
