@@ -59,6 +59,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
 
   String? selectedExercise;
   List<String> selectedSubMovements = [];
+  bool shouldTimerRun = false;
 
   int sportActivityId = 0; // Add this line
 
@@ -107,7 +108,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
         if (kDebugMode) {
           print('Retrieved ids: $ids');
         }
-        if (ids != null && ids.isNotEmpty) {
+        if (ids != null && ids.isNotEmpty && shouldTimerRun) {
           startTimer(ids);
         }
       });
@@ -283,6 +284,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     saveActivityId(sportActivityId);
     timer?.cancel();
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    shouldTimerRun = true;
       if (!isPaused) {
         // Calculate the total calories burned
         totalCaloriesBurned = 0.0;
@@ -325,6 +327,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     timer?.cancel();
     timer = null; // new line added
     isActivityStarted = false; // new line added
+    shouldTimerRun = false;
     totalDuration = duration;
     duration = 0;
     // Reset selectedExercise, selectedSubMovements, and sportActivityId

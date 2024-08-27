@@ -89,8 +89,7 @@ Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
 
   if (response.statusCode == 200) {
     // If the server returns a 200 OK response, parse the JSON.
-    Map<int, int> predictions = (jsonDecode(response.body) as Map)
-        .map((key, value) => MapEntry(int.parse(key), value));
+    Map<int, int> predictions = (jsonDecode(response.body) as Map).map((key, value) => MapEntry(int.parse(key), value));
     return predictions;
   } else {
     // If the server returns an unexpected response, throw an exception.
@@ -134,9 +133,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
   var exercisesData = jsonDecode(exercisesResponse.body);
   // print("Exercises data: $exercisesData");
 
-  List<String> exercises = (exercisesData as List)
-      .map((item) => item['sport_type'] as String)
-      .toList();
+  List<String> exercises = (exercisesData as List).map((item) => item['sport_type'] as String).toList();
 
   Map<String, List<String>> subMovements = {};
 
@@ -150,15 +147,13 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
     // print("Movements response: ${movementsResponse.body}");
 
     var movementsData = jsonDecode(movementsResponse.body);
-    subMovements[exercise] =
-        (movementsData as List).map((item) => item['name'] as String).toList();
+    subMovements[exercise] = (movementsData as List).map((item) => item['name'] as String).toList();
   }
 
   return {'exercises': exercises, 'subMovements': subMovements};
 }
 
-Future<String> getYoutubeUrlForMovement(
-    String exerciseName, String movementName) async {
+Future<String> getYoutubeUrlForMovement(String exerciseName, String movementName) async {
   String token = await getToken();
   print('Exercise name: $exerciseName');
   final response = await http.get(

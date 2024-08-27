@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/pages/welcome_page.dart';
 import 'package:monitoring_hamil/res/constants.dart';
@@ -17,17 +18,12 @@ import 'package:monitoring_hamil/models/activity.dart';
 Future<ApiResponse> login(String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    final response = await http.post(Uri.parse(loginURL),
-        headers: {'Accept': 'application/json'},
-        body: {'email': email, 'password': password});
+    final response = await http.post(Uri.parse(loginURL), headers: {'Accept': 'application/json'}, body: {'email': email, 'password': password});
 
     // debug
     print("Login Response user_service: ${response.body}");
 
     switch (response.statusCode) {
-      // case 200:
-      //   apiResponse.data = User.fromJson(jsonDecode(response.body));
-      //   break;
       case 200:
         User user = User.fromJson(jsonDecode(response.body));
         apiResponse.data = user;
@@ -60,14 +56,8 @@ Future<ApiResponse> login(String email, String password) async {
 Future<ApiResponse> register(String name, String email, String password) async {
   ApiResponse apiResponse = ApiResponse();
   try {
-    final response = await http.post(Uri.parse(registerURL), headers: {
-      'Accept': 'application/json'
-    }, body: {
-      'name': name,
-      'email': email,
-      'password': password,
-      'password_confirmation': password
-    });
+    final response = await http.post(Uri.parse(registerURL),
+        headers: {'Accept': 'application/json'}, body: {'name': name, 'email': email, 'password': password, 'password_confirmation': password});
 
     switch (response.statusCode) {
       case 200:
@@ -98,10 +88,7 @@ Future<ApiResponse> getUserDetail() async {
   ApiResponse apiResponse = ApiResponse();
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(userURL), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+    final response = await http.get(Uri.parse(userURL), headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
 
     // print("User Detail Response: ${response.body}");
 
@@ -132,10 +119,7 @@ Future<List<User>> getUsersDetails() async {
   List<User> users = [];
   try {
     String token = await getToken();
-    final response = await http.get(Uri.parse(allUsersURL), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    });
+    final response = await http.get(Uri.parse(allUsersURL), headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       var jsonData = jsonDecode(response.body);
@@ -143,27 +127,16 @@ Future<List<User>> getUsersDetails() async {
       for (var userJson in usersJson) {
         User user = User.fromJson(userJson);
         if (user.id != null) {
-          List<ActivityRecord> activityRecords =
-              (await getActivityRecords(user.id!));
-          double totalDuration = activityRecords.fold(
-              0, (sum, record) => sum + (record.duration.toDouble()));
+          List<ActivityRecord> activityRecords = (await getActivityRecords(user.id!));
+          double totalDuration = activityRecords.fold(0, (sum, record) => sum + (record.duration.toDouble()));
           user.totalDuration = totalDuration;
-          double totalCaloriesBurned = activityRecords.fold(0,
-              (sum, record) => sum + (record.totalCaloriesBurned.toDouble()));
+          double totalCaloriesBurned = activityRecords.fold(0, (sum, record) => sum + (record.totalCaloriesBurned.toDouble()));
           user.totalCaloriesBurned = totalCaloriesBurned;
-          String sportName =
-              activityRecords.isNotEmpty ? activityRecords[0].sportName : '';
+          String sportName = activityRecords.isNotEmpty ? activityRecords[0].sportName : '';
           user.sportName = sportName;
-          String sportMovement = activityRecords.isNotEmpty
-              ? activityRecords[0].sportMovement
-              : '';
+          String sportMovement = activityRecords.isNotEmpty ? activityRecords[0].sportMovement : '';
           user.sportMovement = sportMovement;
-          int totalPoints = activityRecords.fold(
-              0,
-              (sum, record) =>
-                  sum +
-                  (record.duration) +
-                  (record.totalCaloriesBurned.toInt()));
+          int totalPoints = activityRecords.fold(0, (sum, record) => sum + (record.duration) + (record.totalCaloriesBurned.toInt()));
           user.totalPoints = totalPoints;
         }
         users.add(user);
@@ -180,50 +153,16 @@ Future<List<User>> getUsersDetails() async {
   return users;
 }
 
-// Update user
-// Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, File? image) async {
-//   ApiResponse apiResponse = ApiResponse();
-//   try {
-//     String token = await getToken();
-//     var headers = {'Accept': 'application/json', 'Authorization': 'Bearer $token'};
-//     var body = {'name': name, 'email': email, 'email_confirmation': emailConfirmation};
-//     var response = await http.put(Uri.parse(userURL), headers: headers, body: body);
-
-//     switch (response.statusCode) {
-//       case 200:
-//         apiResponse.data = jsonDecode(response.body)['message'];
-//         break;
-//       case 401:
-//         apiResponse.error = unauthorized;
-//         break;
-//       default:
-//         apiResponse.error = somethingWentWrong;
-//         break;
-//     }
-//   } catch (e) {
-//     apiResponse.error = serverError;
-//   }
-//   return apiResponse;
-// }
-// V2:
-
-Future<ApiResponse> updateUser(
-    String name, String email, String emailConfirmation, String? image) async {
+Future<ApiResponse> updateUser(String name, String email, String emailConfirmation, String? image) async {
   print('updateUser called');
   ApiResponse apiResponse = ApiResponse();
   try {
     print('Getting token');
     String token = await getToken();
     // print('Token: $token');
-    final response = await http.put(Uri.parse(userURL), headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $token'
-    }, body: {
-      'name': name,
-      'email': email,
-      'email_confirmation': emailConfirmation,
-      'image': image
-    });
+    final response = await http.put(Uri.parse(userURL),
+        headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+        body: {'name': name, 'email': email, 'email_confirmation': emailConfirmation, 'image': image});
 
     switch (response.statusCode) {
       case 200:
@@ -245,10 +184,44 @@ Future<ApiResponse> updateUser(
   return apiResponse;
 }
 
+// delete user using route Route::delete('/user', [AuthController::class, 'destroy']);
+Future<ApiResponse> deleteUser() async {
+  if (kDebugMode) {
+    print('deleteUser called');
+  }
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    String token = await getToken();
+    final response = await http.delete(Uri.parse(userURL), headers: {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        await clearToken();
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
 // get token
 Future<String> getToken() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   return pref.getString('token') ?? '';
+}
+
+// clear token
+Future<void> clearToken() async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.remove('token');
 }
 
 // get user id

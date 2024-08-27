@@ -32,11 +32,10 @@ const unauthorized = 'Unauthorized';
 const somethingWentWrong = 'Something went wrong, try again!';
 
 // Maps API KEY
-const String GOOGLE_MAPS_API_KEY = "API_KEY_HERE";
+// const String GOOGLE_MAPS_API_KEY = "API_KEY_HERE";
 
 // --- input decoration
-InputDecoration kInputDecoration(String hint,
-    {Color bgColor = Colors.white, Color hintColor = Colors.grey}) {
+InputDecoration kInputDecoration(String hint, {Color bgColor = Colors.white, Color hintColor = Colors.grey}) {
   return InputDecoration(
     hintText: hint,
     hintStyle: TextStyle(color: hintColor), // Change the color of the hint text
@@ -50,14 +49,25 @@ InputDecoration kInputDecoration(String hint,
 }
 
 // button
-TextButton kTextButton(String label, Function onPressed,
-    {Color? backgroundColor}) {
+TextButton kTextButton(String label, Function onPressed, {Color? backgroundColor}) {
   return TextButton(
     style: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith(
-            (states) => backgroundColor ?? signatureAppColor),
-        padding: WidgetStateProperty.resolveWith(
-            (states) => const EdgeInsets.symmetric(vertical: 10))),
+        backgroundColor: WidgetStateProperty.resolveWith((states) => backgroundColor ?? signatureAppColor),
+        padding: WidgetStateProperty.resolveWith((states) => const EdgeInsets.symmetric(vertical: 10))),
+    onPressed: () => onPressed(),
+    child: Text(
+      label,
+      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
+// button for auth pages
+TextButton kTextButtonAuth(String label, Function onPressed, {Color? backgroundColor}) {
+  return TextButton(
+    style: ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith((states) => backgroundColor ?? signatureAppColor),
+        padding: WidgetStateProperty.resolveWith((states) => const EdgeInsets.symmetric(vertical: 10))),
     onPressed: () => onPressed(),
     child: Text(
       label,
@@ -68,10 +78,8 @@ TextButton kTextButton(String label, Function onPressed,
 
 // format duration
 String formatDuration(Duration duration) {
-  final twoDigitMinutes =
-      duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-  final twoDigitSeconds =
-      duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+  final twoDigitMinutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+  final twoDigitSeconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
   return "${duration.inHours}:$twoDigitMinutes:$twoDigitSeconds";
 }
 
@@ -79,19 +87,13 @@ String formatDuration(Duration duration) {
 Row kLoginRegisterHint(String text, String label, Function onTap) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      Text(text),
-      GestureDetector(
-          child: Text(label, style: const TextStyle(color: Colors.blue)),
-          onTap: () => onTap())
-    ],
+    children: [Text(text), GestureDetector(child: Text(label, style: const TextStyle(color: Colors.blue)), onTap: () => onTap())],
   );
 }
 
 // likes and comment btn
 
-Expanded kLikeAndComment(
-    int value, IconData icon, Color color, Function onTap) {
+Expanded kLikeAndComment(int value, IconData icon, Color color, Function onTap) {
   return Expanded(
     child: Material(
       child: InkWell(

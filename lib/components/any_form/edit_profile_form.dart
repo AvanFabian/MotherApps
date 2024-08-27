@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:monitoring_hamil/components/auth/login_page.dart';
 import 'package:monitoring_hamil/models/user.dart';
+import 'package:monitoring_hamil/pages/welcome_page.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
 import 'package:monitoring_hamil/res/constants.dart';
@@ -50,7 +52,9 @@ class _EditProfileFormState extends State<EditProfileForm> {
       _txtControllerName.text = user.name ?? '';
       _txtControllerEmail.text = user.email ?? '';
     } else {
-      print('Unexpected data format: ${apiResponse.data}');
+      if (kDebugMode) {
+        print('Unexpected data format: ${apiResponse.data}');
+      }
     }
   }
 
@@ -88,88 +92,102 @@ class _EditProfileFormState extends State<EditProfileForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              if (_imageFile != null) Image.file(_imageFile!),
-              IconButton(
-                icon: const Icon(Icons.photo_library),
-                onPressed: () {
-                  getImage();
-                },
-                tooltip: 'Select Image from Gallery',
-              ),
-              Form(
-                key: _formKeyName,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                    controller: _txtControllerName,
-                    validator: (val) => val!.isEmpty ? 'Name is required' : null,
-                    decoration: const InputDecoration(hintText: "Name...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const Text('Edit Profile'),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  if (_imageFile != null) Image.file(_imageFile!),
+                  IconButton(
+                    icon: const Icon(Icons.photo_library),
+                    onPressed: () {
+                      getImage();
+                    },
+                    tooltip: 'Select Image from Gallery',
                   ),
-                ),
-              ),
-              Form(
-                key: _formKeyEmail,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                    controller: _txtControllerEmail,
-                    validator: (val) => val!.isEmpty ? 'Email is required' : null,
-                    decoration:
-                        const InputDecoration(hintText: "Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
-                  ),
-                ),
-              ),
-              Form(
-                key: _formKeyEmailConfirm,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: TextFormField(
-                    controller: _txtControllerEmailConfirm,
-                    validator: (val) => val!.isEmpty ? 'Confirm Email is required' : null,
-                    decoration: const InputDecoration(
-                        hintText: "Confirm Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              _loading
-                  ? const CircularProgressIndicator()
-                  : ElevatedButton(
-                      onPressed: _updateProfile,
-                      child: const Text('Update Profile'),
+                  Form(
+                    key: _formKeyName,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        controller: _txtControllerName,
+                        validator: (val) => val!.isEmpty ? 'Name is required' : null,
+                        decoration:
+                            const InputDecoration(hintText: "Name...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
+                      ),
                     ),
-            ],
+                  ),
+                  Form(
+                    key: _formKeyEmail,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        controller: _txtControllerEmail,
+                        validator: (val) => val!.isEmpty ? 'Email is required' : null,
+                        decoration:
+                            const InputDecoration(hintText: "Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
+                      ),
+                    ),
+                  ),
+                  Form(
+                    key: _formKeyEmailConfirm,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: TextFormField(
+                        controller: _txtControllerEmailConfirm,
+                        validator: (val) => val!.isEmpty ? 'Confirm Email is required' : null,
+                        decoration: const InputDecoration(
+                            hintText: "Confirm Email...", border: OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.black38))),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _loading
+                      ? const CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _updateProfile,
+                          child: const Text('Update Profile'),
+                        ),
+                ],
+              ),
+            ),
           ),
         ),
-      ),
-      floatingActionButton: ElevatedButton.icon(
-        onPressed: () {
-          print('Delete account');
-        },
-        icon: const Icon(
-          Icons.delete,
-          color: Colors.white, // Change color here
-        ),
-        label: const Text(
-          'Delete account',
-          style: TextStyle(color: Colors.white), // Change color here
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.red,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
+        Positioned(
+          bottom: 16.0,
+          right: 16.0,
+          child: ElevatedButton.icon(
+            onPressed: () async {
+              await deleteUser();
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const WelcomePage()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.white, // Change color here
+            ),
+            label: const Text(
+              'Delete account',
+              style: TextStyle(color: Colors.white), // Change color here
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 }

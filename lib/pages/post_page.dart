@@ -5,6 +5,7 @@ import 'package:monitoring_hamil/pages/comment_page.dart';
 import 'package:monitoring_hamil/services/post_service.dart';
 import 'package:monitoring_hamil/services/user_service.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 import '../Components/Auth/login_page.dart';
@@ -195,7 +196,7 @@ class _PostPageState extends State<PostPage> {
                                       decoration: BoxDecoration(
                                           image: DecorationImage(
                                               image:
-                                                  NetworkImage('${post.image}'),
+                                                  CachedNetworkImageProvider('${post.image}'),
                                               fit: BoxFit.cover)),
                                     ),
                                   )

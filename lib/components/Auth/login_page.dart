@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : kTextButton(
+                : kTextButtonAuth(
                     'Login',
                     () {
                       if (formkey.currentState!.validate()) {

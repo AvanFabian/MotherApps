@@ -120,7 +120,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             loading
                 ? const Center(child: CircularProgressIndicator())
-                : kTextButton(
+                : kTextButtonAuth(
                     'Register',
                     () {
                       if (formKey.currentState!.validate()) {
