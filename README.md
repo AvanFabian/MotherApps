@@ -31,22 +31,22 @@
 
 | Home                                                                 
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page1.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page1.jpg" width="360" />
 | Exercise Activity                                                                  
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page2.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page2.jpg" width="360" />
 | Callories Counter                                                                  
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page4.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page4.jpg" width="360" />
 | History                                                                  
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page3.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page3.jpg" width="360" />
 | Ranking                                                                  
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page7.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page7.jpg" width="360" />
 | User Dashboard                                                                  
 | ----------------------------------------------------------------------------- 
-| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page5.jpg" width="968" />
+| <img src="https://github.com/AvanFabian/MotherApps/blob/main/assets/github/page5.jpg" width="360" />
 
 ## <a name="description">🎮 Description</a>
 MotherApps is a Pregant Women Exercise Monitoring Platform
