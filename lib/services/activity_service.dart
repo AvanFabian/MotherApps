@@ -7,7 +7,7 @@ import 'package:monitoring_hamil/res/constants.dart';
 Future<List<ActivityRecord>> getActivityRecords(int userId) async {
   String token = await getToken();
   final response = await http.get(
-    Uri.parse('$baseURL3/activity_records/user/$userId'),
+    Uri.parse('$prodURL2/activity_records/user/$userId'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -30,7 +30,7 @@ Future<List<ActivityRecord>> getActivityRecords(int userId) async {
 Future<int> getSportActivityId(String selectedExercise) async {
   String token = await getToken();
   var activityResponse = await http.get(
-    Uri.parse('$baseURL3/sports_activity_id?activity_name=$selectedExercise'),
+    Uri.parse('$prodURL2/sports_activity_id?activity_name=$selectedExercise'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -53,7 +53,7 @@ Future<List<int>> getSportMovementIds(List<String> selectedSubMovements) async {
   List<int> ids = [];
   for (var movement in selectedSubMovements) {
     var response = await http.get(
-      Uri.parse('$baseURL3/sports_movement_id?activity_name=$movement'),
+      Uri.parse('$prodURL2/sports_movement_id?activity_name=$movement'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
@@ -77,7 +77,7 @@ Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
   print('IDs: ${ids.join(',')}');
   String token = await getToken();
   var response = await http.get(
-    Uri.parse('$baseURL3/sports_movements/calories?ids=${ids.join(',')}'),
+    Uri.parse('$prodURL2/sports_movements/calories?ids=${ids.join(',')}'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
@@ -110,7 +110,7 @@ Future<Map<int, int>> getCaloriesBurnedPredictions(List<int> ids) async {
 Future<http.Response> postActivityRecord(Map<String, String> body) async {
   String token = await getToken();
   return http.post(
-    Uri.parse('$baseURL3/activity_records'),
+    Uri.parse('$prodURL2/activity_records'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Bearer $token',
@@ -124,7 +124,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
 
   // Fetch exercises
   var exercisesResponse = await http.get(
-    Uri.parse('$baseURL3/sports_activities'),
+    Uri.parse('$prodURL2/sports_activities'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },
@@ -139,7 +139,7 @@ Future<Map<String, dynamic>> fetchExercisesAndMovements() async {
 
   for (var exercise in exercises) {
     var movementsResponse = await http.get(
-      Uri.parse('$baseURL3/sports_movements?activity_name=$exercise'),
+      Uri.parse('$prodURL2/sports_movements?activity_name=$exercise'),
       headers: <String, String>{
         'Authorization': 'Bearer $token',
       },
@@ -157,7 +157,7 @@ Future<String> getYoutubeUrlForMovement(String exerciseName, String movementName
   String token = await getToken();
   print('Exercise name: $exerciseName');
   final response = await http.get(
-    Uri.parse('$baseURL3/sports_movements?activity_name=$exerciseName'),
+    Uri.parse('$prodURL2/sports_movements?activity_name=$exerciseName'),
     headers: <String, String>{
       'Authorization': 'Bearer $token',
     },

@@ -15,12 +15,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Create an instance of TimerModel
   TimerModel timerModel = TimerModel();
   await dotenv.load(fileName: ".env");
-
-  // Retrieve the saved time timer value
-  await timerModel.retrieveTimeAndTimerValue();
 
   runApp(
     ChangeNotifierProvider.value(
@@ -91,7 +87,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
   Stream<double> get stream => _stream;
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
       // The app is being closed
@@ -100,8 +96,38 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
       saveActivityId(sportActivityId);
       saveTotalCaloriesBurned(totalCaloriesBurned);
       saveCaloriesBurnedPredictions(caloriesBurnedPredictions);
+      saveIsPaused(isPaused); // Save the isPaused state
+      saveDuration(duration); // Save the duration
     } else if (state == AppLifecycleState.resumed) {
+      TimerModel timerModel = TimerModel();
       // The app is reopened
+      bool? wasPaused = await retrieveIsPaused(); // Use await here
+      if (kDebugMode) {
+        // Debug saving and retrieving the isPaused state
+        print('Was paused: $wasPaused');
+      }
+      if (wasPaused != null) {
+        // If the wasPaused is not null, set the isPaused to the wasPaused
+        isPaused = wasPaused;
+      }
+      int? savedDuration = await retrieveDuration(); // Use await here
+      if (kDebugMode) {
+        // Debug saving and retrieving the duration
+        print('Saved duration: $savedDuration');
+      }
+      if (savedDuration != null) {
+        // If the saved duration is not null, set the duration to the saved duration
+        duration = savedDuration;
+      }
+      // Retrieve the saved time timer value
+      if (isPaused) {
+        if (kDebugMode) {
+          print('isPaused on line 125: $isPaused');
+        }
+        // If the timer was paused, save the timer value and the time
+        await timerModel.saveTimeAndTimerValue(isPaused);
+      }
+
       // Retrieve the ids list and the activity id from SharedPreferences and restart the timer
       retrieveIds().then((ids) {
         // print('Retrieved ids: $ids');
@@ -157,28 +183,6 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     _streamController.add(value);
   }
 
-  Future<void> saveActivityId(int activityId) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('activityId', activityId);
-  }
-
-  Future<int?> retrieveActivityId() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('activityId');
-  }
-
-  // CALORIES BURNED PREDICTIONS SAVING LOGIC
-  Future<void> saveTotalCaloriesBurned(double totalCalories) async {
-    // print('Saving total calories burned: $totalCalories');
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setDouble('totalCaloriesBurned', totalCalories);
-  }
-
-  Future<double?> retrieveTotalCaloriesBurned() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getDouble('totalCaloriesBurned');
-  }
-
   Future<void> saveCaloriesBurnedPredictions(Map<int, int> predictions) async {
     final prefs = await SharedPreferences.getInstance();
     Map<String, int> stringKeyPredictions = predictions.map((key, value) => MapEntry(key.toString(), value));
@@ -222,7 +226,7 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     final savedTimerValue = prefs.getInt('savedTimerValue');
     final wasActivityStarted = prefs.getBool('isActivityStarted') ?? false;
 
-    if (savedTimeMillis != null && savedTimerValue != null && wasActivityStarted) {
+    if (savedTimeMillis != null && savedTimerValue != null && wasActivityStarted && !isPaused) {
       DateTime savedTime = DateTime.fromMillisecondsSinceEpoch(savedTimeMillis);
       DateTime now = DateTime.now();
       Duration elapsedTime = now.difference(savedTime);
@@ -273,18 +277,40 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     }
   }
 
-  void toggleActivityStarted() {
-    _isActivityStarted = !_isActivityStarted;
-    notifyListeners();
+  Future<void> saveIsPaused(bool isPaused) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isPaused', isPaused);
   }
 
-  void startTimer(List<int> ids) {
+  Future<bool?> retrieveIsPaused() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isPaused');
+  }
+
+  Future<void> saveDuration(int duration) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (kDebugMode) {
+      print('Duration on saveDuration before saving to preferences: $duration');
+    }
+    prefs.setInt('duration', duration);
+  }
+
+  Future<int?> retrieveDuration() async {
+    final prefs = await SharedPreferences.getInstance();
+    // var timerSaved = prefs.getInt('duration');
+    // if (kDebugMode) {
+    //   print('Duration inside retrieveDuration: $timerSaved');
+    // }
+    return prefs.getInt('duration');
+  }
+
+  void startTimer(List<int> ids) async {
     // Save the ids list to SharedPreferences
     saveIds(ids);
     saveActivityId(sportActivityId);
     timer?.cancel();
     timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-    shouldTimerRun = true;
+      shouldTimerRun = true;
       if (!isPaused) {
         // Calculate the total calories burned
         totalCaloriesBurned = 0.0;
@@ -307,11 +333,9 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
         saveTotalCaloriesBurned(totalCaloriesBurned);
         saveCaloriesBurnedPredictions(caloriesBurnedPredictions);
         // Debugging print statements
-        // print('Total Calories Burned: $totalCaloriesBurned');
         if (kDebugMode) {
           print('Total Calories Burned: $totalCaloriesBurned');
         }
-        // print('Duration: $duration');
         if (kDebugMode) {
           print('Duration: $duration');
         }
@@ -323,9 +347,14 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     });
   }
 
-  void stopTimer() {
+  void stopTimer() async {
     timer?.cancel();
     timer = null; // new line added
+    TimerModel timerModel = TimerModel();
+    // timerModel.isPaused = false;
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isPressed', timerModel.isPressed);
+    // prefs.setBool('isPaused', timerModel.isPaused);
     isActivityStarted = false; // new line added
     shouldTimerRun = false;
     totalDuration = duration;
@@ -351,9 +380,36 @@ class TimerModel with ChangeNotifier, WidgetsBindingObserver {
     notifyListeners();
   }
 
+  void toggleActivityStarted() {
+    _isActivityStarted = !_isActivityStarted;
+    notifyListeners();
+  }
+
   set isPaused(bool value) {
     _isPaused = value;
     notifyListeners(); // Notify listeners when isPaused changes
+  }
+
+  Future<void> saveActivityId(int activityId) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('activityId', activityId);
+  }
+
+  Future<int?> retrieveActivityId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('activityId');
+  }
+
+  // CALORIES BURNED PREDICTIONS SAVING LOGIC
+  Future<void> saveTotalCaloriesBurned(double totalCalories) async {
+    // print('Saving total calories burned: $totalCalories');
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setDouble('totalCaloriesBurned', totalCalories);
+  }
+
+  Future<double?> retrieveTotalCaloriesBurned() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getDouble('totalCaloriesBurned');
   }
 
   @override

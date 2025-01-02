@@ -18,13 +18,13 @@ var baseURL2 = dotenv.env['BASE_URL2'];
 var baseURL3 = dotenv.env['BASE_URL3'];
 var prodURL = dotenv.env['PROD_URL'];
 var prodURL2 = dotenv.env['PROD_URL2'];
-var loginURL = '$baseURL3/login';
-var registerURL = '$baseURL3/register';
-var logoutURL = '$baseURL3/logout';
-var userURL = '$baseURL3/user';
-var allUsersURL = '$baseURL3/allUsers';
-var postsURL = '$baseURL3/posts';
-var commentsURL = '$baseURL3/comments';
+var loginURL = '$prodURL2/login';
+var registerURL = '$prodURL2/register';
+var logoutURL = '$prodURL2/logout';
+var userURL = '$prodURL2/user';
+var allUsersURL = '$prodURL2/allUsers';
+var postsURL = '$prodURL2/posts';
+var commentsURL = '$prodURL2/comments';
 
 // ----- Errors -----
 const serverError = 'Server error';

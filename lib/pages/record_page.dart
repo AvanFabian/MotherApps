@@ -239,21 +239,6 @@ class _RecordPageState extends State<RecordPage> {
         centerTitle: true,
         backgroundColor: signatureAppColor,
         elevation: 0, // z-coordinate of the app bar
-        // actions: <Widget>[
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 16.0),
-        //     child: IconButton(
-        //       // settings icon
-        //       icon: const Icon(Icons.refresh, size: 30.0),
-        //       color: Colors.black,
-        //       onPressed: () {
-        //         setState(() {
-        //           // This will rebuild your widget
-        //         });
-        //       },
-        //     ),
-        //   ),
-        // ],
       ),
       body: Column(
         children: <Widget>[
@@ -520,10 +505,11 @@ class _RecordPageState extends State<RecordPage> {
                           if (kDebugMode) {
                             debugPrint('Total duration: $totalDuration');
                           }
+                          timerModel.isPaused = false; // Reset the isPaused state to false
                           timerModel.stopTimer(); // Stop the timer in the TimerModel
                           final prefs = await SharedPreferences.getInstance();
                           await prefs.setInt('elapsedTime', 0); // Reset the elapsed time to 0 and save it to SharedPreferences
-                          // await prefs.remove('selectedSubMovements'); // Delete the 'selectedSubMovements' preference
+                          await prefs.setBool('isPaused', timerModel.isPaused); // Reset the isPaused state to false and save it to SharedPreferences
 
                           // Save the total duration to SharedPreferences
                           timerModel.saveTimeAndTimerValue(false);
@@ -657,27 +643,30 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                         );
                       } else {
-                        setState(() async {
+                        final prefs = await SharedPreferences.getInstance();
+                        
+                        setState(() {
                           timerModel.isPaused = !timerModel.isPaused; // Toggle the state of the pause button in TimerModel
-                          final prefs = await SharedPreferences.getInstance();
-                          await prefs.setBool('isPaused', timerModel.isPaused); // Save the state of isPaused to SharedPreferences
-
-                          if (timerModel.isPaused) {
-                            timer?.cancel(); // Stop the timer
-                            timer = null; // Set the timer to null
-                          } else {
-                            getSportMovementIds(selectedSubMovements).then((ids) {
-                              timer?.cancel(); // Stop the timer if it's already running
-                              timer = null; // Set the timer to null
-                              Provider.of<TimerModel>(context, listen: false).startTimer(ids); // Start the timer
-                            }).catchError((e) {
-                              // print('Failed to load sport movement IDs: $e');
-                              if (kDebugMode) {
-                                debugPrint('Failed to load sport movement IDs: $e');
-                              }
-                            });
-                          }
                         });
+                        await prefs.setBool('isPaused', timerModel.isPaused); // Save the state of isPaused to SharedPreferences
+
+                        final isTimerPaused = prefs.getBool('isPaused') ?? false;
+
+                        if (isTimerPaused) {
+                          timer?.cancel(); // Stop the timer
+                          timer = null; // Set the timer to null
+                        } else {
+                          getSportMovementIds(selectedSubMovements).then((ids) {
+                            timer?.cancel(); // Stop the timer if it's already running
+                            timer = null; // Set the timer to null
+                            Provider.of<TimerModel>(context, listen: false).startTimer(ids); // Start the timer
+                          }).catchError((e) {
+                            // print('Failed to load sport movement IDs: $e');
+                            if (kDebugMode) {
+                              debugPrint('Failed to load sport movement IDs: $e');
+                            }
+                          });
+                        }
                       }
                     },
                     child: Icon(timerModel.isPaused ? Icons.play_arrow : Icons.pause, size: 40.0, color: Colors.black),
